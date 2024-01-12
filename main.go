@@ -16,11 +16,11 @@ func listDir(dir string) {
     }
 
     for _, entry := range entries {
+        dirPart := ""
         if entry.IsDir() {
-            fmt.Printf("* %s/\n", entry.Name())
-        } else {
-            fmt.Println("*", entry.Name())
+            dirPart = "/"
         }
+        fmt.Printf("* %s%s\n", entry.Name(), dirPart)
     }
 }
 
