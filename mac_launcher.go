@@ -10,21 +10,21 @@ import (
 func main() {
     fmt.Println("Hello from launcher!")
 
-    docker_cmd := exec.Command("docker")
+    cmd := exec.Command("docker")
 
     ext := func(a *[]string, args ...string) {
         for _, arg := range args {
             *a = append(*a, arg)
         }
     }
-    ext(&docker_cmd.Args, "run")
-    ext(&docker_cmd.Args, "--pull", "always")
-    ext(&docker_cmd.Args, "krelinga/video-tool-box")
+    ext(&cmd.Args, "run")
+    ext(&cmd.Args, "--pull", "always")
+    ext(&cmd.Args, "krelinga/video-tool-box")
 
-    docker_cmd.Stdout = os.Stdout
-    docker_cmd.Stderr = os.Stderr
-    docker_cmd.Stdin = os.Stdin
-    if err := docker_cmd.Run(); err != nil {
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+    cmd.Stdin = os.Stdin
+    if err := cmd.Run(); err != nil {
         log.Fatal(err)
     }
 
