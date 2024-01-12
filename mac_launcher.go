@@ -12,23 +12,23 @@ func main() {
 
     cmd := exec.Command("docker")
 
-    ext := func(a *[]string, args ...string) {
+    ext := func(args ...string) {
         for _, arg := range args {
-            *a = append(*a, arg)
+            cmd.Args = append(cmd.Args, arg)
         }
     }
-    ext(&cmd.Args, "run")
-    ext(&cmd.Args, "--pull", "always")
+    ext("run")
+    ext("--pull", "always")
     pwd := os.Getenv("PWD")
     const workdir string = "/workdir"
     if len(pwd) == 0 {
         log.Print("could not read PWD")
     } else {
-        ext(&cmd.Args, "-v", fmt.Sprintf("%s:%s", pwd, workdir))
+        ext("-v", fmt.Sprintf("%s:%s", pwd, workdir))
     }
-    ext(&cmd.Args, "krelinga/video-tool-box")
+    ext("krelinga/video-tool-box")
     if len(pwd) != 0 {
-        ext(&cmd.Args, "--work_dir", workdir)
+        ext("--work_dir", workdir)
     }
 
     cmd.Stdout = os.Stdout
