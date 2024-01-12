@@ -21,4 +21,4 @@ COPY --from=build-stage /main /main
 
 USER nonroot:nonroot
 
-CMD ["/main"]
+ENTRYPOINT ["/main"]
