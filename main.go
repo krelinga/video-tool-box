@@ -28,9 +28,16 @@ func main() {
     fmt.Println("Hello from main!")
     app := &cli.App{
         Name: "vtb",
-        Action: func(*cli.Context) error {
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "work_dir",
+                Value: "/",
+                Usage: "Directory to do work in.",
+            },
+        },
+        Action: func(c *cli.Context) error {
             fmt.Println("main action.")
-            listDir("/")
+            listDir(c.String("work_dir"))
             return nil
         },
     }
