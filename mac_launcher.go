@@ -34,6 +34,7 @@ func main() {
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
     cmd.Stdin = os.Stdin
+    log.Print("final docker command line:", cmd.Args)
     if err := cmd.Run(); err != nil {
         log.Fatal(err)
     }
