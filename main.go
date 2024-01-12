@@ -2,11 +2,22 @@ package main
 
 import (
     "fmt"
-    cli "github.com/urfave/cli/v2"
+    "log"
     "os"
+
+    cli "github.com/urfave/cli/v2"
 )
 
 func main() {
     fmt.Println("Hello from main!")
-    (&cli.App{}).Run(os.Args)
+    app := &cli.App{
+        Name: "vtb",
+        Action: func(*cli.Context) error {
+            fmt.Println("main action.")
+            return nil
+        },
+    }
+    if err := app.Run(os.Args); err != nil {
+        log.Fatal(err)
+    }
 }
