@@ -4,7 +4,6 @@ import (
     "fmt"
     "log"
     "os"
-    "path/filepath"
 
     cli "github.com/urfave/cli/v2"
 )
@@ -57,11 +56,6 @@ func main() {
             tmm_shows := c.String("tmm_shows")
             if len(tmm_shows) > 0 {
                 listDir(tmm_shows)
-            }
-            src := filepath.Join(work_dir, "moveme")
-            dest := filepath.Join(tmm_shows, "moveme")
-            if err := os.Rename(src, dest); err != nil {
-                return err
             }
 
             return nil
