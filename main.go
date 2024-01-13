@@ -39,12 +39,20 @@ func main() {
                 Value: "",
                 Usage: "Tiny Media Manager movies dir.",
             },
+            &cli.StringFlag{
+                Name: "tmm_shows",
+                Value: "",
+                Usage: "Tiny Media Manager shows dir.",
+            },
         },
         Action: func(c *cli.Context) error {
             fmt.Println("main action.")
             listDir(c.String("work_dir"))
             if len(c.String("tmm_movies")) > 0 {
                 listDir(c.String("tmm_movies"))
+            }
+            if len(c.String("tmm_shows")) > 0 {
+                listDir(c.String("tmm_shows"))
             }
             return nil
         },
