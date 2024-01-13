@@ -4,6 +4,7 @@ import (
     "fmt"
     "log"
     "os"
+    "path/filepath"
 
     cli "github.com/urfave/cli/v2"
 )
@@ -47,13 +48,22 @@ func main() {
         },
         Action: func(c *cli.Context) error {
             fmt.Println("main action.")
-            listDir(c.String("work_dir"))
-            if len(c.String("tmm_movies")) > 0 {
-                listDir(c.String("tmm_movies"))
+            work_dir := c.String("work_dir")
+            listDir(work_dir)
+            tmm_movies := c.String("tmm_movies")
+            if len(tmm_movies) > 0 {
+                listDir(tmm_movies)
             }
-            if len(c.String("tmm_shows")) > 0 {
-                listDir(c.String("tmm_shows"))
+            tmm_shows := c.String("tmm_shows")
+            if len(tmm_shows) > 0 {
+                listDir(tmm_shows)
             }
+            src := filepath.Join(work_dir, "moveme")
+            dest := filepath.Join(tmm_shows, "moveme")
+            if err := os.Rename(src, dest); err != nil {
+                return err
+            }
+
             return nil
         },
     }
