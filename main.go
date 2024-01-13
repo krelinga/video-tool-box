@@ -34,10 +34,18 @@ func main() {
                 Value: "/",
                 Usage: "Directory to do work in.",
             },
+            &cli.StringFlag{
+                Name: "tmm_movies",
+                Value: "",
+                Usage: "Tiny Media Manager movies dir.",
+            },
         },
         Action: func(c *cli.Context) error {
             fmt.Println("main action.")
             listDir(c.String("work_dir"))
+            if len(c.String("tmm_movies")) > 0 {
+                listDir(c.String("tmm_movies"))
+            }
             return nil
         },
     }

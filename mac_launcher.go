@@ -26,9 +26,19 @@ func main() {
     } else {
         ext("-v", fmt.Sprintf("%s:%s", pwd, workdir))
     }
+    tmm_movies_host_dir := os.Getenv("VTB_TMM_MOVIES_DIR")
+    const tmm_movies string = "/tmm_movies"
+    if len(tmm_movies_host_dir) == 0 {
+        log.Print("could not read VTB_TMM_MOVIES_DIR")
+    } else {
+        ext("-v", fmt.Sprintf("%s:%s", tmm_movies_host_dir, tmm_movies))
+    }
     ext("krelinga/video-tool-box")
     if len(pwd) != 0 {
         ext("--work_dir", workdir)
+    }
+    if len(tmm_movies_host_dir) != 0 {
+        ext("--tmm_movies", tmm_movies)
     }
 
     cmd.Stdout = os.Stdout
