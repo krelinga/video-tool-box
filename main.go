@@ -4,7 +4,6 @@ import (
     "fmt"
     "log"
     "os"
-    "path/filepath"
 
     cli "github.com/urfave/cli/v2"
 )
@@ -40,9 +39,6 @@ func main() {
             fmt.Println("main action.")
             work_dir := c.String("work_dir")
             listDir(work_dir)
-            oldP := filepath.Join(work_dir, "moveme")
-            newP := filepath.Join(work_dir, "tmm_shows", "moveme")
-            os.Rename(oldP, newP)
 
             return nil
         },

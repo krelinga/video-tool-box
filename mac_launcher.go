@@ -5,6 +5,7 @@ import (
     "log"
     "os"
     "os/exec"
+    "path/filepath"
 )
 
 func main() {
@@ -19,15 +20,16 @@ func main() {
     }
     ext("run")
     ext("--pull", "always")
-    pwd := os.Getenv("PWD")
+    home := os.Getenv("HOME")
+    movies := filepath.Join(home, "Movies")
     const workdir string = "/workdir"
-    if len(pwd) == 0 {
-        log.Print("could not read PWD")
+    if len(home) == 0 {
+        log.Print("could not read HOME")
     } else {
-        ext("-v", fmt.Sprintf("%s:%s", pwd, workdir))
+        ext("-v", fmt.Sprintf("%s:%s", movies, workdir))
     }
     ext("krelinga/video-tool-box")
-    if len(pwd) != 0 {
+    if len(home) != 0 {
         ext("--work_dir", workdir)
     }
 
