@@ -3,4 +3,4 @@
 export GOOS=darwin
 export GOARCH=arm64
 
-go build -o /mnt/share/macbin/vtb mac_launcher.go
+go build -o /mnt/share/macbin/vtb main.go
