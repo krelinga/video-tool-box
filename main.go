@@ -47,6 +47,8 @@ func main() {
             log.Fatal(err)
         }
     }()
+
+    // Command line processing.
     app := &cli.App{
         Name: "vtb",
         Flags: []cli.Flag{
