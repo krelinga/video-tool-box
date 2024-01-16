@@ -13,7 +13,7 @@ func main() {
 
     // Load & (eventually) store gToolState
     func() {
-        var err error = nil
+        var err error
         gToolState, err = loadToolState(statePath)
         if err != nil {
             log.Fatal(err)
