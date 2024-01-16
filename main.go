@@ -36,11 +36,7 @@ func main() {
     app := &cli.App{
         Name: "vtb",
         Commands: []*cli.Command{
-            {
-                Name: "new",
-                Usage: "start a new project",
-                Action: cmdNew,
-            },
+            cmdNew(),
         },
     }
     if err := app.Run(os.Args); err != nil {
