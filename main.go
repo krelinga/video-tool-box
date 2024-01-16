@@ -37,6 +37,7 @@ func main() {
         Name: "vtb",
         Commands: []*cli.Command{
             cmdNew(),
+            cmdFinish(),
         },
     }
     if err := app.Run(os.Args); err != nil {

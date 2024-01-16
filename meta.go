@@ -49,3 +49,17 @@ func cmdNew() *cli.Command {
         Action: fn,
     }
 }
+
+func cmdFinish() *cli.Command {
+    fn := func(c *cli.Context) error {
+        gToolState = &toolState{}
+        return nil
+    }
+
+    return &cli.Command{
+        Name: "finish",
+        Usage: "finish an existing project",
+        ArgsUsage: " ",  // Makes help text a bit nicer.
+        Action: fn,
+    }
+}
