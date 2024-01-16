@@ -42,6 +42,13 @@ func main() {
 
             return nil
         },
+        Commands: []*cli.Command{
+            {
+                Name: "new",
+                Usage: "start a new project",
+                Action: cmdNew,
+            },
+        },
     }
     if err := app.Run(os.Args); err != nil {
         log.Fatal(err)
