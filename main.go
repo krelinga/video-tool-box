@@ -13,21 +13,14 @@ func main() {
 
     // Load & (eventually) store gToolState
     func() {
-        p, err := tsPath()
-        if err != nil {
-            log.Fatal(err)
-        }
-        gToolState, err = loadToolState(p)
+        var err error = nil
+        gToolState, err = loadToolState(statePath)
         if err != nil {
             log.Fatal(err)
         }
     }()
     defer func() {
-        p, err := tsPath()
-        if err != nil {
-            log.Fatal(err)
-        }
-        if err := gToolState.store(p); err != nil {
+        if err := gToolState.store(statePath); err != nil {
             log.Fatal(err)
         }
     }()

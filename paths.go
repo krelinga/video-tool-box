@@ -1,15 +1,21 @@
 package main
 
 import (
-    "errors"
+    "log"
     "os"
     "path/filepath"
 )
 
-func tsPath() (string, error) {
-    homeDir := os.Getenv("HOME")
-    if len(homeDir) == 0 {
-        return "", errors.New("could not read $HOME")
-    }
-    return filepath.Join(homeDir, ".vtb_state"), nil
-}
+var (
+    homeDir = func() string {
+        home := os.Getenv("HOME")
+        if len(home) == 0 {
+            log.Fatal("could not read HOME env var")
+        }
+        return home
+    }()
+    moviesDir = filepath.Join(homeDir, "Movies")
+    tmmMoviesDir = filepath.Join(moviesDir, "tmm_movies")
+    tmmShowsDir = filepath.Join(moviesDir, "tmm_shows")
+    statePath = filepath.Join(homeDir, ".vtb_state")
+)
