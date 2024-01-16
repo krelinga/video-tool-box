@@ -38,6 +38,7 @@ func main() {
         Commands: []*cli.Command{
             cmdNew(),
             cmdFinish(),
+            cmdDir(),
         },
     }
     if err := app.Run(os.Args); err != nil {
