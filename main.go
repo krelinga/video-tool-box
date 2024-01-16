@@ -26,6 +26,27 @@ func listDir(dir string) {
 
 func main() {
     fmt.Println("Hello from main!")
+
+    // Load & (eventually) store gToolState
+    func() {
+        p, err := tsPath()
+        if err != nil {
+            log.Fatal(err)
+        }
+        gToolState, err = loadToolState(p)
+        if err != nil {
+            log.Fatal(err)
+        }
+    }()
+    defer func() {
+        p, err := tsPath()
+        if err != nil {
+            log.Fatal(err)
+        }
+        if err := gToolState.store(p); err != nil {
+            log.Fatal(err)
+        }
+    }()
     app := &cli.App{
         Name: "vtb",
         Flags: []cli.Flag{
