@@ -27,25 +27,21 @@ func listMkvFilePaths() ([]string, error) {
 }
 
 func openInVLC(path string) error {
-    fmt.Println("will open in vlc", path)
     // TODO
     return nil
 }
 
 func moveToTMMDir(path string) error {
-    fmt.Println("will move to TMM dir", path)
     // TODO
     return nil
 }
 
 func moveToExtrasDir(path string) error {
-    fmt.Println("will move to extras dir", path)
     // TODO
     return nil
 }
 
 func deletePath(path string) error {
-    fmt.Println("will delete path", path)
     // TODO
     return nil
 }
@@ -83,25 +79,31 @@ func cmdDir() *cli.Command{
                     if err := openInVLC(path); err != nil {
                         return err
                     }
+                    fmt.Println("opened in VLC")
                     // Repeat inputLoop
                 case "t":
                     if err := moveToTMMDir(path); err != nil {
                         return err
                     }
+                    fmt.Println("moved to TMM content dir")
                     break inputLoop
                 case "x":
                     if err := moveToExtrasDir(path); err != nil {
                         return err
                     }
+                    fmt.Println("moved to extras dir")
                     break inputLoop
                 case "s":
+                    fmt.Println("skipped")
                     continue pathLoop
                 case "d":
                     if err := deletePath(path); err != nil {
                         return err
                     }
+                    fmt.Println("deleted")
                     break inputLoop
                 case "q":
+                    fmt.Println("quit")
                     break pathLoop
                 }
             }
