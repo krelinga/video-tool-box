@@ -5,6 +5,7 @@ import (
     "errors"
     "fmt"
     "os"
+    "os/exec"
     "path/filepath"
 
     cli "github.com/urfave/cli/v2"
@@ -27,8 +28,8 @@ func listMkvFilePaths() ([]string, error) {
 }
 
 func openInVLC(path string) error {
-    // TODO
-    return nil
+    cmd := exec.Command("open", "-a", "/Applications/VLC.app", path)
+    return cmd.Run()
 }
 
 func moveToTMMDir(path string) error {
