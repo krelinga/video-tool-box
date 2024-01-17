@@ -25,6 +25,32 @@ func listMkvFilePaths() ([]string, error) {
     return paths, nil
 }
 
+type cmdDirEarlyExit struct {}
+
+func (_ *cmdDirEarlyExit) Error() string {
+    return "interPromptEarlyExit"
+}
+
+func openInVLC(path string) error {
+    // TODO
+    return nil
+}
+
+func moveToTMMDir(path string) error {
+    // TODO
+    return nil
+}
+
+func moveToExtrasDir(path string) error {
+    // TODO
+    return nil
+}
+
+func deletePath(path string) error {
+    // TODO
+    return nil
+}
+
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
         if gToolState.Pt == ptUndef {
@@ -35,8 +61,60 @@ func cmdDir() *cli.Command{
         if err != nil {
             return err
         }
-        for _, path := range paths {
+        pathLoop: for _, path := range paths {
             fmt.Println(path)
+            err := interPrompt([]*interChoice{
+                {
+                    Text: "(o)pen",
+                    Key: 'o',
+                    Fn: func() error {
+                        return openInVLC(path)
+                    },
+                },
+                {
+                    Text: "(t)itle",
+                    Key: 't',
+                    Fn: func() error {
+                        return moveToTMMDir(path)
+                    },
+                },
+                {
+                    Text: "e(x)tra",
+                    Key: 'x',
+                    Fn: func() error {
+                        return moveToExtrasDir(path)
+                    },
+                },
+                {
+                    Text: "(s)kip",
+                    Key: 's',
+                    Fn: func() error {
+                        return nil
+                    },
+                },
+                {
+                    Text: "(d)elete",
+                    Key: 'd',
+                    Fn: func() error {
+                        return deletePath(path)
+                    },
+                },
+                {
+                    Text: "(q)uit",
+                    Key: 'q',
+                    Fn: func() error {
+                        return &cmdDirEarlyExit{}
+                    },
+                },
+            })
+            if err != nil {
+                switch err.(type) {
+                case *cmdDirEarlyExit:
+                    break pathLoop
+                default:
+                    return err
+                }
+            }
         }
 
         return nil
