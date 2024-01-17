@@ -32,21 +32,25 @@ func (_ *cmdDirEarlyExit) Error() string {
 }
 
 func openInVLC(path string) error {
+    fmt.Println("will open in vlc", path)
     // TODO
     return nil
 }
 
 func moveToTMMDir(path string) error {
+    fmt.Println("will move to TMM dir", path)
     // TODO
     return nil
 }
 
 func moveToExtrasDir(path string) error {
+    fmt.Println("will move to extras dir", path)
     // TODO
     return nil
 }
 
 func deletePath(path string) error {
+    fmt.Println("will delete path", path)
     // TODO
     return nil
 }
