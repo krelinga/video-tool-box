@@ -8,19 +8,9 @@ import (
 )
 
 func main() {
-    // Load & (eventually) store gToolState
-    func() {
-        var err error
-        gToolState, err = loadToolState(statePath)
-        if err != nil {
-            log.Fatal(err)
-        }
-    }()
-    defer func() {
-        if err := gToolState.store(statePath); err != nil {
-            log.Fatal(err)
-        }
-    }()
+    if err := readToolState() ; err != nil {
+        log.Fatal(err)
+    }
 
     // Command line processing.
     app := &cli.App{
@@ -32,6 +22,12 @@ func main() {
         },
     }
     if err := app.Run(os.Args); err != nil {
+        log.Fatal(err)
+    }
+
+    // We don't defer this because we don't want to update the
+    // serialized toolState if the program panics.
+    if err := writeToolState(); err != nil {
         log.Fatal(err)
     }
 }

@@ -52,7 +52,7 @@ func cmdNew() *cli.Command {
 
 func cmdFinish() *cli.Command {
     fn := func(c *cli.Context) error {
-        gToolState = &toolState{}
+        gToolState = toolState{}
         return nil
     }
 

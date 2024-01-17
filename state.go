@@ -18,25 +18,33 @@ type toolState struct {
     Name    string
 }
 
-func loadToolState(p string) (*toolState, error) {
-    bytes, err := os.ReadFile(p)
+// Global instance of toolState shared by the whole binary.
+var gToolState toolState
+
+// read state into gToolState
+func readToolState() error {
+    bytes, err := os.ReadFile(statePath)
     if err != nil {
         if os.IsNotExist(err) {
-            return &toolState{}, nil
+            // Special case: state file doesn't exist.
+            gToolState = toolState{}
+            return nil
         }
-        return nil, err
+        return err
     }
-    ts := &toolState{}
-    if err := json.Unmarshal(bytes, &ts); err != nil {
-        return nil, err
+    temp := toolState{}
+    if err := json.Unmarshal(bytes, &temp); err != nil {
+        return err
     }
-    return ts, nil
+    gToolState = temp
+    return nil
 }
 
-func (ts *toolState) store(p string) error {
-    bytes, err := json.Marshal(ts)
-    if err != nil { return err }
-    return os.WriteFile(p, bytes, 0644)
+// writes values from gToolState
+func writeToolState() error {
+    bytes, err := json.Marshal(gToolState)
+    if err != nil {
+        return err
+    }
+    return os.WriteFile(statePath, bytes, 0644)
 }
-
-var gToolState *toolState = nil
