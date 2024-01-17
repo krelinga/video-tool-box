@@ -9,8 +9,6 @@ import (
 )
 
 func main() {
-    fmt.Println("Hello from main!")
-
     // Load & (eventually) store gToolState
     func() {
         var err error
