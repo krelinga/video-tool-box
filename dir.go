@@ -1,6 +1,7 @@
 package main
 
 import (
+    "bufio"
     "errors"
     "fmt"
     "os"
@@ -65,58 +66,48 @@ func cmdDir() *cli.Command{
         if err != nil {
             return err
         }
+
+        scanner := bufio.NewScanner(os.Stdin)
+        prompt := func() (string, error) {
+            fmt.Println("(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit")
+            if !scanner.Scan() {
+                return "", scanner.Err()
+            }
+            return scanner.Text(), nil
+        }
+
         pathLoop: for _, path := range paths {
             fmt.Println(path)
-            err := interPrompt([]*interChoice{
-                {
-                    Text: "(o)pen",
-                    Key: 'o',
-                    Fn: func() error {
-                        return openInVLC(path)
-                    },
-                },
-                {
-                    Text: "(t)itle",
-                    Key: 't',
-                    Fn: func() error {
-                        return moveToTMMDir(path)
-                    },
-                },
-                {
-                    Text: "e(x)tra",
-                    Key: 'x',
-                    Fn: func() error {
-                        return moveToExtrasDir(path)
-                    },
-                },
-                {
-                    Text: "(s)kip",
-                    Key: 's',
-                    Fn: func() error {
-                        return nil
-                    },
-                },
-                {
-                    Text: "(d)elete",
-                    Key: 'd',
-                    Fn: func() error {
-                        return deletePath(path)
-                    },
-                },
-                {
-                    Text: "(q)uit",
-                    Key: 'q',
-                    Fn: func() error {
-                        return &cmdDirEarlyExit{}
-                    },
-                },
-            })
-            if err != nil {
-                switch err.(type) {
-                case *cmdDirEarlyExit:
-                    break pathLoop
-                default:
+            inputLoop: for {
+                in, err := prompt()
+                if err != nil {
                     return err
+                }
+                switch in {
+                case "o":
+                    if err := openInVLC(path); err != nil {
+                        return err
+                    }
+                    // Repeat inputLoop
+                case "t":
+                    if err := moveToTMMDir(path); err != nil {
+                        return err
+                    }
+                    break inputLoop
+                case "x":
+                    if err := moveToExtrasDir(path); err != nil {
+                        return err
+                    }
+                    break inputLoop
+                case "s":
+                    continue pathLoop
+                case "d":
+                    if err := deletePath(path); err != nil {
+                        return err
+                    }
+                    break inputLoop
+                case "q":
+                    break pathLoop
                 }
             }
         }
