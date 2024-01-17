@@ -26,3 +26,22 @@ var (
     tmmShowsDir = filepath.Join(moviesDir, "tmm_shows")
     statePath = filepath.Join(homeDir, ".vtb_state")
 )
+
+func tmmDir() string {
+    dir := func() string {
+        switch gToolState.Pt {
+        case ptUndef:
+            panic("tmmDir() requies that gToolState is set up.")
+        case ptMovie:
+            return tmmMoviesDir
+        case ptShow:
+            return tmmShowsDir
+        }
+        panic("unexpected case in tmmDir()")
+    }()
+    return filepath.Join(dir, gToolState.Name)
+}
+
+func extrasDir() string {
+    return filepath.Join(tmmDir(), ".extras")
+}
