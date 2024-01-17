@@ -69,7 +69,7 @@ func cmdDir() *cli.Command{
 
         scanner := bufio.NewScanner(os.Stdin)
         prompt := func() (string, error) {
-            fmt.Println("(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit")
+            fmt.Printf("(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit: ")
             if !scanner.Scan() {
                 return "", scanner.Err()
             }
@@ -77,6 +77,7 @@ func cmdDir() *cli.Command{
         }
 
         pathLoop: for _, path := range paths {
+            fmt.Println()
             fmt.Println(path)
             inputLoop: for {
                 in, err := prompt()
