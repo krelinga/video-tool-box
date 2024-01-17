@@ -4,11 +4,13 @@ import (
     "bufio"
     "errors"
     "fmt"
+    "math/big"
     "os"
     "os/exec"
     "path/filepath"
 
     cli "github.com/urfave/cli/v2"
+    humanize "github.com/dustin/go-humanize"
 )
 
 func listMkvFilePaths() ([]string, error) {
@@ -48,6 +50,15 @@ func moveToExtrasDir(path string) error {
     return os.Rename(path, filepath.Join(extrasDir(), basename))
 }
 
+func readableFileSize(path string) (string, error) {
+    info, err := os.Stat(path)
+    if err != nil {
+        return "", err
+    }
+    bigSize := big.NewInt(info.Size())
+    return humanize.BigIBytes(bigSize), nil
+}
+
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
         if gToolState.Pt == ptUndef {
@@ -67,10 +78,19 @@ func cmdDir() *cli.Command{
             }
             return scanner.Text(), nil
         }
+        printPath := func(path string) error {
+            size, err := readableFileSize(path)
+            if err != nil {
+                return err
+            }
+            fmt.Printf("\n%s: %s\n", filepath.Base(path), size)
+            return nil
+        }
 
         pathLoop: for _, path := range paths {
-            fmt.Println()
-            fmt.Println(path)
+            if err := printPath(path); err != nil {
+                return err
+            }
             inputLoop: for {
                 in, err := prompt()
                 if err != nil {
