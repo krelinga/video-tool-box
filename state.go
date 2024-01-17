@@ -13,6 +13,15 @@ const (
     ptShow
 )
 
+func (pt projectType) String() string {
+    switch pt {
+    case ptUndef: return "ptUndef"
+    case ptMovie: return "ptMovie"
+    case ptShow: return "ptShow"
+    }
+    panic("unexpected projectType value")
+}
+
 type toolState struct {
     Pt      projectType
     Name    string

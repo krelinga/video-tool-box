@@ -63,3 +63,25 @@ func cmdFinish() *cli.Command {
         Action: fn,
     }
 }
+
+func cmdMeta() *cli.Command {
+    fn := func(c *cli.Context) error {
+        if gToolState.Pt == ptUndef {
+            fmt.Println("no project configured.")
+            return nil
+        }
+
+        fmt.Println("Active Project")
+        fmt.Println("--------------")
+        fmt.Println("name:", gToolState.Name)
+        fmt.Println("type:", gToolState.Pt)
+        return nil
+    }
+
+    return &cli.Command{
+        Name: "meta",
+        Usage: "display information about the current project",
+        ArgsUsage: " ",  // Makes help text a bit nicer.
+        Action: fn,
+    }
+}

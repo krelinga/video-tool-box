@@ -19,6 +19,7 @@ func main() {
             cmdNew(),
             cmdFinish(),
             cmdDir(),
+            cmdMeta(),
         },
     }
     if err := app.Run(os.Args); err != nil {
