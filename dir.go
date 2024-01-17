@@ -32,18 +32,19 @@ func openInVLC(path string) error {
 }
 
 func moveToTMMDir(path string) error {
-    // TODO
-    return nil
+    if err := os.MkdirAll(tmmDir(), 0644); err != nil {
+        return err
+    }
+    basename := filepath.Base(path)
+    return os.Rename(path, filepath.Join(tmmDir(), basename))
 }
 
 func moveToExtrasDir(path string) error {
-    // TODO
-    return nil
-}
-
-func deletePath(path string) error {
-    // TODO
-    return nil
+    if err := os.MkdirAll(extrasDir(), 0644); err != nil {
+        return err
+    }
+    basename := filepath.Base(path)
+    return os.Rename(path, filepath.Join(extrasDir(), basename))
 }
 
 func cmdDir() *cli.Command{
@@ -97,7 +98,7 @@ func cmdDir() *cli.Command{
                     fmt.Println("skipped")
                     continue pathLoop
                 case "d":
-                    if err := deletePath(path); err != nil {
+                    if err := os.Remove(path); err != nil {
                         return err
                     }
                     fmt.Println("deleted")
