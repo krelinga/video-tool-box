@@ -26,12 +26,6 @@ func listMkvFilePaths() ([]string, error) {
     return paths, nil
 }
 
-type cmdDirEarlyExit struct {}
-
-func (_ *cmdDirEarlyExit) Error() string {
-    return "interPromptEarlyExit"
-}
-
 func openInVLC(path string) error {
     fmt.Println("will open in vlc", path)
     // TODO
