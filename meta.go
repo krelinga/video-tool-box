@@ -13,6 +13,9 @@ func cmdNew() *cli.Command {
     argsErr := errors.New(fmt.Sprintf("Usage: vtb new %s", argsUsage))
 
     fn := func(c *cli.Context) error {
+        if err := readToolState() ; err != nil {
+            return err
+        }
         if gToolState.Pt != ptUndef {
             msg := fmt.Sprintf("Existsing project %s", gToolState.Name)
             return errors.New(msg)
@@ -38,7 +41,7 @@ func cmdNew() *cli.Command {
         gToolState.Pt = newPt
         gToolState.Name = newName
 
-        return nil
+        return writeToolState()
     }
 
     return &cli.Command{
@@ -53,7 +56,7 @@ func cmdNew() *cli.Command {
 func cmdFinish() *cli.Command {
     fn := func(c *cli.Context) error {
         gToolState = toolState{}
-        return nil
+        return writeToolState()
     }
 
     return &cli.Command{
@@ -66,6 +69,9 @@ func cmdFinish() *cli.Command {
 
 func cmdMeta() *cli.Command {
     fn := func(c *cli.Context) error {
+        if err := readToolState() ; err != nil {
+            return err
+        }
         if gToolState.Pt == ptUndef {
             fmt.Println("no project configured.")
             return nil

@@ -8,11 +8,6 @@ import (
 )
 
 func main() {
-    if err := readToolState() ; err != nil {
-        log.Fatal(err)
-    }
-
-    // Command line processing.
     app := &cli.App{
         Name: "vtb",
         Commands: []*cli.Command{
@@ -23,12 +18,6 @@ func main() {
         },
     }
     if err := app.Run(os.Args); err != nil {
-        log.Fatal(err)
-    }
-
-    // We don't defer this because we don't want to update the
-    // serialized toolState if the program panics.
-    if err := writeToolState(); err != nil {
         log.Fatal(err)
     }
 }

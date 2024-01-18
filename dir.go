@@ -61,6 +61,9 @@ func readableFileSize(path string) (string, error) {
 
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
+        if err := readToolState() ; err != nil {
+            return err
+        }
         if gToolState.Pt == ptUndef {
             return errors.New("no active project")
         }
