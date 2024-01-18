@@ -13,7 +13,7 @@ import (
     humanize "github.com/dustin/go-humanize"
 )
 
-func listMkvFilePaths() ([]string, error) {
+func listMkvFilePaths(currentDir string) ([]string, error) {
     entries, err := os.ReadDir(currentDir)
     if err != nil {
         return nil, err
@@ -34,20 +34,12 @@ func openInVLC(path string) error {
     return cmd.Run()
 }
 
-func moveToTMMDir(path string) error {
-    if err := os.MkdirAll(tmmDir(), 0644); err != nil {
+func createDestDirAndMove(toMove string, destDir string) error {
+    if err := os.MkdirAll(destDir, 0755); err != nil {
         return err
     }
-    basename := filepath.Base(path)
-    return os.Rename(path, filepath.Join(tmmDir(), basename))
-}
-
-func moveToExtrasDir(path string) error {
-    if err := os.MkdirAll(extrasDir(), 0644); err != nil {
-        return err
-    }
-    basename := filepath.Base(path)
-    return os.Rename(path, filepath.Join(extrasDir(), basename))
+    basename := filepath.Base(toMove)
+    return os.Rename(toMove, filepath.Join(destDir, basename))
 }
 
 func readableFileSize(path string) (string, error) {
@@ -61,6 +53,8 @@ func readableFileSize(path string) (string, error) {
 
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
+        toolPaths, err := newToolPaths()
+        if err != nil { return err }
         if err := readToolState() ; err != nil {
             return err
         }
@@ -68,7 +62,7 @@ func cmdDir() *cli.Command{
             return errors.New("no active project")
         }
 
-        paths, err := listMkvFilePaths()
+        paths, err := listMkvFilePaths(toolPaths.CurrentDir())
         if err != nil {
             return err
         }
@@ -107,13 +101,17 @@ func cmdDir() *cli.Command{
                     fmt.Println("opened in VLC")
                     // Repeat inputLoop
                 case "t":
-                    if err := moveToTMMDir(path); err != nil {
+                    destDir, err := toolPaths.TmmProjectDir(gToolState)
+                    if err != nil { return err }
+                    if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
                     }
                     fmt.Println("moved to TMM content dir")
                     break inputLoop
                 case "x":
-                    if err := moveToExtrasDir(path); err != nil {
+                    destDir, err := toolPaths.TmmProjectExtrasDir(gToolState)
+                    if err != nil { return err }
+                    if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
                     }
                     fmt.Println("moved to extras dir")

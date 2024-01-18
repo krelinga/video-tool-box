@@ -32,7 +32,9 @@ var gToolState toolState
 
 // read state into gToolState
 func readToolState() error {
-    bytes, err := os.ReadFile(statePath)
+    paths, err := newToolPaths()
+    if err != nil { return err }
+    bytes, err := os.ReadFile(paths.StatePath())
     if err != nil {
         if os.IsNotExist(err) {
             // Special case: state file doesn't exist.
@@ -55,5 +57,7 @@ func writeToolState() error {
     if err != nil {
         return err
     }
-    return os.WriteFile(statePath, bytes, 0644)
+    paths, err := newToolPaths()
+    if err != nil { return err }
+    return os.WriteFile(paths.StatePath(), bytes, 0644)
 }
