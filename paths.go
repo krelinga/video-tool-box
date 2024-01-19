@@ -2,8 +2,6 @@ package main
 
 import (
     "errors"
-    "fmt"
-    "os"
     "path/filepath"
 )
 
@@ -14,14 +12,6 @@ type toolPaths struct {
 }
 
 func newToolPaths() (toolPaths, error) {
-    getEnvVar := func(name string) (value string, err error) {
-        value = os.Getenv(name)
-        if len(value) == 0 {
-            errStr := fmt.Sprintf("could not read %s env var", name)
-            err = errors.New(errStr)
-        }
-        return
-    }
     tp := toolPaths{}
     var err error
     tp.currentDir, err = getEnvVar("PWD")
