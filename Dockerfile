@@ -7,18 +7,11 @@ WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
+RUN apt update
+RUN apt install -y handbrake-cli
 
 COPY *.go ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /vtb .
-
-# Deploy the application binary into a lean image
-FROM gcr.io/distroless/static-debian12 AS build-release-stage
-
-WORKDIR /
-
-COPY --from=build-stage /vtb /vtb
-
-USER nonroot:nonroot
 
 ENTRYPOINT ["/vtb"]
