@@ -8,7 +8,11 @@ import (
 
 func cmdTrans() *cli.Command {
     fn := func(c *cli.Context) error {
-        fmt.Println("hello transcode.")
+        if len(c.String("handbrake")) > 0 {
+            fmt.Println("handbrake path:", c.String("handbrake"))
+        } else {
+            fmt.Println("handbrake flag empty")
+        }
         return nil
     }
 
