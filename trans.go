@@ -1,17 +1,16 @@
 package main
 
 import (
-    "fmt"
+    "errors"
 
     cli "github.com/urfave/cli/v2"
 )
 
 func cmdTrans() *cli.Command {
     fn := func(c *cli.Context) error {
-        if len(c.String("handbrake")) > 0 {
-            fmt.Println("handbrake path:", c.String("handbrake"))
-        } else {
-            fmt.Println("handbrake flag empty")
+        handbrake := c.String("handbrake")
+        if len(handbrake) == 0 {
+            return errors.New("'trans' command only available when --handbrake is set")
         }
         return nil
     }
