@@ -28,12 +28,9 @@ func cmdTrans() *cli.Command {
             return errors.New("'trans' command only available when --handbrake is set")
         }
 
-        input, err := getEnvVar("VTB_INPUT")
-        if err != nil { return err }
-        output, err := getEnvVar("VTB_OUTPUT")
-        if err != nil { return err }
-        profile, err := getEnvVar("VTB_PROFILE")
-        if err != nil { return err }
+        input := c.String("input")
+        output := c.String("output")
+        profile := c.String("profile")
 
         profileFlags, ok := gHandbrakeProfile[profile]
         if !ok {
@@ -60,5 +57,22 @@ func cmdTrans() *cli.Command {
         Name: "trans",
         Usage: "transcode video",
         Action: fn,
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "input",
+                Usage: "input path to read & transcode.",
+                Required: true,
+            },
+            &cli.StringFlag{
+                Name: "output",
+                Usage: "output path to write transcoded file to.",
+                Required: true,
+            },
+            &cli.StringFlag{
+                Name: "profile",
+                Usage: "name of the transcoding profile to use.",
+                Required: true,
+            },
+        },
     }
 }
