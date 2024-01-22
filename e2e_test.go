@@ -43,15 +43,22 @@ func (tc testContainer) Run(args... string) error {
     return cmd.Run()
 }
 
-func TestDockerBuildAndRun(t *testing.T) {
-    if testing.Short() {
-        t.Skip("skipping test in short mode.")
-    }
-    tc := newTestContainer()
-    tc.Build(t)
-    defer tc.Delete(t)
-
+func testDockerBuildAndRun(t *testing.T, tc testContainer) {
     if err := tc.Run(); err != nil {
         t.Errorf("error running vtb: %s", err)
     }
+}
+
+func TestE2E(t *testing.T) {
+    if testing.Short() {
+        t.Skip("skipping end-to-end test in short mode.")
+    }
+    tc := newTestContainer()
+    tc.Build(t)
+
+    t.Run("Docker Build & Run", func(t *testing.T) {
+        testDockerBuildAndRun(t, tc)
+    })
+
+    defer tc.Delete(t)
 }
