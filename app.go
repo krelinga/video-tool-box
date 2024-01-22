@@ -1,12 +1,10 @@
 package main
 
 import (
-    "os"
-
     cli "github.com/urfave/cli/v2"
 )
 
-func appMain() error {
+func appMain(args []string) error {
     app := &cli.App{
         Name: "vtb",
         Flags: []cli.Flag{
@@ -23,5 +21,5 @@ func appMain() error {
             cmdTrans(),
         },
     }
-    return app.Run(os.Args)
+    return app.Run(args)
 }
