@@ -26,12 +26,22 @@ func deleteContainer(t *testing.T, containerId string) {
     t.Log("Finished deleting docker container.")
 }
 
-func TestSomething(t *testing.T) {
+func runVtb(containerId string, args... string) error {
+    cmd := exec.Command("docker", "run", "--rm", "-t", containerId)
+    cmd.Args = append(cmd.Args, args...)
+    return cmd.Run()
+}
+
+func TestDockerBuildAndRun(t *testing.T) {
     if testing.Short() {
         t.Skip("skipping test in short mode.")
     }
 
     containerId := fmt.Sprintf("vtb-e2e-test-%s", uuid.NewString())
     buildContainer(t, containerId)
-    deleteContainer(t, containerId)
+    defer deleteContainer(t, containerId)
+
+    if err := runVtb(containerId); err != nil {
+        t.Errorf("error running vtb: %s", err)
+    }
 }
