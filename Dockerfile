@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1
 
-# Build the application from source
-FROM golang:1.21 AS build-stage
+FROM krelinga/video-tool-box-base:buildx-latest AS build-stage
 
 WORKDIR /app
 
