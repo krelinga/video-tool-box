@@ -52,9 +52,6 @@ func testDockerBuildAndRun(t *testing.T, tc testContainer) {
 }
 
 func TestE2E(t *testing.T) {
-    if testing.Short() {
-        t.Skip("skipping end-to-end test in short mode.")
-    }
     tc := newTestContainer()
     tc.Build(t)
     defer tc.Delete(t)
