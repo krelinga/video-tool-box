@@ -55,10 +55,10 @@ func TestE2E(t *testing.T) {
     }
     tc := newTestContainer()
     tc.Build(t)
+    defer tc.Delete(t)
 
     t.Run("Docker Build & Run", func(t *testing.T) {
         testDockerBuildAndRun(t, tc)
     })
 
-    defer tc.Delete(t)
 }
