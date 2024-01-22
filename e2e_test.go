@@ -1,13 +1,37 @@
 package main
 
 import (
+    "fmt"
     "testing"
-    "os"
+    "os/exec"
+
+    "github.com/google/uuid"
 )
+
+func buildContainer(t *testing.T, containerId string) {
+    t.Helper()
+    cmd := exec.Command("docker", "image", "build", "-t", containerId, ".")
+    if err := cmd.Run(); err != nil {
+        t.Fatalf("could not build docker container: %s", err)
+    }
+    t.Log("Finished building docker container.")
+}
+
+func deleteContainer(t *testing.T, containerId string) {
+    t.Helper()
+    cmd := exec.Command("docker", "image", "rm", containerId)
+    if err := cmd.Run(); err != nil {
+        t.Fatalf("could not delete docker container: %s", err)
+    }
+    t.Log("Finished deleting docker container.")
+}
 
 func TestSomething(t *testing.T) {
     if testing.Short() {
         t.Skip("skipping test in short mode.")
     }
-    t.Log(os.Getenv("PWD"))
+
+    containerId := fmt.Sprintf("vtb-e2e-test-%s", uuid.NewString())
+    buildContainer(t, containerId)
+    deleteContainer(t, containerId)
 }
