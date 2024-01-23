@@ -11,7 +11,7 @@ type toolPaths struct {
     currentDir  string
 }
 
-func newToolPaths() (toolPaths, error) {
+func newProdToolPaths() (toolPaths, error) {
     tp := toolPaths{}
     var err error
     tp.currentDir, err = getEnvVar("PWD")

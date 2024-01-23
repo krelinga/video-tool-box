@@ -53,7 +53,7 @@ func readableFileSize(path string) (string, error) {
 
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
-        toolPaths, err := newToolPaths()
+        toolPaths, err := newProdToolPaths()
         if err != nil { return err }
         if err := readToolState() ; err != nil {
             return err

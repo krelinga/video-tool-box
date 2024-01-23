@@ -15,34 +15,34 @@ func setEnvVar(t *testing.T, key string, value string) {
 func TestEmptyHOMEAndPWD(t *testing.T) {
     setEnvVar(t, "HOME", "")
     setEnvVar(t, "PWD", "")
-    _, err := newToolPaths()
+    _, err := newProdToolPaths()
     if err == nil {
-        t.Error("Expected error from newToolPaths()")
+        t.Error("Expected error from newProdToolPaths()")
     }
 }
 
 func TestEmptyHOME(t *testing.T) {
     setEnvVar(t, "HOME", "")
     setEnvVar(t, "PWD", "/workdir")
-    _, err := newToolPaths()
+    _, err := newProdToolPaths()
     if err == nil {
-        t.Error("Expected error from newToolPaths()")
+        t.Error("Expected error from newProdToolPaths()")
     }
 }
 
 func TestEmptyPWD(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "")
-    _, err := newToolPaths()
+    _, err := newProdToolPaths()
     if err == nil {
-        t.Error("Expected error from newToolPaths()")
+        t.Error("Expected error from newProdToolPaths()")
     }
 }
 
 func TestBasicPaths(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "/workdir")
-    toolPaths, err := newToolPaths()
+    toolPaths, err := newProdToolPaths()
     if err != nil {
         t.Fatalf("could not create toolPaths: %s", err)
     }
@@ -69,7 +69,7 @@ func TestBasicPaths(t *testing.T) {
 func TestTmmProjectDir(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "/workdir")
-    toolPaths, err := newToolPaths()
+    toolPaths, err := newProdToolPaths()
     if err != nil {
         t.Fatalf("could not create toolPaths: %s", err)
     }
@@ -133,7 +133,7 @@ func TestTmmProjectDir(t *testing.T) {
 func TestTmmProjectExtrasDir(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "/workdir")
-    toolPaths, err := newToolPaths()
+    toolPaths, err := newProdToolPaths()
     if err != nil {
         t.Fatalf("could not create toolPaths: %s", err)
     }
