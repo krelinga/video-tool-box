@@ -5,11 +5,7 @@ import (
     "testing"
 )
 
-var (
-    tempDir string
-)
-
-func setUp(t *testing.T) {
+func setUp(t *testing.T) string {
     t.Helper()
     tempDir, err := os.MkdirTemp("", "state_test.go")
     if err != nil {
@@ -18,9 +14,10 @@ func setUp(t *testing.T) {
     if err := os.Setenv("HOME", tempDir) ; err != nil {
         t.Fatal("could not set fake homedir")
     }
+    return tempDir
 }
 
-func tearDown(t *testing.T) {
+func tearDown(t *testing.T, tempDir string) {
     t.Helper()
     if err := os.RemoveAll(tempDir); err != nil {
         t.Fatalf("could not delete tempDir: %s", err)
@@ -28,8 +25,8 @@ func tearDown(t *testing.T) {
 }
 
 func TestReadAndWriteStateFile(t *testing.T) {
-    setUp(t)
-    defer tearDown(t)
+    tempDir := setUp(t)
+    defer tearDown(t, tempDir)
 
     errorToolState := toolState {
         Name: "this should be removed.",
