@@ -1,6 +1,7 @@
 package main
 
 import (
+    "context"
     "errors"
     "path/filepath"
 )
@@ -62,4 +63,15 @@ func (tp toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
     projectDir, err := tp.TmmProjectDir(ts)
     if err != nil { return "", err }
     return filepath.Join(projectDir, ".extras"), nil
+}
+
+var toolPathsContextKey string = "toolPathsContextKey"
+
+func newToolPathsContext(ctx context.Context, tp toolPaths) context.Context {
+    return context.WithValue(ctx, toolPathsContextKey, tp)
+}
+
+func toolPathsFromContext(ctx context.Context) (toolPaths, bool) {
+    value, ok := ctx.Value(toolPathsContextKey).(toolPaths)
+    return value, ok
 }
