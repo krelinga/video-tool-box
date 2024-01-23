@@ -1,6 +1,7 @@
 package main
 
 import (
+    "context"
     cli "github.com/urfave/cli/v2"
 )
 
@@ -21,5 +22,10 @@ func appMain(args []string) error {
             cmdTrans(),
         },
     }
-    return app.Run(args)
+    tp, err := newProdToolPaths()
+    if err != nil {
+        return err
+    }
+    ctx := newToolPathsContext(context.Background(), tp)
+    return app.RunContext(ctx, args)
 }
