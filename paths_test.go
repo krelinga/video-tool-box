@@ -158,9 +158,9 @@ func TestTmmProjectDir(t *testing.T) {
 func TestTmmProjectExtrasDir(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "/workdir")
-    toolPaths, err := newProdToolPaths()
+    tp, err := newProdToolPaths()
     if err != nil {
-        t.Fatalf("could not create toolPaths: %s", err)
+        t.Fatalf("could not create tp: %s", err)
     }
 
     type testCase struct {
@@ -204,7 +204,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
     }
 
     for _, tc := range testCases {
-        path, err := toolPaths.TmmProjectExtrasDir(tc.Ts)
+        path, err := tp.TmmProjectExtrasDir(tc.Ts)
         if tc.Err && err == nil {
             t.Errorf("%s: expected error but got none", tc.Name)
         }
