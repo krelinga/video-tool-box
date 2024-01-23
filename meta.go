@@ -77,18 +77,23 @@ func cmdFinish() *cli.Command {
 
 func cmdMeta() *cli.Command {
     fn := func(c *cli.Context) error {
-        if err := readToolState() ; err != nil {
+        tp, ok := toolPathsFromContext(c.Context)
+        if !ok {
+            return errors.New("toolPaths not present in context")
+        }
+        ts, err := newToolState(tp.StatePath())
+        if err != nil {
             return err
         }
-        if gToolState.Pt == ptUndef {
+        if ts.Pt == ptUndef {
             fmt.Println("no project configured.")
             return nil
         }
 
         fmt.Println("Active Project")
         fmt.Println("--------------")
-        fmt.Println("name:", gToolState.Name)
-        fmt.Println("type:", gToolState.Pt)
+        fmt.Println("name:", ts.Name)
+        fmt.Println("type:", ts.Pt)
         return nil
     }
 
