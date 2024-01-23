@@ -64,11 +64,10 @@ func TestNewProdToolPaths(t *testing.T) {
 }
 
 func TestBasicPaths(t *testing.T) {
-    setEnvVar(t, "HOME", "/homedir")
-    setEnvVar(t, "PWD", "/workdir")
-    tp, err := newProdToolPaths()
-    if err != nil {
-        t.Fatalf("could not create tp: %s", err)
+    t.Parallel()
+    tp := toolPaths{
+        homeDir: "/homedir",
+        currentDir: "/workdir",
     }
     if tp.HomeDir() != "/homedir" {
         t.Error(tp.HomeDir())
