@@ -39,21 +39,26 @@ var gToolState toolState
 func readToolState() error {
     paths, err := newProdToolPaths()
     if err != nil { return err }
-    bytes, err := os.ReadFile(paths.StatePath())
+    ts, err := newToolState(paths.StatePath())
+    if err != nil {
+        return err
+    }
+    gToolState = ts
+    return nil
+}
+
+func newToolState(path string) (ts toolState, err error) {
+    bytes, err := os.ReadFile(path)
     if err != nil {
         if os.IsNotExist(err) {
             // Special case: state file doesn't exist.
-            gToolState = toolState{}
-            return nil
+            err = nil
+            return
         }
-        return err
+        return 
     }
-    temp := toolState{}
-    if err := json.Unmarshal(bytes, &temp); err != nil {
-        return err
-    }
-    gToolState = temp
-    return nil
+    err = json.Unmarshal(bytes, &ts)
+    return
 }
 
 // writes values from gToolState
