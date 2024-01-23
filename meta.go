@@ -13,11 +13,16 @@ func cmdNew() *cli.Command {
     argsErr := errors.New(fmt.Sprintf("Usage: vtb new %s", argsUsage))
 
     fn := func(c *cli.Context) error {
-        if err := readToolState() ; err != nil {
+        tp, ok := toolPathsFromContext(c.Context)
+        if !ok {
+            return errors.New("toolPaths not present in context")
+        }
+        ts, err := newToolState(tp.StatePath())
+        if err != nil {
             return err
         }
-        if gToolState.Pt != ptUndef {
-            msg := fmt.Sprintf("Existsing project %s", gToolState.Name)
+        if ts.Pt != ptUndef {
+            msg := fmt.Sprintf("Existsing project %s", ts.Name)
             return errors.New(msg)
         }
         args := c.Args().Slice()
@@ -38,10 +43,10 @@ func cmdNew() *cli.Command {
             return argsErr
         }
         newName := strings.Join(args[1:], " ")
-        gToolState.Pt = newPt
-        gToolState.Name = newName
+        ts.Pt = newPt
+        ts.Name = newName
 
-        return writeToolState()
+        return saveToolState(ts, tp.StatePath())
     }
 
     return &cli.Command{
