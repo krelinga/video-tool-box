@@ -12,30 +12,54 @@ func setEnvVar(t *testing.T, key string, value string) {
     }
 }
 
-func TestEmptyHOMEAndPWD(t *testing.T) {
-    setEnvVar(t, "HOME", "")
-    setEnvVar(t, "PWD", "")
-    _, err := newProdToolPaths()
-    if err == nil {
-        t.Error("Expected error from newProdToolPaths()")
-    }
-}
+func TestNewProdToolPaths(t *testing.T) {
+    // This manipulates environment variables, so it needs to be run serially.
+    oldHome := os.Getenv("HOME")
+    oldPwd := os.Getenv("PWD")
+    defer func() {
+        setEnvVar(t, "HOME", oldHome)
+        setEnvVar(t, "PWD", oldPwd)
+    }()
 
-func TestEmptyHOME(t *testing.T) {
-    setEnvVar(t, "HOME", "")
-    setEnvVar(t, "PWD", "/workdir")
-    _, err := newProdToolPaths()
-    if err == nil {
-        t.Error("Expected error from newProdToolPaths()")
+    type testCase struct {
+        Name    string
+        Home    string
+        Pwd     string
+        ExpectError bool
     }
-}
-
-func TestEmptyPWD(t *testing.T) {
-    setEnvVar(t, "HOME", "/homedir")
-    setEnvVar(t, "PWD", "")
-    _, err := newProdToolPaths()
-    if err == nil {
-        t.Error("Expected error from newProdToolPaths()")
+    cases := []testCase{
+        {
+            Name: "No Homedir or PWD",
+            ExpectError: true,
+        },
+        {
+            Name: "No Homedir",
+            Pwd: "/workingdir",
+            ExpectError: true,
+        },
+        {
+            Name: "No PWD",
+            Home: "/homedir",
+            ExpectError: true,
+        },
+        {
+            Name: "Homedir and PWD set",
+            Home: "/homedir",
+            Pwd: "/workingdir",
+        },
+    }
+    for _, tc := range cases {
+        t.Run(tc.Name, func(t *testing.T) {
+            setEnvVar(t, "HOME", tc.Home)
+            setEnvVar(t, "PWD", tc.Pwd)
+            _, err := newProdToolPaths()
+            if tc.ExpectError && err == nil {
+                t.Error("Expected error but didn't get one.")
+            }
+            if !tc.ExpectError && err != nil {
+                t.Errorf("didn't expect an error, but got one: %v", err)
+            }
+        })
     }
 }
 
