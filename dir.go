@@ -57,10 +57,11 @@ func cmdDir() *cli.Command{
         if !ok {
             return errors.New("missing toolPaths in context.")
         }
-        if err := readToolState() ; err != nil {
+        ts, err := newToolState(tp.StatePath())
+        if err != nil {
             return err
         }
-        if gToolState.Pt == ptUndef {
+        if ts.Pt == ptUndef {
             return errors.New("no active project")
         }
 
@@ -103,7 +104,7 @@ func cmdDir() *cli.Command{
                     fmt.Println("opened in VLC")
                     // Repeat inputLoop
                 case "t":
-                    destDir, err := tp.TmmProjectDir(gToolState)
+                    destDir, err := tp.TmmProjectDir(ts)
                     if err != nil { return err }
                     if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
@@ -111,7 +112,7 @@ func cmdDir() *cli.Command{
                     fmt.Println("moved to TMM content dir")
                     break inputLoop
                 case "x":
-                    destDir, err := tp.TmmProjectExtrasDir(gToolState)
+                    destDir, err := tp.TmmProjectExtrasDir(ts)
                     if err != nil { return err }
                     if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
