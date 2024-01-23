@@ -53,7 +53,7 @@ func readableFileSize(path string) (string, error) {
 
 func cmdDir() *cli.Command{
     fn := func(c *cli.Context) error {
-        toolPaths, ok := toolPathsFromContext(c.Context)
+        tp, ok := toolPathsFromContext(c.Context)
         if !ok {
             return errors.New("missing toolPaths in context.")
         }
@@ -64,7 +64,7 @@ func cmdDir() *cli.Command{
             return errors.New("no active project")
         }
 
-        paths, err := listMkvFilePaths(toolPaths.CurrentDir())
+        paths, err := listMkvFilePaths(tp.CurrentDir())
         if err != nil {
             return err
         }
@@ -103,7 +103,7 @@ func cmdDir() *cli.Command{
                     fmt.Println("opened in VLC")
                     // Repeat inputLoop
                 case "t":
-                    destDir, err := toolPaths.TmmProjectDir(gToolState)
+                    destDir, err := tp.TmmProjectDir(gToolState)
                     if err != nil { return err }
                     if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
@@ -111,7 +111,7 @@ func cmdDir() *cli.Command{
                     fmt.Println("moved to TMM content dir")
                     break inputLoop
                 case "x":
-                    destDir, err := toolPaths.TmmProjectExtrasDir(gToolState)
+                    destDir, err := tp.TmmProjectExtrasDir(gToolState)
                     if err != nil { return err }
                     if err := createDestDirAndMove(path, destDir); err != nil {
                         return err
