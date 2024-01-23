@@ -63,11 +63,15 @@ func newToolState(path string) (ts toolState, err error) {
 
 // writes values from gToolState
 func writeToolState() error {
-    bytes, err := json.Marshal(gToolState)
+    paths, err := newProdToolPaths()
+    if err != nil { return err }
+    return saveToolState(gToolState, paths.StatePath())
+}
+
+func saveToolState(ts toolState, path string) error {
+    bytes, err := json.Marshal(ts)
     if err != nil {
         return err
     }
-    paths, err := newProdToolPaths()
-    if err != nil { return err }
-    return os.WriteFile(paths.StatePath(), bytes, 0644)
+    return os.WriteFile(path, bytes, 0644)
 }
