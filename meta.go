@@ -60,8 +60,11 @@ func cmdNew() *cli.Command {
 
 func cmdFinish() *cli.Command {
     fn := func(c *cli.Context) error {
-        gToolState = toolState{}
-        return writeToolState()
+        tp, ok := toolPathsFromContext(c.Context)
+        if !ok {
+            return errors.New("toolPaths not present in context")
+        }
+        return saveToolState(toolState{}, tp.StatePath())
     }
 
     return &cli.Command{
