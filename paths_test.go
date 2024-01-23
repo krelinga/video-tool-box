@@ -156,6 +156,7 @@ func TestTmmProjectDir(t *testing.T) {
 }
 
 func TestTmmProjectExtrasDir(t *testing.T) {
+    t.Parallel()
     tp := toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
@@ -202,17 +203,20 @@ func TestTmmProjectExtrasDir(t *testing.T) {
     }
 
     for _, tc := range testCases {
-        path, err := tp.TmmProjectExtrasDir(tc.Ts)
-        if tc.Err && err == nil {
-            t.Errorf("%s: expected error but got none", tc.Name)
-        }
-        if !tc.Err {
-            if err != nil {
-                t.Errorf("%s: unexpected error %s", tc.Name, err)
+        t.Run(tc.Name, func(t *testing.T) {
+            t.Parallel()
+            path, err := tp.TmmProjectExtrasDir(tc.Ts)
+            if tc.Err && err == nil {
+                t.Error("expected error but got none")
             }
-            if len(tc.Path) > 0 && path != tc.Path {
-                t.Errorf("%s: expected path %s, got %s", tc.Name, tc.Path, path)
+            if !tc.Err {
+                if err != nil {
+                    t.Errorf("unexpected error %s", err)
+                }
+                if len(tc.Path) > 0 && path != tc.Path {
+                    t.Errorf("expected path %s, got %s", tc.Path, path)
+                }
             }
-        }
+        })
     }
 }
