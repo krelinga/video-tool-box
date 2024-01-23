@@ -21,6 +21,7 @@ func setUp(t *testing.T) {
 }
 
 func tearDown(t *testing.T) {
+    t.Helper()
     if err := os.RemoveAll(tempDir); err != nil {
         t.Fatalf("could not delete tempDir: %s", err)
     }
