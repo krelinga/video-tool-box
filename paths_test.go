@@ -66,27 +66,27 @@ func TestNewProdToolPaths(t *testing.T) {
 func TestBasicPaths(t *testing.T) {
     setEnvVar(t, "HOME", "/homedir")
     setEnvVar(t, "PWD", "/workdir")
-    toolPaths, err := newProdToolPaths()
+    tp, err := newProdToolPaths()
     if err != nil {
-        t.Fatalf("could not create toolPaths: %s", err)
+        t.Fatalf("could not create tp: %s", err)
     }
-    if toolPaths.HomeDir() != "/homedir" {
-        t.Error(toolPaths.HomeDir())
+    if tp.HomeDir() != "/homedir" {
+        t.Error(tp.HomeDir())
     }
-    if toolPaths.CurrentDir() != "/workdir" {
-        t.Error(toolPaths.CurrentDir())
+    if tp.CurrentDir() != "/workdir" {
+        t.Error(tp.CurrentDir())
     }
-    if toolPaths.MoviesDir() != "/homedir/Movies" {
-        t.Error(toolPaths.CurrentDir())
+    if tp.MoviesDir() != "/homedir/Movies" {
+        t.Error(tp.CurrentDir())
     }
-    if toolPaths.TmmMoviesDir() != "/homedir/Movies/tmm_movies" {
-        t.Error(toolPaths.TmmMoviesDir())
+    if tp.TmmMoviesDir() != "/homedir/Movies/tmm_movies" {
+        t.Error(tp.TmmMoviesDir())
     }
-    if toolPaths.TmmShowsDir() != "/homedir/Movies/tmm_shows" {
-        t.Error(toolPaths.TmmShowsDir())
+    if tp.TmmShowsDir() != "/homedir/Movies/tmm_shows" {
+        t.Error(tp.TmmShowsDir())
     }
-    if toolPaths.StatePath() != "/homedir/.vtb_state" {
-        t.Error(toolPaths.StatePath())
+    if tp.StatePath() != "/homedir/.vtb_state" {
+        t.Error(tp.StatePath())
     }
 }
 
