@@ -40,6 +40,22 @@ func TestReadNonExistingStateFile(t *testing.T) {
     }
 }
 
+func TestCorruptStateFile(t *testing.T) {
+    t.Parallel()
+    tempDir := setUpTempDir(t)
+    defer tearDownTempDir(t, tempDir)
+
+    tsPath := filepath.Join(tempDir, "corrupt")
+    corrupt := []byte("THIS IS NOT JSON")
+    if err := os.WriteFile(tsPath, corrupt, 0644); err != nil {
+        t.Fatal(err)
+    }
+    _, err := newToolState(tsPath)
+    if err == nil {
+        t.Error("expected error")
+    }
+}
+
 func TestReadAndWriteStateFile(t *testing.T) {
     tempDir := setUpTempDir(t)
     defer tearDownTempDir(t, tempDir)
