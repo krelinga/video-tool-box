@@ -5,7 +5,7 @@ import (
     "testing"
 )
 
-func setUp(t *testing.T) string {
+func setUpTempDir(t *testing.T) string {
     t.Helper()
     tempDir, err := os.MkdirTemp("", "state_test.go")
     if err != nil {
@@ -25,7 +25,7 @@ func tearDown(t *testing.T, tempDir string) {
 }
 
 func TestReadAndWriteStateFile(t *testing.T) {
-    tempDir := setUp(t)
+    tempDir := setUpTempDir(t)
     defer tearDown(t, tempDir)
 
     errorToolState := toolState {
