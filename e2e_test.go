@@ -20,7 +20,6 @@ func newTestContainer() testContainer {
     }
 }
 
-
 func (tc testContainer) Build(t *testing.T) {
     t.Helper()
     cmd := exec.Command("docker", "image", "build", "-t", tc.containerId, ".")
