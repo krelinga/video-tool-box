@@ -56,6 +56,41 @@ func TestCorruptStateFile(t *testing.T) {
     }
 }
 
+func TestStateFileWrites(t *testing.T) {
+    t.Parallel()
+    tempDir := setUpTempDir(t)
+    defer tearDownTempDir(t, tempDir)
+
+    tsPath := filepath.Join(tempDir, "state")
+    ts1 := toolState{
+        Pt: ptMovie,
+        Name: "movie",
+    }
+    if err := saveToolState(ts1, tsPath); err != nil {
+        t.Errorf("error writing to non-existing state file: %s", err)
+    }
+
+    ts1Read, err := newToolState(tsPath)
+    if err != nil {
+        t.Errorf("error reading toolState: %s", err)
+    }
+    if ts1 != ts1Read {
+        t.Errorf("%v != %v", ts1, ts1Read)
+    }
+
+    ts2 := toolState{
+        Pt: ptShow,
+        Name: "show",
+    }
+    if err := saveToolState(ts2, tsPath); err != nil {
+        t.Errorf("error overwriting existing state file: %s", err)
+    }
+    ts2Read, err := newToolState(tsPath)
+    if ts2 != ts2Read {
+        t.Errorf("%v != %v", ts1, ts1Read)
+    }
+}
+
 func TestReadAndWriteStateFile(t *testing.T) {
     tempDir := setUpTempDir(t)
     defer tearDownTempDir(t, tempDir)
