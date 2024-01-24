@@ -5,7 +5,7 @@ import (
     cli "github.com/urfave/cli/v2"
 )
 
-func appMain(args []string) error {
+func appMain(ctx context.Context, args []string) error {
     app := &cli.App{
         Name: "vtb",
         Flags: []cli.Flag{
@@ -22,10 +22,5 @@ func appMain(args []string) error {
             cmdTrans(),
         },
     }
-    tp, err := newProdToolPaths()
-    if err != nil {
-        return err
-    }
-    ctx := newToolPathsContext(context.Background(), tp)
     return app.RunContext(ctx, args)
 }

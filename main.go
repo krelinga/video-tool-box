@@ -1,12 +1,21 @@
 package main
 
 import (
+    "context"
     "log"
     "os"
 )
 
 func main() {
-    if err := appMain(os.Args); err != nil {
+    internal := func() error {
+        tp, err := newProdToolPaths()
+        if err != nil {
+            return err
+        }
+        ctx := newToolPathsContext(context.Background(), tp)
+        return appMain(ctx, os.Args)
+    }
+    if err := internal(); err != nil {
         log.Fatal(err)
     }
 }
