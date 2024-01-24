@@ -2,6 +2,7 @@ package main
 
 import (
     "os"
+    "path/filepath"
     "testing"
 )
 
@@ -18,6 +19,24 @@ func tearDownTempDir(t *testing.T, tempDir string) {
     t.Helper()
     if err := os.RemoveAll(tempDir); err != nil {
         t.Fatalf("could not delete tempDir: %s", err)
+    }
+}
+
+func TestReadNonExistingStateFile(t *testing.T) {
+    t.Parallel()
+    tempDir := setUpTempDir(t)
+    defer tearDownTempDir(t, tempDir)
+
+    tsPath := filepath.Join(tempDir, "does_not_exist")
+    ts, err := newToolState(tsPath)
+    if err != nil {
+        t.Error(err)
+    }
+    if ts.Pt != ptUndef {
+        t.Error(ts.Pt)
+    }
+    if ts.Name != "" {
+        t.Error(ts.Name)
     }
 }
 
