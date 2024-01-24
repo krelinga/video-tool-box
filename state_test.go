@@ -66,7 +66,7 @@ func TestStateFileWrites(t *testing.T) {
         Pt: ptMovie,
         Name: "movie",
     }
-    if err := saveToolState(ts1, tsPath); err != nil {
+    if err := writeToolState(ts1, tsPath); err != nil {
         t.Errorf("error writing to non-existing state file: %s", err)
     }
 
@@ -82,7 +82,7 @@ func TestStateFileWrites(t *testing.T) {
         Pt: ptShow,
         Name: "show",
     }
-    if err := saveToolState(ts2, tsPath); err != nil {
+    if err := writeToolState(ts2, tsPath); err != nil {
         t.Errorf("error overwriting existing state file: %s", err)
     }
     ts2Read, err := readToolState(tsPath)

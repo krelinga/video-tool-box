@@ -46,7 +46,7 @@ func cmdNew() *cli.Command {
         ts.Pt = newPt
         ts.Name = newName
 
-        return saveToolState(ts, tp.StatePath())
+        return writeToolState(ts, tp.StatePath())
     }
 
     return &cli.Command{
@@ -64,7 +64,7 @@ func cmdFinish() *cli.Command {
         if !ok {
             return errors.New("toolPaths not present in context")
         }
-        return saveToolState(toolState{}, tp.StatePath())
+        return writeToolState(toolState{}, tp.StatePath())
     }
 
     return &cli.Command{

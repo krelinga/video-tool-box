@@ -46,7 +46,7 @@ func readToolState(path string) (ts toolState, err error) {
     return
 }
 
-func saveToolState(ts toolState, path string) error {
+func writeToolState(ts toolState, path string) error {
     bytes, err := json.Marshal(ts)
     if err != nil {
         return err
