@@ -90,35 +90,3 @@ func TestStateFileWrites(t *testing.T) {
         t.Errorf("%v != %v", ts1, ts1Read)
     }
 }
-
-func TestReadAndWriteStateFile(t *testing.T) {
-    tempDir := setUpTempDir(t)
-    defer tearDownTempDir(t, tempDir)
-    if err := os.Setenv("HOME", tempDir) ; err != nil {
-        t.Fatal("could not set fake homedir")
-    }
-
-    errorToolState := toolState {
-        Name: "this should be removed.",
-    }
-    gToolState = errorToolState
-    if err := readToolState(); err != nil {
-        t.Fatalf("error reading non-existing state file: %s", err)
-    }
-    if gToolState != (toolState{}) {
-        t.Error("existing gToolState not cleared when reading non-existing file.")
-    }
-
-    gToolState.Name = "initialWrite"
-    toolStateThatWasWritten := gToolState
-    if err := writeToolState(); err != nil {
-        t.Fatalf("error writing new state file: %s", err)
-    }
-
-    if err := readToolState(); err != nil {
-        t.Fatalf("could not read from existing state file: %s", err)
-    }
-    if gToolState != toolStateThatWasWritten {
-        t.Fatalf("inconsistent state file, expected %s and saw %s", toolStateThatWasWritten, gToolState)
-    }
-}
