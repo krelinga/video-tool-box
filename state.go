@@ -32,21 +32,6 @@ func (ts toolState) String() string {
     return fmt.Sprintf("toolState{Pt: %s, Name: %s}", ts.Pt, ts.Name)
 }
 
-// Global instance of toolState shared by the whole binary.
-var gToolState toolState
-
-// read state into gToolState
-func readToolState() error {
-    paths, err := newProdToolPaths()
-    if err != nil { return err }
-    ts, err := newToolState(paths.StatePath())
-    if err != nil {
-        return err
-    }
-    gToolState = ts
-    return nil
-}
-
 func newToolState(path string) (ts toolState, err error) {
     bytes, err := os.ReadFile(path)
     if err != nil {
@@ -59,13 +44,6 @@ func newToolState(path string) (ts toolState, err error) {
     }
     err = json.Unmarshal(bytes, &ts)
     return
-}
-
-// writes values from gToolState
-func writeToolState() error {
-    paths, err := newProdToolPaths()
-    if err != nil { return err }
-    return saveToolState(gToolState, paths.StatePath())
 }
 
 func saveToolState(ts toolState, path string) error {
