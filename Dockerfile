@@ -13,4 +13,4 @@ COPY *.go ./
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /vtb .
 
-ENTRYPOINT ["/vtb", "--handbrake", "/usr/bin/HandBrakeCLI"]
+ENTRYPOINT ["/usr/bin/bash", "-c", "/vtb", "--handbrake", "/usr/bin/HandBrakeCLI"]
