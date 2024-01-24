@@ -57,7 +57,7 @@ func cmdDir() *cli.Command{
         if !ok {
             return errors.New("missing toolPaths in context.")
         }
-        ts, err := newToolState(tp.StatePath())
+        ts, err := readToolState(tp.StatePath())
         if err != nil {
             return err
         }

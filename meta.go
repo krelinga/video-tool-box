@@ -17,7 +17,7 @@ func cmdNew() *cli.Command {
         if !ok {
             return errors.New("toolPaths not present in context")
         }
-        ts, err := newToolState(tp.StatePath())
+        ts, err := readToolState(tp.StatePath())
         if err != nil {
             return err
         }
@@ -81,7 +81,7 @@ func cmdMeta() *cli.Command {
         if !ok {
             return errors.New("toolPaths not present in context")
         }
-        ts, err := newToolState(tp.StatePath())
+        ts, err := readToolState(tp.StatePath())
         if err != nil {
             return err
         }

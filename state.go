@@ -32,7 +32,7 @@ func (ts toolState) String() string {
     return fmt.Sprintf("toolState{Pt: %s, Name: %s}", ts.Pt, ts.Name)
 }
 
-func newToolState(path string) (ts toolState, err error) {
+func readToolState(path string) (ts toolState, err error) {
     bytes, err := os.ReadFile(path)
     if err != nil {
         if os.IsNotExist(err) {
