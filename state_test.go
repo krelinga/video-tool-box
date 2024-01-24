@@ -42,10 +42,10 @@ func TestReadNonExistingStateFile(t *testing.T) {
 
 func TestReadAndWriteStateFile(t *testing.T) {
     tempDir := setUpTempDir(t)
+    defer tearDownTempDir(t, tempDir)
     if err := os.Setenv("HOME", tempDir) ; err != nil {
         t.Fatal("could not set fake homedir")
     }
-    defer tearDownTempDir(t, tempDir)
 
     errorToolState := toolState {
         Name: "this should be removed.",
