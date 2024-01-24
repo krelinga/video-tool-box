@@ -17,7 +17,7 @@ func setUpTempDir(t *testing.T) string {
     return tempDir
 }
 
-func tearDown(t *testing.T, tempDir string) {
+func tearDownTempDir(t *testing.T, tempDir string) {
     t.Helper()
     if err := os.RemoveAll(tempDir); err != nil {
         t.Fatalf("could not delete tempDir: %s", err)
@@ -26,7 +26,7 @@ func tearDown(t *testing.T, tempDir string) {
 
 func TestReadAndWriteStateFile(t *testing.T) {
     tempDir := setUpTempDir(t)
-    defer tearDown(t, tempDir)
+    defer tearDownTempDir(t, tempDir)
 
     errorToolState := toolState {
         Name: "this should be removed.",
