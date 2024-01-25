@@ -8,54 +8,51 @@ import (
     cli "github.com/urfave/cli/v2"
 )
 
-func cmdNew() *cli.Command {
-    const argsUsage = "(movie|show) <name>"
-    argsErr := errors.New(fmt.Sprintf("Usage: vtb new %s", argsUsage))
-
-    fn := func(c *cli.Context) error {
-        tp, ok := toolPathsFromContext(c.Context)
-        if !ok {
-            return errors.New("toolPaths not present in context")
-        }
-        ts, err := readToolState(tp.StatePath())
-        if err != nil {
-            return err
-        }
-        if ts.Pt != ptUndef {
-            msg := fmt.Sprintf("Existsing project %s", ts.Name)
-            return errors.New(msg)
-        }
-        args := c.Args().Slice()
-        if len(args) < 2 {
-            return argsErr
-        }
-        newPt := func() projectType {
-            switch args[0] {
-            case "movie":
-                return ptMovie
-            case "show":
-                return ptShow
-            default:
-                return ptUndef
-            }
-        }()
-        if newPt == ptUndef {
-            return argsErr
-        }
-        newName := strings.Join(args[1:], " ")
-        ts.Pt = newPt
-        ts.Name = newName
-
-        return writeToolState(ts, tp.StatePath())
-    }
-
+func cmdCfgNew() *cli.Command {
     return &cli.Command{
         Name: "new",
         Usage: "create a new project",
-        ArgsUsage: argsUsage,
+        ArgsUsage: "(movie|show) <name>",
         Description: "Creates a new movie or tv show project.",
-        Action: fn,
+        Action: cmdNew,
     }
+}
+
+func cmdNew(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    ts, err := readToolState(tp.StatePath())
+    if err != nil {
+        return err
+    }
+    if ts.Pt != ptUndef {
+        msg := fmt.Sprintf("Existsing project %s", ts.Name)
+        return errors.New(msg)
+    }
+    args := c.Args().Slice()
+    if len(args) < 2 {
+        return errors.New("Expected two arguments: project type & name")
+    }
+    newPt := func() projectType {
+        switch args[0] {
+        case "movie":
+            return ptMovie
+        case "show":
+            return ptShow
+        default:
+            return ptUndef
+        }
+    }()
+    if newPt == ptUndef {
+        return errors.New("Unrecognized project type")
+    }
+    newName := strings.Join(args[1:], " ")
+    ts.Pt = newPt
+    ts.Name = newName
+
+    return writeToolState(ts, tp.StatePath())
 }
 
 func cmdFinish() *cli.Command {

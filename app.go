@@ -5,7 +5,7 @@ import (
     cli "github.com/urfave/cli/v2"
 )
 
-func newAppCfg() *cli.App {
+func appCfg() *cli.App {
     return &cli.App{
         Name: "vtb",
         Flags: []cli.Flag{
@@ -15,7 +15,7 @@ func newAppCfg() *cli.App {
             },
         },
         Commands: []*cli.Command{
-            cmdNew(),
+            cmdCfgNew(),
             cmdFinish(),
             cmdDir(),
             cmdMeta(),
@@ -25,6 +25,6 @@ func newAppCfg() *cli.App {
 }
 
 func appMain(ctx context.Context, args []string) error {
-    app := newAppCfg()
+    app := appCfg()
     return app.RunContext(ctx, args)
 }
