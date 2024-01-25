@@ -18,5 +18,9 @@ func appCfg() *cli.App {
             cmdCfgMeta(),
             cmdCfgTrans(),
         },
+        // Caller should set these.
+        Reader: nil,
+        Writer: nil,
+        ErrWriter: nil,
     }
 }
