@@ -72,32 +72,32 @@ func cmdFinish(c *cli.Context) error {
     return writeToolState(toolState{}, tp.StatePath())
 }
 
-func cmdMeta() *cli.Command {
-    fn := func(c *cli.Context) error {
-        tp, ok := toolPathsFromContext(c.Context)
-        if !ok {
-            return errors.New("toolPaths not present in context")
-        }
-        ts, err := readToolState(tp.StatePath())
-        if err != nil {
-            return err
-        }
-        if ts.Pt == ptUndef {
-            fmt.Println("no project configured.")
-            return nil
-        }
-
-        fmt.Println("Active Project")
-        fmt.Println("--------------")
-        fmt.Println("name:", ts.Name)
-        fmt.Println("type:", ts.Pt)
-        return nil
-    }
-
+func cmdCfgMeta() *cli.Command {
     return &cli.Command{
         Name: "meta",
         Usage: "display information about the current project",
         ArgsUsage: " ",  // Makes help text a bit nicer.
-        Action: fn,
+        Action: cmdMeta,
     }
+}
+
+func cmdMeta(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    ts, err := readToolState(tp.StatePath())
+    if err != nil {
+        return err
+    }
+    if ts.Pt == ptUndef {
+        fmt.Println("no project configured.")
+        return nil
+    }
+
+    fmt.Println("Active Project")
+    fmt.Println("--------------")
+    fmt.Println("name:", ts.Name)
+    fmt.Println("type:", ts.Pt)
+    return nil
 }

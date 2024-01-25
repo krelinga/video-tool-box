@@ -18,7 +18,7 @@ func appCfg() *cli.App {
             cmdCfgNew(),
             cmdCfgFinish(),
             cmdDir(),
-            cmdMeta(),
+            cmdCfgMeta(),
             cmdTrans(),
         },
     }
