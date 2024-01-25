@@ -70,9 +70,9 @@ func cmdTrans(c *cli.Context) error {
     cmd.Stdin = os.Stdin
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
-    fmt.Println("starting Handbrake....")
+    fmt.Fprintln(c.App.Writer, "starting Handbrake....")
     if err := cmd.Run(); err != nil { return err }
-    fmt.Println("...handbrake finished")
+    fmt.Fprintln(c.App.Writer, "...handbrake finished")
 
     return nil
 }

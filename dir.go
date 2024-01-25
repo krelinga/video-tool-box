@@ -79,9 +79,9 @@ func cmdDir(c *cli.Context) error {
         return err
     }
 
-    scanner := bufio.NewScanner(os.Stdin)
+    scanner := bufio.NewScanner(c.App.Reader)
     prompt := func() (string, error) {
-        fmt.Printf("(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit: ")
+        fmt.Fprintf(c.App.Writer, "(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit: ")
         if !scanner.Scan() {
             return "", scanner.Err()
         }
@@ -92,7 +92,7 @@ func cmdDir(c *cli.Context) error {
         if err != nil {
             return err
         }
-        fmt.Printf("\n%s: %s\n", filepath.Base(path), size)
+        fmt.Fprintf(c.App.Writer, "\n%s: %s\n", filepath.Base(path), size)
         return nil
     }
 
@@ -110,7 +110,7 @@ func cmdDir(c *cli.Context) error {
                 if err := openInVLC(path); err != nil {
                     return err
                 }
-                fmt.Println("opened in VLC")
+                fmt.Fprintln(c.App.Writer, "opened in VLC")
                 // Repeat inputLoop
             case "t":
                 destDir, err := tp.TmmProjectDir(ts)
@@ -118,7 +118,7 @@ func cmdDir(c *cli.Context) error {
                 if err := createDestDirAndMove(path, destDir); err != nil {
                     return err
                 }
-                fmt.Println("moved to TMM content dir")
+                fmt.Fprintln(c.App.Writer, "moved to TMM content dir")
                 break inputLoop
             case "x":
                 destDir, err := tp.TmmProjectExtrasDir(ts)
@@ -126,19 +126,19 @@ func cmdDir(c *cli.Context) error {
                 if err := createDestDirAndMove(path, destDir); err != nil {
                     return err
                 }
-                fmt.Println("moved to extras dir")
+                fmt.Fprintln(c.App.Writer, "moved to extras dir")
                 break inputLoop
             case "s":
-                fmt.Println("skipped")
+                fmt.Fprintln(c.App.Writer, "skipped")
                 continue pathLoop
             case "d":
                 if err := os.Remove(path); err != nil {
                     return err
                 }
-                fmt.Println("deleted")
+                fmt.Fprintln(c.App.Writer, "deleted")
                 break inputLoop
             case "q":
-                fmt.Println("quit")
+                fmt.Fprintln(c.App.Writer, "quit")
                 break pathLoop
             }
         }

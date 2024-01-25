@@ -91,13 +91,13 @@ func cmdMeta(c *cli.Context) error {
         return err
     }
     if ts.Pt == ptUndef {
-        fmt.Println("no project configured.")
+        fmt.Fprintln(c.App.Writer, "no project configured.")
         return nil
     }
 
-    fmt.Println("Active Project")
-    fmt.Println("--------------")
-    fmt.Println("name:", ts.Name)
-    fmt.Println("type:", ts.Pt)
+    fmt.Println(c.App.Writer, "Active Project")
+    fmt.Println(c.App.Writer, "--------------")
+    fmt.Println(c.App.Writer, "name:", ts.Name)
+    fmt.Println(c.App.Writer, "type:", ts.Pt)
     return nil
 }
