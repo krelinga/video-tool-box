@@ -13,7 +13,8 @@ func main() {
             return err
         }
         ctx := newToolPathsContext(context.Background(), tp)
-        return appMain(ctx, os.Args)
+        app := appCfg()
+        return app.RunContext(ctx, os.Args)
     }
     if err := internal(); err != nil {
         log.Fatal(err)

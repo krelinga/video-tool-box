@@ -1,9 +1,6 @@
 package main
 
-import (
-    "context"
-    cli "github.com/urfave/cli/v2"
-)
+import cli "github.com/urfave/cli/v2"
 
 func appCfg() *cli.App {
     return &cli.App{
@@ -22,9 +19,4 @@ func appCfg() *cli.App {
             cmdCfgTrans(),
         },
     }
-}
-
-func appMain(ctx context.Context, args []string) error {
-    app := appCfg()
-    return app.RunContext(ctx, args)
 }
