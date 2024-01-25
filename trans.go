@@ -21,42 +21,11 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
     },
 }
 
-func cmdTrans() *cli.Command {
-    fn := func(c *cli.Context) error {
-        handbrake := c.String("handbrake")
-        if len(handbrake) == 0 {
-            return errors.New("'trans' command only available when --handbrake is set")
-        }
-
-        input := c.String("input")
-        output := c.String("output")
-        profile := c.String("profile")
-
-        profileFlags, ok := gHandbrakeProfile[profile]
-        if !ok {
-            return errors.New(fmt.Sprintf("unknown profile %s", profile))
-        }
-        standardFlags := []string{
-            "-i", input,
-            "-o", output,
-        }
-        cmd := exec.Command(handbrake)
-        cmd.Args = append(cmd.Args, standardFlags...)
-        cmd.Args = append(cmd.Args, profileFlags...)
-        cmd.Stdin = os.Stdin
-        cmd.Stdout = os.Stdout
-        cmd.Stderr = os.Stderr
-        fmt.Println("starting Handbrake....")
-        if err := cmd.Run(); err != nil { return err }
-        fmt.Println("...handbrake finished")
-
-        return nil
-    }
-
+func cmdCfgTrans() *cli.Command {
     return &cli.Command{
         Name: "trans",
         Usage: "transcode video",
-        Action: fn,
+        Action: cmdTrans,
         Flags: []cli.Flag{
             &cli.StringFlag{
                 Name: "input",
@@ -75,4 +44,35 @@ func cmdTrans() *cli.Command {
             },
         },
     }
+}
+
+func cmdTrans(c *cli.Context) error {
+    handbrake := c.String("handbrake")
+    if len(handbrake) == 0 {
+        return errors.New("'trans' command only available when --handbrake is set")
+    }
+
+    input := c.String("input")
+    output := c.String("output")
+    profile := c.String("profile")
+
+    profileFlags, ok := gHandbrakeProfile[profile]
+    if !ok {
+        return errors.New(fmt.Sprintf("unknown profile %s", profile))
+    }
+    standardFlags := []string{
+        "-i", input,
+        "-o", output,
+    }
+    cmd := exec.Command(handbrake)
+    cmd.Args = append(cmd.Args, standardFlags...)
+    cmd.Args = append(cmd.Args, profileFlags...)
+    cmd.Stdin = os.Stdin
+    cmd.Stdout = os.Stdout
+    cmd.Stderr = os.Stderr
+    fmt.Println("starting Handbrake....")
+    if err := cmd.Run(); err != nil { return err }
+    fmt.Println("...handbrake finished")
+
+    return nil
 }
