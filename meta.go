@@ -55,21 +55,21 @@ func cmdNew(c *cli.Context) error {
     return writeToolState(ts, tp.StatePath())
 }
 
-func cmdFinish() *cli.Command {
-    fn := func(c *cli.Context) error {
-        tp, ok := toolPathsFromContext(c.Context)
-        if !ok {
-            return errors.New("toolPaths not present in context")
-        }
-        return writeToolState(toolState{}, tp.StatePath())
-    }
-
+func cmdCfgFinish() *cli.Command {
     return &cli.Command{
         Name: "finish",
         Usage: "finish an existing project",
         ArgsUsage: " ",  // Makes help text a bit nicer.
-        Action: fn,
+        Action: cmdFinish,
     }
+}
+
+func cmdFinish(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    return writeToolState(toolState{}, tp.StatePath())
 }
 
 func cmdMeta() *cli.Command {
