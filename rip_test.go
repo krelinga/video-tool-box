@@ -8,8 +8,7 @@ import (
 )
 
 type testApp struct {
-    workDir string
-    homeDir string
+    paths toolPaths
 
     stdin bytes.Buffer
     stdout bytes.Buffer
@@ -19,23 +18,21 @@ type testApp struct {
 func newTestApp(t *testing.T) *testApp {
     t.Helper()
     return &testApp{
-        workDir: setUpTempDir(t),
-        homeDir: setUpTempDir(t),
+        paths: toolPaths{
+            homeDir: setUpTempDir(t),
+            currentDir: setUpTempDir(t),
+        },
     }
 }
 
 func (ta *testApp) Delete(t *testing.T) {
     t.Helper()
-    tearDownTempDir(t, ta.workDir)
-    tearDownTempDir(t, ta.homeDir)
+    tearDownTempDir(t, ta.Paths().HomeDir())
+    tearDownTempDir(t, ta.Paths().CurrentDir())
 }
 
-func (ta *testApp) WorkDir() string {
-    return ta.workDir
-}
-
-func (ta *testApp) HomeDir() string {
-    return ta.homeDir
+func (ta *testApp) Paths() toolPaths {
+    return ta.paths
 }
 
 func (ta *testApp) Stdin() *bytes.Buffer {
@@ -55,11 +52,7 @@ func (ta *testApp) Run(args... string) error {
     app.Reader = &ta.stdin
     app.Writer = &ta.stdout
     app.ErrWriter = &ta.stderr
-    tp := toolPaths{
-        homeDir: ta.homeDir,
-        currentDir: ta.workDir,
-    }
-    ctx := newToolPathsContext(context.Background(), tp)
+    ctx := newToolPathsContext(context.Background(), ta.paths)
     fullArgs := []string{"vtb"}
     fullArgs = append(fullArgs, args...)
     return app.RunContext(ctx, fullArgs)
