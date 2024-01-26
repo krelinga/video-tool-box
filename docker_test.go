@@ -61,7 +61,7 @@ func testDockerBuildAndRun(t *testing.T, tc testContainer) {
     }
 }
 
-func TestE2E(t *testing.T) {
+func TestDocker(t *testing.T) {
     t.Parallel()
     tc := newTestContainer()
     tc.Build(t)
