@@ -1,5 +1,3 @@
-// +build e2e
-
 package main
 
 import (
@@ -62,6 +60,10 @@ func testDockerBuildAndRun(t *testing.T, tc testContainer) {
 }
 
 func TestDocker(t *testing.T) {
+    if testing.Short() {
+        t.Skip()
+        return
+    }
     t.Parallel()
     tc := newTestContainer()
     tc.Build(t)
