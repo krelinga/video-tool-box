@@ -17,6 +17,7 @@ type testApp struct {
 }
 
 func newTestApp(t *testing.T) *testApp {
+    t.Helper()
     return &testApp{
         workDir: setUpTempDir(t),
         homeDir: setUpTempDir(t),
@@ -24,6 +25,7 @@ func newTestApp(t *testing.T) *testApp {
 }
 
 func (ta *testApp) Delete(t *testing.T) {
+    t.Helper()
     tearDownTempDir(t, ta.workDir)
     tearDownTempDir(t, ta.homeDir)
 }
