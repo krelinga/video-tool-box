@@ -49,6 +49,12 @@ func (ta *testApp) Stderr() *bytes.Buffer {
     return &ta.stderr
 }
 
+func (ta *testApp) Reset() {
+    for _, b := range []*bytes.Buffer{&ta.stdin, &ta.stdout, &ta.stderr} {
+        b.Reset()
+    }
+}
+
 func (ta *testApp) Run(args... string) error {
     app := appCfg()
     app.Reader = &ta.stdin
@@ -118,6 +124,7 @@ func TestRipSequence(t *testing.T) {
     if !runNoError("new", "movie", "Test", "Movie") {
         return
     }
+    ta.Reset()
 
     if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
         t.Fatalf("error writing to test stdin: %s", err)
@@ -152,8 +159,10 @@ func TestRipSequence(t *testing.T) {
     if len(files) != 1 {
         t.Errorf("Expected 1 entry in working directory, found %d", len(files))
     }
+    ta.Reset()
 
     if !runNoError("finish") {
         return
     }
+    ta.Reset()
 }
