@@ -186,8 +186,12 @@ func TestRipSequence(t *testing.T) {
     }
     ta.Reset()
 
+    testMetaConfigured()
+
     if !runNoError("finish") {
         return
     }
     ta.Reset()
+
+    testMetaUnconfigured()
 }
