@@ -119,6 +119,16 @@ func TestRipSequence(t *testing.T) {
         return true
     }
 
+    if !runNoError("meta") {
+        return
+    }
+    initMetaOut := ta.Stdout().String()
+    noProjectConfigured := "no project configured"
+    if !strings.Contains(initMetaOut, noProjectConfigured) {
+        t.Errorf("Unexpected 'meta' output for no configured project: %s", initMetaOut)
+    }
+    ta.Reset()
+
     // Project names don't have to be quoted on the shell, so we pass
     // "Test" and "Movie" as two separate strings here.
     if !runNoError("new", "movie", "Test", "Movie") {
