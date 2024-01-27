@@ -119,6 +119,7 @@ func TestRipSequence(t *testing.T) {
         return true
     }
     testMetaUnconfigured := func() {
+        defer ta.Reset()
         if !runNoError("meta") {
             return
         }
@@ -127,9 +128,9 @@ func TestRipSequence(t *testing.T) {
         if !strings.Contains(initMetaOut, noProjectConfigured) {
             t.Errorf("Unexpected 'meta' output for no configured project: %s", initMetaOut)
         }
-        ta.Reset()
     }
     testMetaConfigured := func() {
+        defer ta.Reset()
         if !runNoError("meta") {
             return
         }
@@ -137,7 +138,6 @@ func TestRipSequence(t *testing.T) {
         if !strings.Contains(afterNewMetaOut, "Test Movie") {
             t.Errorf("Unexpected 'meta' output for configured project: %s", afterNewMetaOut)
         }
-        ta.Reset()
     }
 
     testMetaUnconfigured()
