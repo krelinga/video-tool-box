@@ -3,6 +3,8 @@ package main
 import (
     "bytes"
     "context"
+    "os"
+    "path/filepath"
     "strings"
     "testing"
 )
@@ -75,5 +77,83 @@ func TestRootHelp(t *testing.T) {
     hasCommands := strings.Contains(stdout, "\nCOMMANDS:")
     if !hasName || !hasUsage || !hasCommands {
         t.Errorf("Output does not look like help text:\n%s", stdout)
+    }
+}
+
+func TestRipSequence(t *testing.T) {
+    t.Parallel()
+    ta := newTestApp(t)
+    defer ta.Delete(t)
+
+    // Set up a fake DVD directory.
+    mkdir := func(path string) {
+        if err := os.Mkdir(path, 0755); err != nil {
+            t.Fatalf("error creating directory %s: %s", path, err)
+        }
+    }
+    mkdir(ta.Paths().MoviesDir())
+    mkdir(ta.Paths().TmmMoviesDir())
+    writeTestFile := func(name string) {
+        path := filepath.Join(ta.Paths().CurrentDir(), name)
+        if err := os.WriteFile(path, []byte(name), 0644); err != nil {
+            t.Fatalf("error creating fake MKV file %s: %s", path, err)
+        }
+    }
+    // Prefix is to control the sorted order more-easily.
+    writeTestFile("a_title.mkv")
+    writeTestFile("b_extra.mkv")
+    writeTestFile("c_skip.mkv")
+    writeTestFile("d_delete.mkv")
+
+    runNoError := func(args... string) bool {
+        if err := ta.Run(args...); err != nil {
+            t.Errorf("Error running with args %v: %s", args, err)
+            return false
+        }
+        return true
+    }
+
+    // Project names don't have to be quoted on the shell, so we pass
+    // "Test" and "Movie" as two separate strings here.
+    if !runNoError("new", "movie", "Test", "Movie") {
+        return
+    }
+
+    if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
+        t.Fatalf("error writing to test stdin: %s", err)
+    }
+    if !runNoError("dir") {
+        return
+    }
+    if leftover := ta.Stdin().Len(); leftover > 0 {
+        t.Errorf("dir has %d leftover bytes in stdin", leftover)
+    }
+    check := func(path string) {
+        expContents := filepath.Base(path)
+        actBytes, err := os.ReadFile(path)
+        if err != nil {
+            t.Errorf("Could not read %s: %s", path, err)
+            return
+        }
+        actContents := string(actBytes)
+        if expContents != actContents {
+            t.Errorf("Bad contents in %s: expected \"%s\", actual \"%s\"", path, expContents, actContents)
+        }
+    }
+    tmmMovieDir := filepath.Join(ta.Paths().TmmMoviesDir(), "Test Movie")
+    check(filepath.Join(tmmMovieDir, "a_title.mkv"))
+    check(filepath.Join(tmmMovieDir, ".extras", "b_extra.mkv"))
+    check(filepath.Join(ta.Paths().CurrentDir(), "c_skip.mkv"))
+    files, err := os.ReadDir(ta.Paths().CurrentDir())
+    if err != nil {
+        t.Errorf("could not read current directory: %s", err)
+        return
+    }
+    if len(files) != 1 {
+        t.Errorf("Expected 1 entry in working directory, found %d", len(files))
+    }
+
+    if !runNoError("finish") {
+        return
     }
 }
