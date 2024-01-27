@@ -95,9 +95,9 @@ func cmdMeta(c *cli.Context) error {
         return nil
     }
 
-    fmt.Println(c.App.Writer, "Active Project")
-    fmt.Println(c.App.Writer, "--------------")
-    fmt.Println(c.App.Writer, "name:", ts.Name)
-    fmt.Println(c.App.Writer, "type:", ts.Pt)
+    fmt.Fprintln(c.App.Writer, "Active Project")
+    fmt.Fprintln(c.App.Writer, "--------------")
+    fmt.Fprintln(c.App.Writer, "name:", ts.Name)
+    fmt.Fprintln(c.App.Writer, "type:", ts.Pt)
     return nil
 }

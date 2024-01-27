@@ -136,6 +136,15 @@ func TestRipSequence(t *testing.T) {
     }
     ta.Reset()
 
+    if !runNoError("meta") {
+        return
+    }
+    afterNewMetaOut := ta.Stdout().String()
+    if !strings.Contains(afterNewMetaOut, "Test Movie") {
+        t.Errorf("Unexpected 'meta' output for configured project: %s", afterNewMetaOut)
+    }
+    ta.Reset()
+
     if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
         t.Fatalf("error writing to test stdin: %s", err)
     }
