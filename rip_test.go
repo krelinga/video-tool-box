@@ -120,7 +120,7 @@ func TestRipSequence(t *testing.T) {
     }
     testMetaUnconfigured := func() {
         defer ta.Reset()
-        if !runNoError("meta") {
+        if !runNoError("rip", "meta") {
             return
         }
         initMetaOut := ta.Stdout().String()
@@ -131,7 +131,7 @@ func TestRipSequence(t *testing.T) {
     }
     testMetaConfigured := func() {
         defer ta.Reset()
-        if !runNoError("meta") {
+        if !runNoError("rip", "meta") {
             return
         }
         afterNewMetaOut := ta.Stdout().String()
@@ -144,7 +144,7 @@ func TestRipSequence(t *testing.T) {
 
     // Project names don't have to be quoted on the shell, so we pass
     // "Test" and "Movie" as two separate strings here.
-    if !runNoError("new", "movie", "Test", "Movie") {
+    if !runNoError("rip", "new", "movie", "Test", "Movie") {
         return
     }
     ta.Reset()
@@ -154,7 +154,7 @@ func TestRipSequence(t *testing.T) {
     if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
         t.Fatalf("error writing to test stdin: %s", err)
     }
-    if !runNoError("dir") {
+    if !runNoError("rip", "dir") {
         return
     }
     if leftover := ta.Stdin().Len(); leftover > 0 {
@@ -188,7 +188,7 @@ func TestRipSequence(t *testing.T) {
 
     testMetaConfigured()
 
-    if !runNoError("finish") {
+    if !runNoError("rip", "finish") {
         return
     }
     ta.Reset()

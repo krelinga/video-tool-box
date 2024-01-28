@@ -12,10 +12,7 @@ func appCfg() *cli.App {
             },
         },
         Commands: []*cli.Command{
-            cmdCfgNew(),
-            cmdCfgFinish(),
-            cmdCfgDir(),
-            cmdCfgMeta(),
+            subcmdCfgRip(),
             cmdCfgTrans(),
         },
         // Caller should set these.
