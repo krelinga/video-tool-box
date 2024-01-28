@@ -5,6 +5,7 @@ import cli "github.com/urfave/cli/v2"
 func appCfg() *cli.App {
     return &cli.App{
         Name: "vtb",
+        Usage: "Video Tool Box",
         Flags: []cli.Flag{
             &cli.StringFlag{
                 Name: "handbrake",
