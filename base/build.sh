@@ -1,5 +1,5 @@
 #! /usr/bin/bash
 
-/usr/bin/docker buildx build --push \
+/usr/bin/docker buildx build --builder=myBuilder --push \
     --platform linux/amd64,linux/arm64 \
     --tag krelinga/video-tool-box-base:buildx-latest .
