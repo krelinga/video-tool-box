@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "github.com/krelinga/video-tool-box/pb";
+
+message HelloWorldRequest {
+    string in = 1;
+}
+
+message HelloWorldReply {
+    string out = 1;
+}
+
+service TCServer {
+    rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
+}
