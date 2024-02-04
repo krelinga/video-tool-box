@@ -2,7 +2,7 @@
 
 export PATH="${PATH}:$HOME/go/bin"
 
-rm *.pb.go
+rm -f *.pb.go
 protoc \
     -I=. \
     --go_out=. --go_opt=paths=source_relative \
