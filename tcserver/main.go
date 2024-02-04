@@ -18,6 +18,7 @@ type tcServer struct {
 }
 
 func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
+    fmt.Printf("Saw request: %v\n", req)
     rep := &pb.HelloWorldReply{
         Out: req.In,
     }
