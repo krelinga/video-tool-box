@@ -2,6 +2,7 @@ package main
 
 import (
     "fmt"
+    "errors"
 
     cli "github.com/urfave/cli/v2"
     "github.com/krelinga/video-tool-box/pb"
@@ -27,7 +28,7 @@ func cmdCfgRemote() *cli.Command {
 func cmdRemote(c *cli.Context) error {
     conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
     if  err != nil {
-        return err
+        return errors.New(fmt.Sprintf("when dialing: %s", err))
     }
     defer conn.Close()
 
@@ -35,7 +36,7 @@ func cmdRemote(c *cli.Context) error {
 
     resp, err := client.HelloWorld(c.Context, &pb.HelloWorldRequest{In: "taters"})
     if err != nil {
-        return err
+        return errors.New(fmt.Sprintf("from RPC: %s", err))
     }
     fmt.Println(resp)
     return nil
