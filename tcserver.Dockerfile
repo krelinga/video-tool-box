@@ -19,6 +19,8 @@ COPY tcserver/*.go ./tcserver/
 RUN CGO_ENABLED=0 GOOS=linux go build -o /tcserver ./tcserver/
 
 ENV VTB_TCSERVER_PORT=25000
+ENV VTB_TCSERVER_IN_PATH_PREFIX="smb://truenas/media"
+ENV VTB_TCSERVER_OUT_PATH_PREFIX="/videos"
 
 ENTRYPOINT ["/usr/bin/bash", "-c", "/tcserver"]
 
