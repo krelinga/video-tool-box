@@ -21,3 +21,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /tcserver ./tcserver/
 ENV VTB_TCSERVER_PORT=25000
 
 ENTRYPOINT ["/usr/bin/bash", "-c", "/tcserver"]
+
+EXPOSE 25000
