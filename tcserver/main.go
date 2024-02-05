@@ -43,7 +43,7 @@ func mainOrError() error {
     if err != nil {
         return err
     }
-    lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", port))
+    lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
     if err != nil {
         return err
     }
