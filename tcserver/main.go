@@ -8,6 +8,7 @@ import (
     "net"
     "os"
     "strconv"
+    "strings"
 
     "github.com/krelinga/video-tool-box/pb"
     "google.golang.org/grpc"
@@ -25,11 +26,19 @@ func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) 
     return rep, nil
 }
 
+func getEnvVar(name string) (string, error) {
+    value := os.Getenv(name)
+    if len(value) == 0 {
+        return "", errors.New(fmt.Sprintf("env var %s is not set", name))
+    }
+    return value, nil
+}
+
 func getPort() (int, error) {
     const envVar = "VTB_TCSERVER_PORT"
-    portString := os.Getenv(envVar)
-    if len(portString) == 0 {
-        return 0, errors.New(fmt.Sprintf("set %s env var", envVar))
+    portString, err := getEnvVar(envVar)
+    if err != nil {
+        return 0, err
     }
     port, err := strconv.Atoi(portString)
     if err != nil {
@@ -37,8 +46,38 @@ func getPort() (int, error) {
     }
     return port, nil
 }
+
+func listVideoPaths(path string) error {
+    oldPrefix, err := getEnvVar("VTB_TCSERVER_IN_PATH_PREFIX")
+    if err != nil {
+        return err
+    }
+    newPrefix, err := getEnvVar("VTB_TCSERVER_OUT_PATH_PREFIX")
+    if err != nil {
+        return err
+    }
+
+    cutPath, found := strings.CutPrefix(path, oldPrefix)
+    if !found {
+        return errors.New(fmt.Sprintf("path %s does not start with prefix %s", path, oldPrefix))
+    }
+    newPath := newPrefix + cutPath
+
+    entries, err := os.ReadDir(newPath)
+    if err != nil {
+        return err
+    }
+    for _, entry := range entries {
+        fmt.Println(entry.Name())
+    }
+    return nil
+}
+
 func mainOrError() error {
     fmt.Println("hello world!")
+    if err := listVideoPaths("smb://truenas/media"); err != nil {
+        return err
+    }
     port, err := getPort()
     if err != nil {
         return err
