@@ -17,17 +17,20 @@ func TestNewProdToolPaths(t *testing.T) {
     oldHome := os.Getenv("HOME")
     oldPwd := os.Getenv("PWD")
     oldVtbNasMountDir := os.Getenv("VTB_NAS_MOUNT_DIR")
+    oldVtbNasCanonDir := os.Getenv("VTB_NAS_CANON_DIR")
     defer func() {
         setEnvVar(t, "HOME", oldHome)
         setEnvVar(t, "PWD", oldPwd)
         setEnvVar(t, "VTB_NAS_MOUNT_DIR", oldVtbNasMountDir)
+        setEnvVar(t, "VTB_NAS_CANON_DIR", oldVtbNasCanonDir)
     }()
 
     type testCase struct {
-        Name    string
-        Home    string
-        Pwd     string
-        NasMount     string
+        Name        string
+        Home        string
+        Pwd         string
+        NasMount    string
+        NasCanon    string
         ExpectError bool
     }
     cases := []testCase{
@@ -39,25 +42,36 @@ func TestNewProdToolPaths(t *testing.T) {
             Name: "No Homedir",
             Pwd: "/workingdir",
             NasMount: "/nas",
+            NasCanon: "smb://nas",
             ExpectError: true,
         },
         {
             Name: "No PWD",
             Home: "/homedir",
             NasMount: "/nas",
+            NasCanon: "smb://nas",
             ExpectError: true,
         },
         {
-            Name: "No NAS",
+            Name: "No NAS Mount",
             Home: "/homedir",
             Pwd: "/workingdir",
+            NasCanon: "smb://nas",
             ExpectError: true,
         },
         {
-            Name: "Homedir, PWD, and NAS set",
+            Name: "No NAS Canon",
             Home: "/homedir",
             Pwd: "/workingdir",
             NasMount: "/nas",
+            ExpectError: true,
+        },
+        {
+            Name: "Homedir, PWD, NAS Mount and NAS Canon set",
+            Home: "/homedir",
+            Pwd: "/workingdir",
+            NasMount: "/nas",
+            NasCanon: "smb://nas",
         },
     }
     for _, tc := range cases {
@@ -65,6 +79,7 @@ func TestNewProdToolPaths(t *testing.T) {
             setEnvVar(t, "HOME", tc.Home)
             setEnvVar(t, "PWD", tc.Pwd)
             setEnvVar(t, "VTB_NAS_MOUNT_DIR", tc.NasMount)
+            setEnvVar(t, "VTB_NAS_CANON_DIR", tc.NasCanon)
             _, err := newProdToolPaths()
             if tc.ExpectError && err == nil {
                 t.Error("Expected error but didn't get one.")
@@ -82,6 +97,7 @@ func TestBasicPaths(t *testing.T) {
         homeDir: "/homedir",
         currentDir: "/workdir",
         nasMountDir: "/nas",
+        nasCanonDir: "smb://nas",
     }
     if tp.HomeDir() != "/homedir" {
         t.Error(tp.HomeDir())
@@ -91,6 +107,9 @@ func TestBasicPaths(t *testing.T) {
     }
     if tp.NasMountDir() != "/nas" {
         t.Error(tp.NasMountDir())
+    }
+    if tp.NasCanonDir() != "smb://nas" {
+        t.Error(tp.NasCanonDir())
     }
     if tp.MoviesDir() != "/homedir/Movies" {
         t.Error(tp.CurrentDir())
