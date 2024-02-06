@@ -10,11 +10,13 @@ import (
     "google.golang.org/grpc/credentials/insecure"
 )
 
-func cmdCfgRemote() *cli.Command {
+func subcmdCfgRemote() *cli.Command {
     return &cli.Command{
         Name: "remote",
-        Usage: "talk to remote transcoding server.",
-        Action: cmdRemote,
+        Usage: "Remote operations on video files.",
+        Subcommands: []*cli.Command{
+            cmdCfgHello(),
+        },
         Flags: []cli.Flag{
             &cli.StringFlag{
                 Name: "target",
@@ -25,7 +27,15 @@ func cmdCfgRemote() *cli.Command {
     }
 }
 
-func cmdRemote(c *cli.Context) error {
+func cmdCfgHello() *cli.Command {
+    return &cli.Command{
+        Name: "hello",
+        Usage: "hello world to remote transcoding server.",
+        Action: cmdHello,
+    }
+}
+
+func cmdHello(c *cli.Context) error {
     tp, ok := toolPathsFromContext(c.Context)
     if !ok {
         return errors.New("toolPaths not present in context")
