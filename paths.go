@@ -3,7 +3,9 @@ package main
 import (
     "context"
     "errors"
+    "fmt"
     "path/filepath"
+    "strings"
 )
 
 
@@ -77,6 +79,14 @@ func (tp toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
     projectDir, err := tp.TmmProjectDir(ts)
     if err != nil { return "", err }
     return filepath.Join(projectDir, ".extras"), nil
+}
+
+func (tp toolPaths) TranslateNasDir(in string) (string, error) {
+    cut, found := strings.CutPrefix(in, tp.NasMountDir())
+    if !found {
+        return "", errors.New(fmt.Sprintf("path %s does not start with %s", in, tp.NasMountDir()))
+    }
+    return tp.NasCanonDir() + cut, nil
 }
 
 var toolPathsContextKey string = "toolPathsContextKey"
