@@ -16,18 +16,18 @@ func TestNewProdToolPaths(t *testing.T) {
     // This manipulates environment variables, so it needs to be run serially.
     oldHome := os.Getenv("HOME")
     oldPwd := os.Getenv("PWD")
-    oldVtbNasDir := os.Getenv("VTB_NAS_DIR")
+    oldVtbNasMountDir := os.Getenv("VTB_NAS_MOUNT_DIR")
     defer func() {
         setEnvVar(t, "HOME", oldHome)
         setEnvVar(t, "PWD", oldPwd)
-        setEnvVar(t, "VTB_NAS_DIR", oldVtbNasDir)
+        setEnvVar(t, "VTB_NAS_MOUNT_DIR", oldVtbNasMountDir)
     }()
 
     type testCase struct {
         Name    string
         Home    string
         Pwd     string
-        Nas     string
+        NasMount     string
         ExpectError bool
     }
     cases := []testCase{
@@ -38,13 +38,13 @@ func TestNewProdToolPaths(t *testing.T) {
         {
             Name: "No Homedir",
             Pwd: "/workingdir",
-            Nas: "/nas",
+            NasMount: "/nas",
             ExpectError: true,
         },
         {
             Name: "No PWD",
             Home: "/homedir",
-            Nas: "/nas",
+            NasMount: "/nas",
             ExpectError: true,
         },
         {
@@ -57,14 +57,14 @@ func TestNewProdToolPaths(t *testing.T) {
             Name: "Homedir, PWD, and NAS set",
             Home: "/homedir",
             Pwd: "/workingdir",
-            Nas: "/nas",
+            NasMount: "/nas",
         },
     }
     for _, tc := range cases {
         t.Run(tc.Name, func(t *testing.T) {
             setEnvVar(t, "HOME", tc.Home)
             setEnvVar(t, "PWD", tc.Pwd)
-            setEnvVar(t, "VTB_NAS_DIR", tc.Nas)
+            setEnvVar(t, "VTB_NAS_MOUNT_DIR", tc.NasMount)
             _, err := newProdToolPaths()
             if tc.ExpectError && err == nil {
                 t.Error("Expected error but didn't get one.")
@@ -81,7 +81,7 @@ func TestBasicPaths(t *testing.T) {
     tp := toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
-        nasDir: "/nas",
+        nasMountDir: "/nas",
     }
     if tp.HomeDir() != "/homedir" {
         t.Error(tp.HomeDir())
@@ -89,8 +89,8 @@ func TestBasicPaths(t *testing.T) {
     if tp.CurrentDir() != "/workdir" {
         t.Error(tp.CurrentDir())
     }
-    if tp.NasDir() != "/nas" {
-        t.Error(tp.NasDir())
+    if tp.NasMountDir() != "/nas" {
+        t.Error(tp.NasMountDir())
     }
     if tp.MoviesDir() != "/homedir/Movies" {
         t.Error(tp.CurrentDir())
