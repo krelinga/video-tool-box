@@ -1,22 +1,16 @@
 package main
 
 import (
-    "context"
     "errors"
     "fmt"
     "log"
     "net"
     "os"
     "strconv"
-    "strings"
 
     "github.com/krelinga/video-tool-box/pb"
     "google.golang.org/grpc"
 )
-
-type tcServer struct {
-    pb.UnimplementedTCServerServer
-}
 
 func getFileSize(path string) int64 {
     stat, err := os.Stat(path)
@@ -25,51 +19,6 @@ func getFileSize(path string) int64 {
         return -1
     }
     return stat.Size()
-}
-
-func translatePath(canonPath string) (string, error) {
-    oldPrefix, err := getEnvVar("VTB_TCSERVER_IN_PATH_PREFIX")
-    if err != nil {
-        return "", err
-    }
-    newPrefix, err := getEnvVar("VTB_TCSERVER_OUT_PATH_PREFIX")
-    if err != nil {
-        return "", err
-    }
-
-    cutPath, found := strings.CutPrefix(canonPath, oldPrefix)
-    if !found {
-        return "", errors.New(fmt.Sprintf("path %s does not start with prefix %s", canonPath, oldPrefix))
-    }
-    return newPrefix + cutPath, nil
-}
-
-func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
-    fmt.Printf("Saw request: %v\n", req)
-    fileSize := func() int64 {
-        translated, err := translatePath(req.In)
-        if err != nil {
-            return -1
-        }
-        stat, err := os.Stat(translated)
-        if err != nil {
-            return -1
-        }
-        return stat.Size()
-    }()
-    rep := &pb.HelloWorldReply{
-        Out: req.In,
-        FileSize: fileSize,
-    }
-    return rep, nil
-}
-
-func getEnvVar(name string) (string, error) {
-    value := os.Getenv(name)
-    if len(value) == 0 {
-        return "", errors.New(fmt.Sprintf("env var %s is not set", name))
-    }
-    return value, nil
 }
 
 func getPort() (int, error) {
