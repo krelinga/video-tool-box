@@ -46,5 +46,5 @@ func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneF
 
     // Temporary, until we get handbrake hooked up.
     copyCmd := exec.Command("cp", inPath, outPath)
-    return nil, copyCmd.Run()
+    return &pb.TranscodeOneFileReply{}, copyCmd.Run()
 }
