@@ -16,42 +16,55 @@ func TestNewProdToolPaths(t *testing.T) {
     // This manipulates environment variables, so it needs to be run serially.
     oldHome := os.Getenv("HOME")
     oldPwd := os.Getenv("PWD")
+    oldVtbNasDir := os.Getenv("VTB_NAS_DIR")
     defer func() {
         setEnvVar(t, "HOME", oldHome)
         setEnvVar(t, "PWD", oldPwd)
+        setEnvVar(t, "VTB_NAS_DIR", oldVtbNasDir)
     }()
 
     type testCase struct {
         Name    string
         Home    string
         Pwd     string
+        Nas     string
         ExpectError bool
     }
     cases := []testCase{
         {
-            Name: "No Homedir or PWD",
+            Name: "No Homedir, PWD, or NAS",
             ExpectError: true,
         },
         {
             Name: "No Homedir",
             Pwd: "/workingdir",
+            Nas: "/nas",
             ExpectError: true,
         },
         {
             Name: "No PWD",
             Home: "/homedir",
+            Nas: "/nas",
             ExpectError: true,
         },
         {
-            Name: "Homedir and PWD set",
+            Name: "No NAS",
             Home: "/homedir",
             Pwd: "/workingdir",
+            ExpectError: true,
+        },
+        {
+            Name: "Homedir, PWD, and NAS set",
+            Home: "/homedir",
+            Pwd: "/workingdir",
+            Nas: "/nas",
         },
     }
     for _, tc := range cases {
         t.Run(tc.Name, func(t *testing.T) {
             setEnvVar(t, "HOME", tc.Home)
             setEnvVar(t, "PWD", tc.Pwd)
+            setEnvVar(t, "VTB_NAS_DIR", tc.Nas)
             _, err := newProdToolPaths()
             if tc.ExpectError && err == nil {
                 t.Error("Expected error but didn't get one.")
@@ -68,12 +81,16 @@ func TestBasicPaths(t *testing.T) {
     tp := toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
+        nasDir: "/nas",
     }
     if tp.HomeDir() != "/homedir" {
         t.Error(tp.HomeDir())
     }
     if tp.CurrentDir() != "/workdir" {
         t.Error(tp.CurrentDir())
+    }
+    if tp.NasDir() != "/nas" {
+        t.Error(tp.NasDir())
     }
     if tp.MoviesDir() != "/homedir/Movies" {
         t.Error(tp.CurrentDir())

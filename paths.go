@@ -10,6 +10,7 @@ import (
 type toolPaths struct {
     homeDir     string
     currentDir  string
+    nasDir      string
 }
 
 func newProdToolPaths() (toolPaths, error) {
@@ -18,6 +19,8 @@ func newProdToolPaths() (toolPaths, error) {
     tp.currentDir, err = getEnvVar("PWD")
     if err != nil { return tp, err }
     tp.homeDir, err = getEnvVar("HOME")
+    if err != nil { return tp, err }
+    tp.nasDir, err = getEnvVar("VTB_NAS_DIR")
     if err != nil { return tp, err }
     return tp, nil
 }
@@ -28,6 +31,10 @@ func (tp toolPaths) HomeDir() string {
 
 func (tp toolPaths) CurrentDir() string {
     return tp.currentDir
+}
+
+func (tp toolPaths) NasDir() string {
+    return tp.nasDir
 }
 
 func (tp toolPaths) MoviesDir() string {
