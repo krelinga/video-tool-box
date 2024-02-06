@@ -6,9 +6,6 @@ WORKDIR /app
 
 COPY go.mod go.sum ./
 RUN go mod download
-# TODO: we'll want handbrake eventually, but no need to have it for hello world.
-# RUN apt update
-# RUN apt install -y handbrake-cli
 
 # TODO: it would be nice to have a better way to recursively copy _all_
 # the source files to their correct directories...
