@@ -12,15 +12,6 @@ import (
     "google.golang.org/grpc"
 )
 
-func getFileSize(path string) int64 {
-    stat, err := os.Stat(path)
-    if err != nil {
-        fmt.Println(err)
-        return -1
-    }
-    return stat.Size()
-}
-
 func getPort() (int, error) {
     const envVar = "VTB_TCSERVER_PORT"
     portString, err := getEnvVar(envVar)
