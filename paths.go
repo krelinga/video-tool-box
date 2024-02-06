@@ -10,7 +10,7 @@ import (
 type toolPaths struct {
     homeDir     string
     currentDir  string
-    nasMountDir      string
+    nasMountDir string
 }
 
 func newProdToolPaths() (toolPaths, error) {
