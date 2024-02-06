@@ -18,10 +18,48 @@ type tcServer struct {
     pb.UnimplementedTCServerServer
 }
 
+func getFileSize(path string) int64 {
+    stat, err := os.Stat(path)
+    if err != nil {
+        fmt.Println(err)
+        return -1
+    }
+    return stat.Size()
+}
+
+func translatePath(canonPath string) (string, error) {
+    oldPrefix, err := getEnvVar("VTB_TCSERVER_IN_PATH_PREFIX")
+    if err != nil {
+        return "", err
+    }
+    newPrefix, err := getEnvVar("VTB_TCSERVER_OUT_PATH_PREFIX")
+    if err != nil {
+        return "", err
+    }
+
+    cutPath, found := strings.CutPrefix(canonPath, oldPrefix)
+    if !found {
+        return "", errors.New(fmt.Sprintf("path %s does not start with prefix %s", canonPath, oldPrefix))
+    }
+    return newPrefix + cutPath, nil
+}
+
 func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
     fmt.Printf("Saw request: %v\n", req)
+    fileSize := func() int64 {
+        translated, err := translatePath(req.In)
+        if err != nil {
+            return -1
+        }
+        stat, err := os.Stat(translated)
+        if err != nil {
+            return -1
+        }
+        return stat.Size()
+    }()
     rep := &pb.HelloWorldReply{
         Out: req.In,
+        FileSize: fileSize,
     }
     return rep, nil
 }
@@ -48,20 +86,10 @@ func getPort() (int, error) {
 }
 
 func listVideoPaths(path string) error {
-    oldPrefix, err := getEnvVar("VTB_TCSERVER_IN_PATH_PREFIX")
+    newPath, err := translatePath(path)
     if err != nil {
         return err
     }
-    newPrefix, err := getEnvVar("VTB_TCSERVER_OUT_PATH_PREFIX")
-    if err != nil {
-        return err
-    }
-
-    cutPath, found := strings.CutPrefix(path, oldPrefix)
-    if !found {
-        return errors.New(fmt.Sprintf("path %s does not start with prefix %s", path, oldPrefix))
-    }
-    newPath := newPrefix + cutPath
 
     entries, err := os.ReadDir(newPath)
     if err != nil {
