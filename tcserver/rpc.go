@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "os"
+    "os/exec"
 
     "github.com/krelinga/video-tool-box/pb"
 )
@@ -32,3 +33,18 @@ func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) 
     return rep, nil
 }
 
+func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneFileRequest) (*pb.TranscodeOneFileReply, error) {
+    fmt.Printf("TranscodeOneFile: %v\n", req)
+    inPath, err := translatePath(req.InPath)
+    if err != nil {
+        return nil, err
+    }
+    outPath, err := translatePath(req.OutPath)
+    if err != nil {
+        return nil, err
+    }
+
+    // Temporary, until we get handbrake hooked up.
+    copyCmd := exec.Command("cp", inPath, outPath)
+    return nil, copyCmd.Run()
+}
