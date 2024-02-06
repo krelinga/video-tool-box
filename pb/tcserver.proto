@@ -11,6 +11,15 @@ message HelloWorldReply {
     int64 file_size = 2;
 }
 
+message TranscodeOneFileRequest {
+    string in_path = 1;
+    string out_path = 2;
+}
+
+message TranscodeOneFileReply {
+}
+
 service TCServer {
     rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
+    rpc TranscodeOneFile(TranscodeOneFileRequest) returns (TranscodeOneFileReply) {}
 }
