@@ -1,0 +1,21 @@
+name: video-tool-box-tcserver
+services:
+  server:
+    container_name: server
+    image: "krelinga/video-tool-box-tcserver:buildx-latest"
+    ports:
+      - "25000:25000"
+    volumes:
+      - type: volume
+        source: videos
+        target: /videos
+    restart: unless-stopped
+
+volumes:
+  videos:
+    driver: local
+    driver_opts:
+      type: cifs
+      device: //192.168.86.97/media
+      o: "username=${SMB_USER},password=${SMB_PASSWORD},file_mode=0666,dir_mode=0777"
+
