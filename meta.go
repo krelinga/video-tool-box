@@ -28,8 +28,7 @@ func cmdNew(c *cli.Context) error {
         return err
     }
     if ts.Pt != ptUndef {
-        msg := fmt.Sprintf("Existsing project %s", ts.Name)
-        return errors.New(msg)
+        return fmt.Errorf("Existsing project %s", ts.Name)
     }
     args := c.Args().Slice()
     if len(args) < 2 {
