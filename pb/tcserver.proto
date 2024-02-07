@@ -19,7 +19,30 @@ message TranscodeOneFileRequest {
 message TranscodeOneFileReply {
 }
 
+message StartAsyncTranscodeRequest {
+    // Must be unique among all running transcodes on the server.
+    string name = 1;
+
+    string in_path = 2;
+    string out_path = 3;
+}
+
+message StartAsyncTranscodeReply {
+}
+
+message CheckAsyncTranscodeRequest {
+    // Must match the name given in StartAsyncTranscodeRequest.
+    string name = 1;
+}
+
+message CheckAsyncTranscodeReply {
+}
+
 service TCServer {
     rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
+
     rpc TranscodeOneFile(TranscodeOneFileRequest) returns (TranscodeOneFileReply) {}
+
+    rpc StartAsyncTrancode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
+    rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
 }
