@@ -45,21 +45,19 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
     },
 }
 
-func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneFileRequest) (*pb.TranscodeOneFileReply, error) {
-    fmt.Printf("TranscodeOneFile: %v\n", req)
-    inPath, err := translatePath(req.InPath)
+func transcodeImpl(inNasPath, outNasPath, profile string) error {
+    inPath, err := translatePath(inNasPath)
     if err != nil {
-        return nil, err
+        return err
     }
-    outPath, err := translatePath(req.OutPath)
+    outPath, err := translatePath(outNasPath)
     if err != nil {
-        return nil, err
+        return err
     }
 
-    const profile = "mkv_h265_1080p30"
     profileFlags, ok := gHandbrakeProfile[profile]
     if !ok {
-        return nil, fmt.Errorf("unknown profile %s", profile)
+        return fmt.Errorf("unknown profile %s", profile)
     }
     standardFlags := []string{
         "-i", inPath,
@@ -72,5 +70,12 @@ func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneF
     cmd.Stdin = os.Stdin
     cmd.Stdout = os.Stdout
     cmd.Stderr = os.Stderr
-    return &pb.TranscodeOneFileReply{}, cmd.Run()
+    return cmd.Run()
+}
+
+func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneFileRequest) (*pb.TranscodeOneFileReply, error) {
+    fmt.Printf("TranscodeOneFile: %v\n", req)
+    const profile = "mkv_h265_1080p30"
+    result := transcodeImpl(req.InPath, req.OutPath, profile)
+    return &pb.TranscodeOneFileReply{}, result
 }
