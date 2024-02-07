@@ -58,7 +58,7 @@ func cmdTrans(c *cli.Context) error {
 
     profileFlags, ok := gHandbrakeProfile[profile]
     if !ok {
-        return errors.New(fmt.Sprintf("unknown profile %s", profile))
+        return fmt.Errorf("unknown profile %s", profile)
     }
     standardFlags := []string{
         "-i", input,
