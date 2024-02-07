@@ -9,6 +9,9 @@ services:
       - type: volume
         source: videos
         target: /videos
+      - state:/state
+    environment:
+      VTB_TCSERVER_STATE_PATH: /state/state
     restart: unless-stopped
 
 volumes:
@@ -18,4 +21,5 @@ volumes:
       type: cifs
       device: //192.168.86.97/media
       o: "username=${SMB_USER},password=${SMB_PASSWORD},file_mode=0666,dir_mode=0777"
+  state: {}
 
