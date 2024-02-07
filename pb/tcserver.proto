@@ -51,6 +51,6 @@ service TCServer {
 
     rpc TranscodeOneFile(TranscodeOneFileRequest) returns (TranscodeOneFileReply) {}
 
-    rpc StartAsyncTrancode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
+    rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
 }

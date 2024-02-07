@@ -49,12 +49,16 @@ func mainOrError() error {
     if err != nil {
         return err
     }
+    statePath, err := getEnvVar("VTB_TCSERVER_STATE_PATH")
+    if err != nil {
+        return err
+    }
     lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
     if err != nil {
         return err
     }
     grpcServer := grpc.NewServer()
-    pb.RegisterTCServerServer(grpcServer, &tcServer{})
+    pb.RegisterTCServerServer(grpcServer, newTcServer(statePath))
     grpcServer.Serve(lis)  // Runs as long as the server is alive.
 
     return nil

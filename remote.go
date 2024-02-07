@@ -17,6 +17,8 @@ func subcmdCfgRemote() *cli.Command {
         Subcommands: []*cli.Command{
             cmdCfgHello(),
             cmdCfgTranscodeOne(),
+            cmdCfgStart(),
+            cmdCfgCheck(),
         },
         Flags: []cli.Flag{
             &cli.StringFlag{
@@ -104,4 +106,88 @@ func cmdTranscodeOne(c *cli.Context) error {
     _, err = client.TranscodeOneFile(c.Context, &pb.TranscodeOneFileRequest{InPath: inPath, OutPath: outPath})
 
     return err
+}
+
+func cmdCfgStart() *cli.Command {
+    return &cli.Command{
+        Name: "start",
+        Usage: "start an async transcode on the server.",
+        Action: cmdAsyncTranscodeStart,
+    }
+}
+
+func cmdAsyncTranscodeStart(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    args := c.Args().Slice()
+    if len(args) != 3 {
+        return errors.New("Expected a name and two file paths")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+    inPath, err := tp.TranslateNasDir(args[1])
+    if err != nil {
+        return err
+    }
+    outPath, err := tp.TranslateNasDir(args[2])
+    if err != nil {
+        return err
+    }
+
+    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+    if  err != nil {
+        return fmt.Errorf("when dialing: %w", err)
+    }
+    defer conn.Close()
+
+    client := pb.NewTCServerClient(conn)
+
+    _, err = client.StartAsyncTranscode(c.Context, &pb.StartAsyncTranscodeRequest{Name: name, InPath: inPath, OutPath: outPath})
+
+    return err
+}
+
+func cmdCfgCheck() *cli.Command {
+    return &cli.Command{
+        Name: "check",
+        Usage: "check on an async transcode on the server.",
+        Action: cmdAsyncTranscodeCheck,
+    }
+}
+
+func cmdAsyncTranscodeCheck(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected a name")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+
+    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+    if  err != nil {
+        return fmt.Errorf("when dialing: %w", err)
+    }
+    defer conn.Close()
+
+    client := pb.NewTCServerClient(conn)
+
+    reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
+
+    if err != nil {
+        return err
+    }
+
+    fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
+    if len(reply.ErrorMessage) > 0 {
+        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.State)
+    }
+    return nil
 }

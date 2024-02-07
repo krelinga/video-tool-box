@@ -87,8 +87,8 @@ func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneF
     return &pb.TranscodeOneFileReply{}, result
 }
 
-func (tcs *tcServer) StartAsyncTrancode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
-    fmt.Printf("StartAsyncTrancode: %v\n", req)
+func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
+    fmt.Printf("StartAsyncTranscode: %v\n", req)
     const profile = "mkv_h265_1080p30"
     err := tcs.s.Do(func(sp *pb.TCSState) error {
         if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
@@ -119,8 +119,8 @@ func (tcs *tcServer) StartAsyncTrancode(ctx context.Context, req *pb.StartAsyncT
     return &pb.StartAsyncTranscodeReply{}, err
 }
 
-func (tcs *tcServer) CheckAsyncTrancode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeReply, error) {
-    fmt.Printf("CheckAsyncTrancode: %v\n", req)
+func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeReply, error) {
+    fmt.Printf("CheckAsyncTranscode: %v\n", req)
     reply := &pb.CheckAsyncTranscodeReply{}
     err := tcs.s.Do(func(sp *pb.TCSState) error {
         if sp.Op == nil || sp.Op.State == pb.TCSState_Op_STATE_UNKNOWN {
