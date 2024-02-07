@@ -2,7 +2,6 @@ package main
 
 import (
     "context"
-    "errors"
     "fmt"
     "os"
     "os/exec"
@@ -60,7 +59,7 @@ func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneF
     const profile = "mkv_h265_1080p30"
     profileFlags, ok := gHandbrakeProfile[profile]
     if !ok {
-        return nil, errors.New(fmt.Sprintf("unknown profile %s", profile))
+        return nil, fmt.Errorf("unknown profile %s", profile)
     }
     standardFlags := []string{
         "-i", inPath,
