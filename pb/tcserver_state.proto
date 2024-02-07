@@ -10,8 +10,10 @@ message TCSState {
             STATE_UNKNOWN = 0;
             STATE_IN_PROGRESS = 1;
             STATE_DONE = 2;
+            STATE_FAILED = 3;
         }
         State state = 2;
+        string error_message = 3;
     }
 
     Op op = 1;

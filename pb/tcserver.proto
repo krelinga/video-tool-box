@@ -36,6 +36,14 @@ message CheckAsyncTranscodeRequest {
 }
 
 message CheckAsyncTranscodeReply {
+    enum State {
+        STATE_UNKNOWN = 0;
+        STATE_IN_PROGRESS = 1;
+        STATE_DONE = 2;
+        STATE_FAILED = 3;
+    }
+    State state = 1;
+    string error_message = 2;
 }
 
 service TCServer {

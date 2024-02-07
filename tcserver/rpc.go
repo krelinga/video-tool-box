@@ -3,6 +3,7 @@ package main
 import (
     "context"
     "fmt"
+    "errors"
     "os"
     "os/exec"
 
@@ -11,6 +12,12 @@ import (
 
 type tcServer struct {
     pb.UnimplementedTCServerServer
+
+    s   *state
+}
+
+func newTcServer(statePath string) *tcServer {
+    return &tcServer{s: newState(statePath)}
 }
 
 func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
@@ -78,4 +85,66 @@ func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneF
     const profile = "mkv_h265_1080p30"
     result := transcodeImpl(req.InPath, req.OutPath, profile)
     return &pb.TranscodeOneFileReply{}, result
+}
+
+func (tcs *tcServer) StartAsyncTrancode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
+    fmt.Printf("StartAsyncTrancode: %v\n", req)
+    const profile = "mkv_h265_1080p30"
+    err := tcs.s.Do(func(sp *pb.TCSState) error {
+        if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
+            return fmt.Errorf("Async transcode %s already in-progress", sp.Op.Name)
+        }
+        sp.Op = &pb.TCSState_Op{
+            Name: req.Name,
+            State: pb.TCSState_Op_STATE_IN_PROGRESS,
+        }
+        go func() {
+            err := transcodeImpl(req.InPath, req.OutPath, profile)
+            persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
+                if err != nil {
+                    sp.Op.State = pb.TCSState_Op_STATE_FAILED
+                    sp.Op.ErrorMessage = err.Error()
+                } else {
+                    sp.Op.State = pb.TCSState_Op_STATE_DONE
+                }
+                return nil
+            })
+            if persistErr != nil {
+                // TODO: Is there a better way here?
+                panic(persistErr.Error())
+            }
+        }()
+        return nil
+    })
+    return &pb.StartAsyncTranscodeReply{}, err
+}
+
+func (tcs *tcServer) CheckAsyncTrancode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeReply, error) {
+    fmt.Printf("CheckAsyncTrancode: %v\n", req)
+    reply := &pb.CheckAsyncTranscodeReply{}
+    err := tcs.s.Do(func(sp *pb.TCSState) error {
+        if sp.Op == nil || sp.Op.State == pb.TCSState_Op_STATE_UNKNOWN {
+            return errors.New("No active transcode")
+        }
+        if sp.Op.Name != req.Name {
+            return fmt.Errorf("Active transcode is named '%s', but '%s' was requested", sp.Op.Name, req.Name)
+        }
+        reply.State = func() pb.CheckAsyncTranscodeReply_State {
+            switch sp.Op.State {
+            case pb.TCSState_Op_STATE_UNKNOWN:
+                return pb.CheckAsyncTranscodeReply_STATE_UNKNOWN
+            case pb.TCSState_Op_STATE_IN_PROGRESS:
+                return pb.CheckAsyncTranscodeReply_STATE_IN_PROGRESS
+            case pb.TCSState_Op_STATE_DONE:
+                return pb.CheckAsyncTranscodeReply_STATE_DONE
+            case pb.TCSState_Op_STATE_FAILED:
+                return pb.CheckAsyncTranscodeReply_STATE_FAILED
+            default:
+                panic(fmt.Sprintf("Unexpected op state %v", sp.Op.State))
+            }
+        }()
+        reply.ErrorMessage = sp.Op.ErrorMessage
+        return nil
+    })
+    return reply, err
 }
