@@ -1,7 +1,6 @@
 package main
 
 import (
-    "errors"
     "fmt"
     "log"
     "net"
@@ -20,7 +19,7 @@ func getPort() (int, error) {
     }
     port, err := strconv.Atoi(portString)
     if err != nil {
-        return 0, errors.New(fmt.Sprintf("env var %s should be a port number, saw %s", envVar, portString))
+        return 0, fmt.Errorf("env var %s should be a port number, saw %s", envVar, portString)
     }
     return port, nil
 }
