@@ -2,7 +2,6 @@ package main
 
 import (
     "encoding/json"
-    "fmt"
     "os"
 )
 
@@ -26,10 +25,6 @@ func (pt projectType) String() string {
 type toolState struct {
     Pt      projectType
     Name    string
-}
-
-func (ts toolState) String() string {
-    return fmt.Sprintf("toolState{Pt: %s, Name: %s}", ts.Pt, ts.Name)
 }
 
 func readToolState(path string) (ts toolState, err error) {
