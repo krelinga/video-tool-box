@@ -52,7 +52,7 @@ func cmdHello(c *cli.Context) error {
     }
     conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
     if  err != nil {
-        return errors.New(fmt.Sprintf("when dialing: %s", err))
+        return fmt.Errorf("when dialing %w", err)
     }
     defer conn.Close()
 
@@ -60,7 +60,7 @@ func cmdHello(c *cli.Context) error {
 
     resp, err := client.HelloWorld(c.Context, &pb.HelloWorldRequest{In: canonPath})
     if err != nil {
-        return errors.New(fmt.Sprintf("from RPC: %s", err))
+        return fmt.Errorf("from RPC: %w", err)
     }
     fmt.Println(resp)
     return nil
@@ -95,7 +95,7 @@ func cmdTranscodeOne(c *cli.Context) error {
 
     conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
     if  err != nil {
-        return errors.New(fmt.Sprintf("when dialing: %s", err))
+        return fmt.Errorf("when dialing: %w", err)
     }
     defer conn.Close()
 
