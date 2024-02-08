@@ -69,6 +69,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     standardFlags := []string{
         "-i", inPath,
         "-o", outPath,
+        "--json",
     }
 
     cmd := exec.Command("/usr/bin/HandBrakeCLI")
