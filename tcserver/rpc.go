@@ -72,12 +72,26 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
         "--json",
     }
 
+    stdOutPath := outPath + ".stdout"
+    stdOutFile, err := os.Create(stdOutPath)
+    if err != nil {
+        return fmt.Errorf("could not open %s: %v", stdOutPath, err)
+    }
+    defer stdOutFile.Close()
+
+    stdErrPath := outPath + ".stderr"
+    stdErrFile, err := os.Create(stdErrPath)
+    if err != nil {
+        return fmt.Errorf("could not open %s: %v", stdErrPath, err)
+    }
+    defer stdErrFile.Close()
+
     cmd := exec.Command("/usr/bin/HandBrakeCLI")
     cmd.Args = append(cmd.Args, standardFlags...)
     cmd.Args = append(cmd.Args, profileFlags...)
     cmd.Stdin = os.Stdin
-    cmd.Stdout = os.Stdout
-    cmd.Stderr = os.Stderr
+    cmd.Stdout = stdOutFile
+    cmd.Stderr = stdErrFile
     return cmd.Run()
 }
 
