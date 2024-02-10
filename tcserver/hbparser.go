@@ -14,6 +14,7 @@ type hbProgress struct {
     Working     *hbProgressWorking
     Muxing      *hbProgressMuxing
     WorkDone    *hbProgressWorkDone
+    Scanning    *hbProgressScanning
 }
 
 func (hbp *hbProgress) String() string {
@@ -38,7 +39,14 @@ func (hbp *hbProgress) String() string {
 
         return fmt.Sprintf("{%s}", hbp.WorkDone)
     }
-    return fmt.Sprintf("State: %s Working: %s Muxing: %s WorkDone: %s", hbp.State, working(), muxing(), workDone())
+    scanning := func() string {
+        if hbp.Scanning == nil {
+            return "nil"
+        }
+
+        return fmt.Sprintf("{%s}", hbp.Scanning)
+    }
+    return fmt.Sprintf("State: %s Working: %s Muxing: %s WorkDone: %s Scanning: %s", hbp.State, working(), muxing(), workDone(), scanning())
 }
 
 type hbProgressWorking struct {
@@ -87,6 +95,26 @@ type hbProgressWorkDone struct {
 
 func (wd *hbProgressWorkDone) String() string {
     return fmt.Sprintf("Error: %d", wd.Error)
+}
+
+type hbProgressScanning struct {
+    Preview         int
+    PreviewCount    int
+    Progress        float64
+    SequenceID      int
+    Title           int
+    TitleCount      int
+}
+
+func (s *hbProgressScanning) String() string {
+    return strings.Join([]string{
+        fmt.Sprintf("Preview: %d", s.Preview),
+        fmt.Sprintf("PreviewCount: %d", s.PreviewCount),
+        fmt.Sprintf("Progress: %f", s.Progress),
+        fmt.Sprintf("SequenceID: %d", s.SequenceID),
+        fmt.Sprintf("Title: %d", s.Title),
+        fmt.Sprintf("TitleCount: %d", s.TitleCount),
+    }, " ")
 }
 
 // TODO: mark the output channel as consume-only.
