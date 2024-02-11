@@ -49,8 +49,6 @@ message CheckAsyncTranscodeReply {
 service TCServer {
     rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
 
-    rpc TranscodeOneFile(TranscodeOneFileRequest) returns (TranscodeOneFileReply) {}
-
     rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
 }

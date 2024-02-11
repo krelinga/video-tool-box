@@ -95,13 +95,6 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     return cmd.Run()
 }
 
-func (tcs *tcServer) TranscodeOneFile(ctc context.Context, req *pb.TranscodeOneFileRequest) (*pb.TranscodeOneFileReply, error) {
-    fmt.Printf("TranscodeOneFile: %v\n", req)
-    const profile = "mkv_h265_1080p30"
-    result := transcodeImpl(req.InPath, req.OutPath, profile)
-    return &pb.TranscodeOneFileReply{}, result
-}
-
 func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
     fmt.Printf("StartAsyncTranscode: %v\n", req)
     const profile = "mkv_h265_1080p30"

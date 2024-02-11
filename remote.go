@@ -16,7 +16,6 @@ func subcmdCfgRemote() *cli.Command {
         Usage: "Remote operations on video files.",
         Subcommands: []*cli.Command{
             cmdCfgHello(),
-            cmdCfgTranscodeOne(),
             cmdCfgStart(),
             cmdCfgCheck(),
         },
@@ -66,46 +65,6 @@ func cmdHello(c *cli.Context) error {
     }
     fmt.Println(resp)
     return nil
-}
-
-func cmdCfgTranscodeOne() *cli.Command {
-    return &cli.Command{
-        Name: "transcodeone",
-        Usage: "transcode a single file on the server.",
-        Action: cmdTranscodeOne,
-    }
-}
-
-func cmdTranscodeOne(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
-    args := c.Args().Slice()
-    if len(args) != 2 {
-        return errors.New("Expected two file paths")
-    }
-
-    inPath, err := tp.TranslateNasDir(args[0])
-    if err != nil {
-        return err
-    }
-    outPath, err := tp.TranslateNasDir(args[1])
-    if err != nil {
-        return err
-    }
-
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing: %w", err)
-    }
-    defer conn.Close()
-
-    client := pb.NewTCServerClient(conn)
-
-    _, err = client.TranscodeOneFile(c.Context, &pb.TranscodeOneFileRequest{InPath: inPath, OutPath: outPath})
-
-    return err
 }
 
 func cmdCfgStart() *cli.Command {
