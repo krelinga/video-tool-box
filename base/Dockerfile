@@ -2,5 +2,4 @@
 
 FROM golang:1.21
 
-RUN apt update
-RUN apt install -y handbrake-cli
+RUN apt-get update && apt-get install -y handbrake-cli
