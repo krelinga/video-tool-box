@@ -4,7 +4,6 @@ import (
     "fmt"
     "log"
     "net"
-    "os"
     "strconv"
 
     "github.com/krelinga/video-tool-box/pb"
