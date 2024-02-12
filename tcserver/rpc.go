@@ -95,6 +95,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     return cmd.Run()
 }
 
+// Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
     const profile = "mkv_h265_1080p30"
     err := transcodeImpl(inCanon, outCanon, profile)
