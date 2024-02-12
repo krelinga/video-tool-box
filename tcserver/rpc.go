@@ -86,7 +86,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     }
     defer stdErrFile.Close()
 
-    cmd := exec.Command("/usr/bin/HandBrakeCLI")
+    cmd := exec.Command("/usr/local/bin/HandBrakeCLI")
     cmd.Args = append(cmd.Args, standardFlags...)
     cmd.Args = append(cmd.Args, profileFlags...)
     cmd.Stdin = os.Stdin
