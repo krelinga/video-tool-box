@@ -50,6 +50,13 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
         "--all-subtitles",
         "--subtitle-burned=none",
     },
+    "mkv_h265_2160p60_surround": {
+        "-Z", "General/Super HQ 2160p60 4K HEVC Surround",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
 }
 
 func transcodeImpl(inNasPath, outNasPath, profile string) error {
@@ -97,7 +104,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
 
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
-    const profile = "mkv_h265_1080p30"
+    const profile = "mkv_h265_2160p60_surround"
     err := transcodeImpl(inCanon, outCanon, profile)
     persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
         if err != nil {
