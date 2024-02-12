@@ -24,27 +24,8 @@ func getPort() (int, error) {
     return port, nil
 }
 
-func listVideoPaths(path string) error {
-    newPath, err := translatePath(path)
-    if err != nil {
-        return err
-    }
-
-    entries, err := os.ReadDir(newPath)
-    if err != nil {
-        return err
-    }
-    for _, entry := range entries {
-        fmt.Println(entry.Name())
-    }
-    return nil
-}
-
 func mainOrError() error {
     fmt.Println("hello world!")
-    if err := listVideoPaths("smb://truenas/media"); err != nil {
-        return err
-    }
     demoHbParser := func() error {
         canonPath := "smb://truenas/media/Experimental/5sec.mkv.stdout"
         realPath, err := translatePath(canonPath)
