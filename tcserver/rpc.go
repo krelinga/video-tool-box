@@ -95,9 +95,26 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     return cmd.Run()
 }
 
+func (tcs *tcServer) transcode(inCanon, outCanon string) {
+    const profile = "mkv_h265_1080p30"
+    err := transcodeImpl(inCanon, outCanon, profile)
+    persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
+        if err != nil {
+            sp.Op.State = pb.TCSState_Op_STATE_FAILED
+            sp.Op.ErrorMessage = err.Error()
+        } else {
+            sp.Op.State = pb.TCSState_Op_STATE_DONE
+        }
+        return nil
+    })
+    if persistErr != nil {
+        // TODO: Is there a better way here?
+        panic(persistErr.Error())
+    }
+}
+
 func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
     fmt.Printf("StartAsyncTranscode: %v\n", req)
-    const profile = "mkv_h265_1080p30"
     err := tcs.s.Do(func(sp *pb.TCSState) error {
         if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
             return fmt.Errorf("Async transcode %s already in-progress", sp.Op.Name)
@@ -106,22 +123,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
             Name: req.Name,
             State: pb.TCSState_Op_STATE_IN_PROGRESS,
         }
-        go func() {
-            err := transcodeImpl(req.InPath, req.OutPath, profile)
-            persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
-                if err != nil {
-                    sp.Op.State = pb.TCSState_Op_STATE_FAILED
-                    sp.Op.ErrorMessage = err.Error()
-                } else {
-                    sp.Op.State = pb.TCSState_Op_STATE_DONE
-                }
-                return nil
-            })
-            if persistErr != nil {
-                // TODO: Is there a better way here?
-                panic(persistErr.Error())
-            }
-        }()
+        go tcs.transcode(req.InPath, req.OutPath)
         return nil
     })
     return &pb.StartAsyncTranscodeReply{}, err
