@@ -26,24 +26,6 @@ func getPort() (int, error) {
 
 func mainOrError() error {
     fmt.Println("hello world!")
-    demoHbParser := func() error {
-        canonPath := "smb://truenas/media/Experimental/5sec.mkv.stdout"
-        realPath, err := translatePath(canonPath)
-        if err != nil {
-            return err
-        }
-        stdoutFile, err := os.Open(realPath)
-        if err != nil {
-            return err
-        }
-        for entry := range parseHbOutput(stdoutFile) {
-            fmt.Printf("Progress: {%s}\n", entry)
-        }
-        return nil
-    }
-    if err := demoHbParser(); err != nil {
-        return err
-    }
     port, err := getPort()
     if err != nil {
         return err
