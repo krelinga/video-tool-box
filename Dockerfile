@@ -7,8 +7,6 @@ WORKDIR /app
 COPY go.mod go.sum ./
 COPY pb/*.go ./pb/
 RUN go mod download
-RUN apt update
-RUN apt install -y handbrake-cli
 
 COPY *.go ./
 
