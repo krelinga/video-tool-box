@@ -109,7 +109,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
     err := transcodeImpl(inCanon, outCanon, tcs.p)
-    persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
+    persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
             sp.Op.ErrorMessage = err.Error()
@@ -126,7 +126,7 @@ func (tcs *tcServer) transcode(inCanon, outCanon string) {
 
 func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
     fmt.Printf("StartAsyncTranscode: %v\n", req)
-    err := tcs.s.Do(func(sp *pb.TCSState) error {
+    err := tcs.s.Do(func(sp *pb.TCSState, _ **hbProgress) error {
         if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
             return fmt.Errorf("Async transcode %s already in-progress", sp.Op.Name)
         }
@@ -143,7 +143,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
 func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeReply, error) {
     fmt.Printf("CheckAsyncTranscode: %v\n", req)
     reply := &pb.CheckAsyncTranscodeReply{}
-    err := tcs.s.Do(func(sp *pb.TCSState) error {
+    err := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if sp.Op == nil || sp.Op.State == pb.TCSState_Op_STATE_UNKNOWN {
             return errors.New("No active transcode")
         }
