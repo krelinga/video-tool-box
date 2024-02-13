@@ -44,6 +44,8 @@ message CheckAsyncTranscodeReply {
     }
     State state = 1;
     string error_message = 2;
+    // Only set if state is STATE_IN_PROGRESS
+    string progress = 3;
 }
 
 service TCServer {
