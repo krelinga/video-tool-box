@@ -9,8 +9,9 @@ import (
 )
 
 type state struct {
-    path    string
-    mu      sync.Mutex
+    path        string
+    stateProto  *pb.TCSState
+    mu          sync.Mutex
 }
 
 func newState(path string) *state {
@@ -21,32 +22,35 @@ func (s *state) Do(fn func(*pb.TCSState) error) error {
     s.mu.Lock()
     defer s.mu.Unlock()
 
-    stateProto := &pb.TCSState{}
-    data, err := os.ReadFile(s.path)
-    if err != nil {
-        if !os.IsNotExist(err) {
-            return err
-        }
-        // Special case: the file doesn't exist.  It's OK to use a default
-        // proto instance in this case.
-    } else {
-        if err := proto.Unmarshal(data, stateProto); err != nil {
-            return err
+    if s.stateProto == nil {
+        // No existing stateProto, so we need to read it from disk.
+        s.stateProto = &pb.TCSState{}
+        data, err := os.ReadFile(s.path)
+        if err != nil {
+            if !os.IsNotExist(err) {
+                return err
+            }
+            // Special case: the file doesn't exist.  It's OK to use a default
+            // proto instance in this case.
+        } else {
+            if err := proto.Unmarshal(data, s.stateProto); err != nil {
+                return err
+            }
         }
     }
 
-    oldStateProto := proto.Clone(stateProto)
+    oldStateProto := proto.Clone(s.stateProto)
 
-    if err := fn(stateProto); err != nil {
+    if err := fn(s.stateProto); err != nil {
         return err
     }
 
-    if proto.Equal(oldStateProto, stateProto) {
+    if proto.Equal(oldStateProto, s.stateProto) {
         // fn() didn't change stateProto, so no need to re-serialize it.
         return nil
     }
 
-    data, err = proto.Marshal(stateProto)
+    data, err := proto.Marshal(s.stateProto)
     if err != nil {
         return err
     }
