@@ -144,7 +144,7 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         return err
     }
 
-    fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
+    fmt.Fprintln(c.App.Writer, reply)
     if len(reply.ErrorMessage) > 0 {
         fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
     }
