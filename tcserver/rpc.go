@@ -116,6 +116,7 @@ func (tcs *tcServer) transcode(inCanon, outCanon string) {
         } else {
             sp.Op.State = pb.TCSState_Op_STATE_DONE
         }
+        prog = nil
         return nil
     })
     if persistErr != nil {
