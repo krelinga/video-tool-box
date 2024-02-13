@@ -35,8 +35,15 @@ func (s *state) Do(fn func(*pb.TCSState) error) error {
         }
     }
 
+    oldStateProto := proto.Clone(stateProto)
+
     if err := fn(stateProto); err != nil {
         return err
+    }
+
+    if proto.Equal(oldStateProto, stateProto) {
+        // fn() didn't change stateProto, so no need to re-serialize it.
+        return nil
     }
 
     data, err = proto.Marshal(stateProto)
