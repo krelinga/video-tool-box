@@ -6,7 +6,6 @@ import (
     "encoding/json"
     "fmt"
     "io"
-    "strings"
 )
 
 type hbProgress struct {
@@ -18,35 +17,17 @@ type hbProgress struct {
 }
 
 func (hbp *hbProgress) String() string {
-    working := func() string {
-        if hbp.Working == nil {
-            return "nil"
-        }
-
-        return fmt.Sprintf("{%s}", hbp.Working)
+    switch {
+    case hbp.Working != nil:
+        return fmt.Sprintf("Working: %s", hbp.Working)
+    case hbp.Muxing != nil:
+        return fmt.Sprintf("Muxing: %s", hbp.Muxing)
+    case hbp.WorkDone != nil:
+        return fmt.Sprintf("WorkDone: %s", hbp.WorkDone)
+    case hbp.Scanning != nil:
+        return fmt.Sprintf("Scanning:  %s", hbp.Scanning)
     }
-    muxing := func() string {
-        if hbp.Muxing == nil {
-            return "nil"
-        }
-
-        return fmt.Sprintf("{%s}", hbp.Muxing)
-    }
-    workDone := func() string {
-        if hbp.WorkDone == nil {
-            return "nil"
-        }
-
-        return fmt.Sprintf("{%s}", hbp.WorkDone)
-    }
-    scanning := func() string {
-        if hbp.Scanning == nil {
-            return "nil"
-        }
-
-        return fmt.Sprintf("{%s}", hbp.Scanning)
-    }
-    return fmt.Sprintf("State: %s Working: %s Muxing: %s WorkDone: %s Scanning: %s", hbp.State, working(), muxing(), workDone(), scanning())
+    return fmt.Sprintf("Unexpected state '%s'", hbp.State)
 }
 
 type hbProgressWorking struct {
@@ -65,20 +46,14 @@ type hbProgressWorking struct {
 }
 
 func (w *hbProgressWorking) String() string {
-    return strings.Join([]string {
-        fmt.Sprintf("ETASeconds: %d", w.ETASeconds),
-        fmt.Sprintf("Hours: %d", w.Hours),
-        fmt.Sprintf("Minutes: %d", w.Minutes),
-        fmt.Sprintf("Pass: %d", w.Pass),
-        fmt.Sprintf("PassCount: %d", w.PassCount),
-        fmt.Sprintf("PassID: %d", w.PassID),
-        fmt.Sprintf("Paused: %d", w.Paused),
-        fmt.Sprintf("Progress: %f", w.Progress),
-        fmt.Sprintf("Rate: %f", w.Rate),
-        fmt.Sprintf("RateAvg: %f", w.RateAvg),
-        fmt.Sprintf("Seconds: %d", w.Seconds),
-        fmt.Sprintf("SequenceID: %d", w.SequenceID),
-    }, " ")
+    etaPart := func() string {
+        if w.Hours == -1 && w.Minutes == -1 && w.Seconds == -1 {
+            return fmt.Sprintf("%21s", "UKNOWN")
+        } else {
+            return fmt.Sprintf("%4d:%02d:%02d (%7dS)", w.Hours, w.Minutes, w.Seconds, w.ETASeconds)
+        }
+    }()
+    return fmt.Sprintf("Pass %d/%d %7.3f%%, ETA %s, %7.3f FPS (%7.3f aFPS)", w.Pass, w.PassCount, w.Progress * 100.0, etaPart, w.Rate, w.RateAvg)
 }
 
 type hbProgressMuxing struct {
@@ -86,7 +61,7 @@ type hbProgressMuxing struct {
 }
 
 func (m *hbProgressMuxing) String() string {
-    return fmt.Sprintf("Progress: %f", m.Progress)
+    return fmt.Sprintf("%7.3f%%", m.Progress * 100.0)
 }
 
 type hbProgressWorkDone struct {
@@ -107,14 +82,7 @@ type hbProgressScanning struct {
 }
 
 func (s *hbProgressScanning) String() string {
-    return strings.Join([]string{
-        fmt.Sprintf("Preview: %d", s.Preview),
-        fmt.Sprintf("PreviewCount: %d", s.PreviewCount),
-        fmt.Sprintf("Progress: %f", s.Progress),
-        fmt.Sprintf("SequenceID: %d", s.SequenceID),
-        fmt.Sprintf("Title: %d", s.Title),
-        fmt.Sprintf("TitleCount: %d", s.TitleCount),
-    }, " ")
+    return fmt.Sprintf("Preview %d/%d %7.3f%%", s.Preview, s.PreviewCount, s.Progress * 100.0)
 }
 
 // TODO: mark the output channel as consume-only.
