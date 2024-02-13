@@ -166,6 +166,9 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsync
             }
         }()
         reply.ErrorMessage = sp.Op.ErrorMessage
+        if prog != nil {
+            reply.Progress = (*prog).String()
+        }
         return nil
     })
     return reply, err
