@@ -13,11 +13,15 @@ import (
 type tcServer struct {
     pb.UnimplementedTCServerServer
 
+    p   string
     s   *state
 }
 
-func newTcServer(statePath string) *tcServer {
-    return &tcServer{s: newState(statePath)}
+func newTcServer(statePath, profile string) *tcServer {
+    return &tcServer{
+        s: newState(statePath),
+        p: profile,
+    }
 }
 
 func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
@@ -93,7 +97,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     }
     defer stdErrFile.Close()
 
-    cmd := exec.Command("/usr/local/bin/HandBrakeCLI")
+    cmd := exec.Command("HandBrakeCLI")
     cmd.Args = append(cmd.Args, standardFlags...)
     cmd.Args = append(cmd.Args, profileFlags...)
     cmd.Stdin = os.Stdin
@@ -104,8 +108,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
 
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
-    const profile = "mkv_h265_2160p60_surround"
-    err := transcodeImpl(inCanon, outCanon, profile)
+    err := transcodeImpl(inCanon, outCanon, tcs.p)
     persistErr := tcs.s.Do(func(sp *pb.TCSState) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
