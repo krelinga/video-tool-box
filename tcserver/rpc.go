@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "errors"
+    "io"
     "os"
     "os/exec"
 
@@ -63,7 +64,7 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
     },
 }
 
-func transcodeImpl(inNasPath, outNasPath, profile string) error {
+func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
     inPath, err := translatePath(inNasPath)
     if err != nil {
         return err
@@ -97,18 +98,50 @@ func transcodeImpl(inNasPath, outNasPath, profile string) error {
     }
     defer stdErrFile.Close()
 
+    // A pipe to allow stdout to be consumed via a Reader.
+    hbPipeReader, hbPipeWriter := io.Pipe()
+
+    // Tee the output of Handbrake so that it goes to both stdOutFile and
+    // progressReader
+    progressReader := io.TeeReader(hbPipeReader, stdOutFile)
+
+    // parse entries out of progressReader and into a channel.
+    progressCh := parseHbOutput(progressReader)
+
+    // Consume from progressCh while Handbrake is running, and update s.
+    // Notify progressDone when all updates have been consumed.
+    progressDone := make(chan struct{})
+    go func() {
+        for u := range(progressCh) {
+            s.Do(func(_ *pb.TCSState, prog **hbProgress) error {
+                *prog = u
+                return nil
+            })
+        }
+        progressDone <- struct{}{}
+    }()
+
     cmd := exec.Command("HandBrakeCLI")
     cmd.Args = append(cmd.Args, standardFlags...)
     cmd.Args = append(cmd.Args, profileFlags...)
     cmd.Stdin = os.Stdin
-    cmd.Stdout = stdOutFile
+    cmd.Stdout = hbPipeWriter
     cmd.Stderr = stdErrFile
-    return cmd.Run()
+    err = cmd.Run()
+
+    // Wait for all progress to be processed before we exit.  This also makes
+    // sure that all output from Handbrake was written to stdOutFile via the
+    // above tee.  Note that the tee does not close stdOutFile when hbPipeWriter
+    // is closed, so we rely on a `defer stdOutFile.Close()` statement above.
+    hbPipeWriter.Close()
+    <- progressDone
+
+    return err
 }
 
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
-    err := transcodeImpl(inCanon, outCanon, tcs.p)
+    err := transcodeImpl(inCanon, outCanon, tcs.p, tcs.s)
     persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
@@ -116,7 +149,7 @@ func (tcs *tcServer) transcode(inCanon, outCanon string) {
         } else {
             sp.Op.State = pb.TCSState_Op_STATE_DONE
         }
-        prog = nil
+        *prog = nil
         return nil
     })
     if persistErr != nil {
@@ -166,7 +199,7 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsync
             }
         }()
         reply.ErrorMessage = sp.Op.ErrorMessage
-        if prog != nil {
+        if *prog != nil {
             reply.Progress = (*prog).String()
         }
         return nil

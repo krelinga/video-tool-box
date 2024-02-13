@@ -11,7 +11,7 @@ import (
 type state struct {
     path        string
     stateProto  *pb.TCSState
-    progress    **hbProgress
+    progress    *hbProgress
     mu          sync.Mutex
 }
 
@@ -42,7 +42,7 @@ func (s *state) Do(fn func(*pb.TCSState, **hbProgress) error) error {
 
     oldStateProto := proto.Clone(s.stateProto)
 
-    if err := fn(s.stateProto, s.progress); err != nil {
+    if err := fn(s.stateProto, &s.progress); err != nil {
         return err
     }
 
