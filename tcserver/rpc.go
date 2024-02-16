@@ -76,6 +76,13 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
         "--all-subtitles",
         "--subtitle-burned=none",
     },
+    "mkv_h265_2160p60_fast": {
+        "-Z", "General/Fast 2160p60 4K HEVC",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
 }
 
 func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
