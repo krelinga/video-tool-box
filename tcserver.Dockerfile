@@ -18,7 +18,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /tcserver ./tcserver/
 ENV VTB_TCSERVER_PORT=25000
 ENV VTB_TCSERVER_IN_PATH_PREFIX="smb://truenas/media"
 ENV VTB_TCSERVER_OUT_PATH_PREFIX="/videos"
-ENV VTB_TCSERVER_PROFILE="mkv_h265_2160p60_fast"
+ENV VTB_TCSERVER_PROFILE="mkv_h265_2160p60_very_fast"
 
 ENTRYPOINT ["/usr/bin/bash", "-c", "/tcserver"]
 
