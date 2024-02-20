@@ -188,6 +188,13 @@ func (tcs *tcServer) transcode(inCanon, outCanon, profile string) {
 
 func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeReply, error) {
     fmt.Printf("StartAsyncTranscode: %v\n", req)
+    profile := func() string {
+        if len(req.Profile) > 0 {
+            return req.Profile
+        }
+        return tcs.defaultProfile
+    }()
+    fmt.Printf("using profile %s\n", profile)
     err := tcs.s.Do(func(sp *pb.TCSState, _ **hbProgress) error {
         if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
             return fmt.Errorf("Async transcode %s already in-progress", sp.Op.Name)
@@ -196,7 +203,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
             Name: req.Name,
             State: pb.TCSState_Op_STATE_IN_PROGRESS,
         }
-        go tcs.transcode(req.InPath, req.OutPath, tcs.defaultProfile)
+        go tcs.transcode(req.InPath, req.OutPath, profile)
         return nil
     })
     return &pb.StartAsyncTranscodeReply{}, err
