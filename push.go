@@ -3,6 +3,7 @@ package main
 import (
     "errors"
     "fmt"
+    "os/exec"
     "path/filepath"
 
     cli "github.com/urfave/cli/v2"
@@ -52,5 +53,10 @@ func cmdPush(c *cli.Context) error {
         return nil
     }
 
-    return errors.New("'push' command is not implemented.")
+    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", cwd, outPath)
+    cmd.Stdin = c.App.Reader
+    cmd.Stdout = c.App.Writer
+    cmd.Stderr = c.App.ErrWriter
+
+    return cmd.Run()
 }
