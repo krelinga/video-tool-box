@@ -25,6 +25,9 @@ message StartAsyncTranscodeRequest {
 
     string in_path = 2;
     string out_path = 3;
+
+    // If set, the name of the profile to use.
+    string profile = 4;
 }
 
 message StartAsyncTranscodeReply {
