@@ -168,8 +168,8 @@ func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
 }
 
 // Starts Handbrake and blocks until it finishes.
-func (tcs *tcServer) transcode(inCanon, outCanon string) {
-    err := transcodeImpl(inCanon, outCanon, tcs.defaultProfile, tcs.s)
+func (tcs *tcServer) transcode(inCanon, outCanon, profile string) {
+    err := transcodeImpl(inCanon, outCanon, profile, tcs.s)
     persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
@@ -196,7 +196,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
             Name: req.Name,
             State: pb.TCSState_Op_STATE_IN_PROGRESS,
         }
-        go tcs.transcode(req.InPath, req.OutPath)
+        go tcs.transcode(req.InPath, req.OutPath, tcs.defaultProfile)
         return nil
     })
     return &pb.StartAsyncTranscodeReply{}, err
