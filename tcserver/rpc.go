@@ -14,14 +14,14 @@ import (
 type tcServer struct {
     pb.UnimplementedTCServerServer
 
-    p   string
-    s   *state
+    defaultProfile  string
+    s               *state
 }
 
 func newTcServer(statePath, profile string) *tcServer {
     return &tcServer{
         s: newState(statePath),
-        p: profile,
+        defaultProfile: profile,
     }
 }
 
@@ -169,7 +169,7 @@ func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
 
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inCanon, outCanon string) {
-    err := transcodeImpl(inCanon, outCanon, tcs.p, tcs.s)
+    err := transcodeImpl(inCanon, outCanon, tcs.defaultProfile, tcs.s)
     persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
