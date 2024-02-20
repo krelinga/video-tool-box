@@ -71,6 +71,13 @@ func cmdCfgStart() *cli.Command {
     return &cli.Command{
         Name: "start",
         Usage: "start an async transcode on the server.",
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "profile",
+                Value: "",  // Use the server-side default.
+                Usage: "Profile to use for transcoding.",
+            },
+        },
         Action: cmdAsyncTranscodeStart,
     }
 }
@@ -103,10 +110,16 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
         return fmt.Errorf("when dialing: %w", err)
     }
     defer conn.Close()
-
     client := pb.NewTCServerClient(conn)
 
-    _, err = client.StartAsyncTranscode(c.Context, &pb.StartAsyncTranscodeRequest{Name: name, InPath: inPath, OutPath: outPath})
+    req := &pb.StartAsyncTranscodeRequest{
+        Name: name,
+        InPath: inPath,
+        OutPath: outPath,
+        Profile: c.String("profile"),
+    }
+
+    _, err = client.StartAsyncTranscode(c.Context, req)
 
     return err
 }
