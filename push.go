@@ -3,6 +3,8 @@ package main
 import (
     "errors"
     "fmt"
+    "io/fs"
+    "os"
     "os/exec"
     "path/filepath"
 
@@ -44,7 +46,8 @@ func cmdPush(c *cli.Context) error {
         return err
     }
     title := filepath.Base(cwd)
-    outPath := filepath.Join(tp.NasMountDir(), nasSubDir, title)
+    outSuperPath := filepath.Join(tp.NasMountDir(), nasSubDir)
+    outPath := filepath.Join(outSuperPath, title)
 
     fmt.Fprintf(c.App.Writer, "Will copy %s to %s.\nConfirm (y/N)? ", cwd, outPath)
     var confirm string
@@ -53,10 +56,28 @@ func cmdPush(c *cli.Context) error {
         return nil
     }
 
-    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", cwd, outPath)
+    // Use rsync to copy the files.
+    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", cwd, outSuperPath)
     cmd.Stdin = c.App.Reader
     cmd.Stdout = c.App.Writer
     cmd.Stderr = c.App.ErrWriter
 
-    return cmd.Run()
+    if err := cmd.Run(); err != nil {
+        return err
+    }
+
+    // Now rename the .extras dir (if it exists)
+    extrasPath := filepath.Join(outPath, ".extras")
+    _, err = os.Stat(extrasPath)
+    if err != nil {
+        if errors.Is(err, fs.ErrNotExist) {
+            fmt.Fprintln(c.App.Writer, "No extras dir.")
+            return nil
+        } else {
+            return err
+        }
+    }
+    newExtrasPath := filepath.Join(outPath, "extras")
+    fmt.Fprintln(c.App.Writer, "Renaming extras dir.")
+    return os.Rename(extrasPath, newExtrasPath)
 }
