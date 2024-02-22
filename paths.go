@@ -82,7 +82,11 @@ func (tp toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
 }
 
 func (tp toolPaths) TranslateNasDir(in string) (string, error) {
-    cut, found := strings.CutPrefix(in, tp.NasMountDir())
+    inAbs, err := filepath.Abs(in)
+    if err != nil {
+        return "", err
+    }
+    cut, found := strings.CutPrefix(inAbs, tp.NasMountDir())
     if !found {
         return "", fmt.Errorf("path %s does not start with %s", in, tp.NasMountDir())
     }
