@@ -51,6 +51,8 @@ func cmdNew(c *cli.Context) error {
     ts.Pt = newPt
     ts.Name = newName
 
+    // TODO: create tiny media manager directory here.
+
     return writeToolState(ts, tp.StatePath())
 }
 
