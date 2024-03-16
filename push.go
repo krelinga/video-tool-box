@@ -61,7 +61,14 @@ func cmdPush(c *cli.Context) error {
     }
 
     // Use rsync to copy the files.
-    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", projectDir, outSuperPath)
+    args := []string{
+        "-ah",
+        "--progress",
+        "-r",
+        projectDir,
+        outSuperPath,
+    }
+    cmd := exec.Command("/usr/bin/rsync", args...)
     cmd.Stdin = c.App.Reader
     cmd.Stdout = c.App.Writer
     cmd.Stderr = c.App.ErrWriter
