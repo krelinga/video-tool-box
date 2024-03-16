@@ -66,6 +66,9 @@ func (tp toolPaths) TmmProjectDir(ts toolState) (string, error) {
     if len(ts.Name) == 0 {
         return "", errors.New("Empty Name field in toolState")
     }
+    if len(ts.TmmDirOverride) > 0 {
+        return ts.TmmDirOverride, nil
+    }
     switch ts.Pt {
     case ptMovie:
         return filepath.Join(tp.TmmMoviesDir(), ts.Name), nil

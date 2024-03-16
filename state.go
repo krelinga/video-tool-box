@@ -25,6 +25,8 @@ func (pt projectType) String() string {
 type toolState struct {
     Pt      projectType
     Name    string
+    // Set if TMM has forced an override to the otherwise-computed project name.
+    TmmDirOverride  string
 }
 
 func readToolState(path string) (ts toolState, err error) {

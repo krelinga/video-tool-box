@@ -170,6 +170,14 @@ func TestTmmProjectDir(t *testing.T) {
             },
             Path: "/homedir/Movies/tmm_shows/some name",
         },
+        {
+            Name: "Override Set",
+            Ts: toolState{
+                Name: "some name",
+                TmmDirOverride: "/foo/bar",
+            },
+            Path: "/foo/bar",
+        },
     }
 
     for _, tc := range testCases {
@@ -235,6 +243,14 @@ func TestTmmProjectExtrasDir(t *testing.T) {
                 Pt: ptShow,
             },
             Path: "/homedir/Movies/tmm_shows/some name/.extras",
+        },
+        {
+            Name: "Override Set",
+            Ts: toolState{
+                Name: "some name",
+                TmmDirOverride: "/foo/bar",
+            },
+            Path: "/foo/bar/.extras",
         },
     }
 
