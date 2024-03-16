@@ -1,0 +1,12 @@
+name: video-tool-box-mkvinfoserver
+services:
+  server:
+    container_name: server
+    image: "krelinga/video-tool-box-mkvinfoserver:buildx-latest"
+    ports:
+      - "25001:25001"
+    volumes:
+      - type: bind
+        source: /Users/krelinga/Movies
+        target: /Movies
+    restart: unless-stopped
