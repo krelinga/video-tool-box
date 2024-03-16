@@ -3,6 +3,7 @@ package main
 import (
     "errors"
     "fmt"
+    "os"
     "strings"
 
     cli "github.com/urfave/cli/v2"
@@ -51,7 +52,13 @@ func cmdNew(c *cli.Context) error {
     ts.Pt = newPt
     ts.Name = newName
 
-    // TODO: create tiny media manager directory here.
+    projectDir, err := tp.TmmProjectDir(ts)
+    if err != nil {
+        return err
+    }
+    if err := os.MkdirAll(projectDir, 0755); err != nil {
+        return fmt.Errorf("Could not create project dir %s: %w", projectDir, err)
+    }
 
     return writeToolState(ts, tp.StatePath())
 }

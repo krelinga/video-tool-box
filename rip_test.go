@@ -138,6 +138,15 @@ func TestRipSequence(t *testing.T) {
         if !strings.Contains(afterNewMetaOut, "Test Movie") {
             t.Errorf("Unexpected 'meta' output for configured project: %s", afterNewMetaOut)
         }
+        expectedTmmDir := filepath.Join(ta.Paths().TmmMoviesDir(), "Test Movie")
+        stat, err := os.Stat(expectedTmmDir)
+        if err != nil {
+            t.Errorf("Could not stat expected TMM dir %s: %s", expectedTmmDir, err)
+            return
+        }
+        if !stat.IsDir() {
+            t.Errorf("Expected %s to be a directory: %v", expectedTmmDir, stat)
+        }
     }
 
     testMetaUnconfigured()
