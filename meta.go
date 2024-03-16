@@ -77,6 +77,7 @@ func cmdFinish(c *cli.Context) error {
     if !ok {
         return errors.New("toolPaths not present in context")
     }
+    // TODO: clean up tiny media manager directory here.
     return writeToolState(toolState{}, tp.StatePath())
 }
 
