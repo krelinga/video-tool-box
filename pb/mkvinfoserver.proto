@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "github.com/krelinga/video-tool-box/pb";
+
+message GetMkvInfoRequest {
+    string in = 1;
+}
+
+message GetMkvInfoReply {
+    string out = 1;
+}
+
+service MkvInfo {
+    rpc GetMkvInfo(GetMkvInfoRequest) returns (GetMkvInfoReply) {}
+}
