@@ -10,6 +10,7 @@ func subcmdCfgRip() *cli.Command {
             cmdCfgNew(),
             cmdCfgFinish(),
             cmdCfgDir(),
+            cmdCfgTmm(),
             cmdCfgMeta(),
             cmdCfgPush(),
         },
