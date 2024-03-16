@@ -10,7 +10,7 @@ RUN go mod download
 # TODO: it would be nice to have a better way to recursively copy _all_
 # the source files to their correct directories...
 COPY pb/*.go ./pb/
-COPY tcserver/*.go ./mkvinfoserver/
+COPY mkvinfoserver/*.go ./mkvinfoserver/
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /mkvinfoserver ./mkvinfoserver/
 

@@ -33,7 +33,7 @@ func getPort() (int, error) {
 }
 
 func mainOrError() error {
-    fmt.Println("hello world!")
+    fmt.Println("hello world from mkvinfoserver!")
     port, err := getPort()
     if err != nil {
         return err
