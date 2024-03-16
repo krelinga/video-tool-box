@@ -70,7 +70,7 @@ func cmdInfo(c *cli.Context) error {
         return fmt.Errorf("Error sending request %v to server: %w", request, err)
     }
 
-    fmt.Fprintf(c.App.Writer, "%s\n", reply.Out)
+    fmt.Fprintf(c.App.Writer, "%s", reply.Out)
 
     return nil
 }
