@@ -69,6 +69,13 @@ func cmdCfgFinish() *cli.Command {
         Usage: "finish an existing project",
         ArgsUsage: " ",  // Makes help text a bit nicer.
         Action: cmdFinish,
+        Flags: []cli.Flag{
+            &cli.BoolFlag{
+                Name: "y",
+                Usage: "always confirms interactive prompts",
+                Value: false,
+            },
+        },
     }
 }
 
@@ -77,7 +84,28 @@ func cmdFinish(c *cli.Context) error {
     if !ok {
         return errors.New("toolPaths not present in context")
     }
-    // TODO: clean up tiny media manager directory here.
+    ts, err := readToolState(tp.StatePath())
+    if err != nil {
+        return err
+    }
+
+    projectDir, err := tp.TmmProjectDir(ts)
+    if err != nil {
+        return err
+    }
+    if !c.Bool("y") {
+        fmt.Fprintf(c.App.Writer, "Will delete %s.\nConfirm (y/N)? ", projectDir)
+        var confirm string
+        fmt.Fscanf(c.App.Reader, "%s", &confirm)
+        if confirm != "y" {
+            return nil
+        }
+    }
+
+    if err := os.RemoveAll(projectDir); err != nil {
+        return fmt.Errorf("Could not remove %s: %w", projectDir, err)
+    }
+
     return writeToolState(toolState{}, tp.StatePath())
 }
 
@@ -108,5 +136,8 @@ func cmdMeta(c *cli.Context) error {
     fmt.Fprintln(c.App.Writer, "--------------")
     fmt.Fprintln(c.App.Writer, "name:", ts.Name)
     fmt.Fprintln(c.App.Writer, "type:", ts.Pt)
+    if len(ts.TmmDirOverride) > 0 {
+        fmt.Fprintln(c.App.Writer, "TMM dir override:", ts.TmmDirOverride)
+    }
     return nil
 }

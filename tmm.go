@@ -1,7 +1,12 @@
 package main
 
 import (
+    "errors"
+    "fmt"
+    "math/rand"
+    "os"
     "os/exec"
+    "path/filepath"
 
     cli "github.com/urfave/cli/v2"
 )
@@ -19,8 +24,79 @@ func runTmmAndWait() error {
     return cmd.Run()
 }
 
-func cmdTmm(c *cli.Context) error {
-    // TODO: record the contents of TMM directorys before & after running TMM, update project dir accordingly.
+func findFlagFile(base, fileName string) (string, error) {
+    s := make([]string, 1)
+    s[0] = base
+    for len(s) > 0 {
+        lastIdx := len(s) - 1
+        c := s[lastIdx]
+        s = s[:lastIdx]
 
-    return runTmmAndWait()
+        entries, err := os.ReadDir(c)
+        if err != nil {
+            return "", fmt.Errorf("Could not read dir %s: %w", c, err)
+        }
+        for _, e := range entries {
+            cPath := filepath.Join(c, e.Name())
+            if e.Name() == fileName {
+                return cPath, nil
+            } else if e.IsDir() {
+                s = append(s, cPath)
+            }
+            // the file is uninteresting, do nothing.
+        }
+    }
+    return "", fmt.Errorf("Could not find a file named %s under %s", fileName, base)
+}
+
+func cmdTmm(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    ts, err := readToolState(tp.StatePath())
+    if err != nil {
+        return err
+    }
+
+    flagFile := fmt.Sprintf(".%d", rand.Int31())
+    projectDir, err := tp.TmmProjectDir(ts)
+    if err != nil {
+        return err
+    }
+    flagPath := filepath.Join(projectDir, flagFile)
+    if err := os.WriteFile(flagPath, []byte{}, 0644); err != nil {
+        return fmt.Errorf("Could not create flag path %s: %w", flagPath, err)
+    }
+
+    if err := runTmmAndWait(); err != nil {
+        return fmt.Errorf("Could not run TMM: %w", err)
+    }
+
+    var base string
+    switch ts.Pt {
+    case ptUndef:
+        return errors.New("Undefined project state")
+    case ptMovie:
+        base = tp.TmmMoviesDir()
+    case ptShow:
+        base = tp.TmmShowsDir()
+    default:
+        return fmt.Errorf("Unexpected project state: %v", ts.Pt)
+    }
+    newFlagPath, err := findFlagFile(base, flagFile)
+    if err != nil {
+        return err
+    }
+
+    ts.TmmDirOverride = filepath.Dir(newFlagPath)
+    if err := writeToolState(ts, tp.StatePath()); err != nil {
+        return err
+    }
+
+    if err := os.Remove(newFlagPath); err != nil {
+        return fmt.Errorf("Could not remove new flag path %s: %w", newFlagPath, err)
+    }
+
+    return nil
 }

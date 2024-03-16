@@ -29,7 +29,11 @@ func cmdPush(c *cli.Context) error {
         return err
     }
 
-    cwd := tp.CurrentDir()
+    projectDir, err := tp.TmmProjectDir(ts)
+    if err != nil {
+        return err
+    }
+
     nasSubDir, err := func() (string, error) {
         switch ts.Pt {
         case ptUndef:
@@ -45,11 +49,11 @@ func cmdPush(c *cli.Context) error {
     if err != nil {
         return err
     }
-    title := filepath.Base(cwd)
+    title := filepath.Base(projectDir)
     outSuperPath := filepath.Join(tp.NasMountDir(), nasSubDir)
     outPath := filepath.Join(outSuperPath, title)
 
-    fmt.Fprintf(c.App.Writer, "Will copy %s to %s.\nConfirm (y/N)? ", cwd, outPath)
+    fmt.Fprintf(c.App.Writer, "Will copy %s to %s.\nConfirm (y/N)? ", projectDir, outPath)
     var confirm string
     fmt.Fscanf(c.App.Reader, "%s", &confirm)
     if confirm != "y" {
@@ -57,7 +61,7 @@ func cmdPush(c *cli.Context) error {
     }
 
     // Use rsync to copy the files.
-    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", cwd, outSuperPath)
+    cmd := exec.Command("/usr/bin/rsync", "-ah", "--progress", "-r", projectDir, outSuperPath)
     cmd.Stdin = c.App.Reader
     cmd.Stdout = c.App.Writer
     cmd.Stderr = c.App.ErrWriter

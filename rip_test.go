@@ -119,6 +119,7 @@ func TestRipSequence(t *testing.T) {
         return true
     }
     testMetaUnconfigured := func() {
+        t.Helper()
         defer ta.Reset()
         if !runNoError("rip", "meta") {
             return
@@ -197,7 +198,7 @@ func TestRipSequence(t *testing.T) {
 
     testMetaConfigured()
 
-    if !runNoError("rip", "finish") {
+    if !runNoError("rip", "finish", "-y") {
         return
     }
     ta.Reset()
