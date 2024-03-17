@@ -8,6 +8,7 @@ message GetMkvInfoRequest {
 
 message GetMkvInfoReply {
     string out = 1;
+    string summary = 2;
 }
 
 service MkvInfo {
