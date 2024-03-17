@@ -15,7 +15,7 @@ type MkvInfoServer struct {
 
 func (mis *MkvInfoServer) GetMkvInfo(ctx context.Context, req *pb.GetMkvInfoRequest) (*pb.GetMkvInfoReply, error) {
     fmt.Printf("Saw request: %v\n", req)
-    cmd := exec.Command("mkvinfo", req.In)
+    cmd := exec.Command("mkvmerge", "-J", req.In)
     b := &bytes.Buffer{}
     cmd.Stdout = b
     cmd.Stderr = b
