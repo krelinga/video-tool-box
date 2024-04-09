@@ -35,11 +35,25 @@ func openInVLC(path string) error {
 }
 
 func createDestDirAndMove(toMove string, destDir string) error {
+    exists := func(path string) error {
+        _, err := os.Stat(path)
+        if os.IsNotExist(err) {
+            return nil
+        }
+        if err != nil {
+            return err
+        }
+        return fmt.Errorf("path %s already exists", path)
+    }
+    basename := filepath.Base(toMove)
+    destPath := filepath.Join(destDir, basename)
+    if err := exists(destPath); err != nil {
+        return err
+    }
     if err := os.MkdirAll(destDir, 0755); err != nil {
         return err
     }
-    basename := filepath.Base(toMove)
-    return os.Rename(toMove, filepath.Join(destDir, basename))
+    return os.Rename(toMove, destPath)
 }
 
 func readableFileSize(path string) (string, error) {
