@@ -11,6 +11,7 @@ import (
 
     cli "github.com/urfave/cli/v2"
     humanize "github.com/dustin/go-humanize"
+    uuid "github.com/google/uuid"
 )
 
 func listMkvFilePaths(currentDir string) ([]string, error) {
@@ -46,7 +47,7 @@ func createDestDirAndMove(toMove string, destDir string) error {
         return fmt.Errorf("path %s already exists", path)
     }
     basename := filepath.Base(toMove)
-    destPath := filepath.Join(destDir, basename)
+    destPath := filepath.Join(destDir, uuid.NewString() + "-" + basename)
     if err := exists(destPath); err != nil {
         return err
     }

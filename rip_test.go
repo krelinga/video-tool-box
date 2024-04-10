@@ -182,9 +182,32 @@ func TestRipSequence(t *testing.T) {
             t.Errorf("Bad contents in %s: expected \"%s\", actual \"%s\"", path, expContents, actContents)
         }
     }
+    checkPattern := func(dir, basename string) {
+        const uuidPattern = "????????-????-????-????-????????????-"
+        pattern := filepath.Join(dir, uuidPattern + basename)
+        matches, err := filepath.Glob(pattern)
+        if err != nil {
+            t.Errorf("Could not match %s: %s", pattern, err)
+            return
+        }
+        if len(matches) != 1 {
+            t.Errorf("Unexpected number of matches found for %s: %d", pattern, len(matches))
+            return
+        }
+        path := matches[0]
+        actBytes, err := os.ReadFile(path)
+        if err != nil {
+            t.Errorf("Could not read %s: %s", path, err)
+            return
+        }
+        actContents := string(actBytes)
+        if basename != actContents {
+            t.Errorf("Bad contents in %s: expected \"%s\", actual \"%s\"", path, basename, actContents)
+        }
+    }
     tmmMovieDir := filepath.Join(ta.Paths().TmmMoviesDir(), "Test Movie")
-    check(filepath.Join(tmmMovieDir, "a_title.mkv"))
-    check(filepath.Join(tmmMovieDir, ".extras", "b_extra.mkv"))
+    checkPattern(tmmMovieDir, "a_title.mkv")
+    checkPattern(filepath.Join(tmmMovieDir, ".extras"), "b_extra.mkv")
     check(filepath.Join(ta.Paths().CurrentDir(), "c_skip.mkv"))
     files, err := os.ReadDir(ta.Paths().CurrentDir())
     if err != nil {
