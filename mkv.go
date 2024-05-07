@@ -20,6 +20,7 @@ func subcmdCfgMkv() *cli.Command {
         Subcommands: []*cli.Command{
             cmdCfgMkvInfo(),
             cmdCfgMkvSplit(),
+            cmdCfgMkvChapters(),
         },
         Flags: []cli.Flag{
             &cli.StringFlag{
@@ -144,5 +145,46 @@ func cmdMkvSplit(c *cli.Context) error {
     defer conn.Close()
     client := muspb.NewMkvUtilClient(conn)
     _, err = client.Split(c.Context, req)
+    return err
+}
+
+func cmdCfgMkvChapters() *cli.Command {
+    return &cli.Command{
+        Name: "chapters",
+        Usage: "get chapters present in an mkv file",
+        ArgsUsage: "<path>",
+        Description: "get chapters present in an mkv file",
+        Action: cmdMkvChapters,
+    }
+}
+
+func cmdMkvChapters(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected a single argument")
+    }
+    in, err := filepath.Abs(args[0])
+    if err != nil {
+        return fmt.Errorf("Could not get absolute path: %w", err)
+    }
+    req := &muspb.GetChaptersRequest{
+        InPath: in,
+        Format: muspb.ChaptersFormat_CF_SIMPLE,
+    }
+    target := c.String("target")
+    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+    conn, err := grpc.DialContext(c.Context, target, creds)
+    if err != nil {
+        return fmt.Errorf("when dialing %w", err)
+    }
+    defer conn.Close()
+    client := muspb.NewMkvUtilClient(conn)
+    resp, err := client.GetChapters(c.Context, req)
+    if err != nil {
+        return err
+    }
+
+    _, err = fmt.Fprintf(c.App.Writer, "%s\n", resp)
+
     return err
 }
