@@ -94,15 +94,6 @@ func cmdCfgMkvSplit() *cli.Command {
 var splitSpecRe = regexp.MustCompile(`(\d+)?-(\d+)?:(.+)`)
 
 func cmdMkvSplit(c *cli.Context) error {
-//    target := c.String("target")
-//    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-//    conn, err := grpc.DialContext(c.Context, target, creds)
-//    if  err != nil {
-//        return fmt.Errorf("when dialing %w", err)
-//    }
-//    defer conn.Close()
-//    client := muspb.NewMkvUtilClient(conn)
-
     in, err := filepath.Abs(c.String("in"))
     if err != nil {
         return fmt.Errorf("Could not get absolute path: %w", err)
@@ -144,6 +135,14 @@ func cmdMkvSplit(c *cli.Context) error {
         InPath: in,
         ByChapters: outs,
     }
-    _, err = fmt.Fprintf(c.App.Writer, "%s\n", req)
+    target := c.String("target")
+    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+    conn, err := grpc.DialContext(c.Context, target, creds)
+    if  err != nil {
+        return fmt.Errorf("when dialing %w", err)
+    }
+    defer conn.Close()
+    client := muspb.NewMkvUtilClient(conn)
+    _, err = client.Split(c.Context, req)
     return err
 }
