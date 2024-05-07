@@ -4,6 +4,8 @@ import (
     "errors"
     "fmt"
     "path/filepath"
+    "regexp"
+    "strconv"
 
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
@@ -89,18 +91,59 @@ func cmdCfgMkvSplit() *cli.Command {
     }
 }
 
+var splitSpecRe = regexp.MustCompile(`(\d+)?-(\d+)?:(.+)`)
+
 func cmdMkvSplit(c *cli.Context) error {
-    in := c.String("in")
-    outs := c.StringSlice("out")
-    _, err := fmt.Fprintf(c.App.Writer, "in: %s\n", in)
+//    target := c.String("target")
+//    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+//    conn, err := grpc.DialContext(c.Context, target, creds)
+//    if  err != nil {
+//        return fmt.Errorf("when dialing %w", err)
+//    }
+//    defer conn.Close()
+//    client := muspb.NewMkvUtilClient(conn)
+
+    in, err := filepath.Abs(c.String("in"))
     if err != nil {
-        return err
+        return fmt.Errorf("Could not get absolute path: %w", err)
     }
-    for _, out := range outs {
-        _, err := fmt.Fprintf(c.App.Writer, "out: %s\n", out)
-        if err != nil {
-            return err
+    outs := []*muspb.SplitRequest_ByChapters{}
+    for _, o := range c.StringSlice("out") {
+        match := splitSpecRe.FindStringSubmatch(o)
+        if match == nil {
+            return fmt.Errorf("Could not parse --out %s", o)
         }
+        c := &muspb.SplitRequest_ByChapters{}
+        var err error
+        c.OutPath, err = filepath.Abs(match[3])
+        if err != nil {
+            return fmt.Errorf("Could not get absolute path for --out %s", o)
+        }
+        atoi := func(s string) (int32, error) {
+            i, err := strconv.Atoi(s)
+            if err != nil {
+                return 0, err
+            }
+            return int32(i), nil
+        }
+        if len(match[1]) > 0 {
+            c.Start, err = atoi(match[1])
+            if err != nil {
+                return fmt.Errorf("Could not parse --out %s", o)
+            }
+        }
+        if len(match[2]) > 0 {
+            c.Limit, err = atoi(match[2])
+            if err != nil {
+                return fmt.Errorf("Could not parse --out %s", o)
+            }
+        }
+        outs = append(outs, c)
     }
-    return nil
+    req := &muspb.SplitRequest{
+        InPath: in,
+        ByChapters: outs,
+    }
+    _, err = fmt.Fprintf(c.App.Writer, "%s\n", req)
+    return err
 }
