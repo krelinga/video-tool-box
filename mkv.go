@@ -17,6 +17,7 @@ func subcmdCfgMkv() *cli.Command {
         Usage: "Manipulate MKV files",
         Subcommands: []*cli.Command{
             cmdCfgMkvInfo(),
+            cmdCfgMkvSplit(),
         },
         Flags: []cli.Flag{
             &cli.StringFlag{
@@ -64,4 +65,42 @@ func cmdMkvInfo(c *cli.Context) error {
 
     _, err = fmt.Fprintf(c.App.Writer, "%s\n", resp)
     return err
+}
+
+func cmdCfgMkvSplit() *cli.Command {
+    return &cli.Command{
+        Name: "split",
+        Usage: "split an MKV file into parts",
+        ArgsUsage: "-in /path/to/input -out 2-3:/path/to/out1 -out -2:/path/to/out2 -out 4-:/path/to/out3",
+        Description: "split an MKV file into parts",
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "in",
+                Usage: ".mkv file to read",
+                Required: true,
+            },
+            &cli.StringSliceFlag{
+                Name: "out",
+                Usage: "chapters to export & path to store output at.",
+                Required: true,
+            },
+        },
+        Action: cmdMkvSplit,
+    }
+}
+
+func cmdMkvSplit(c *cli.Context) error {
+    in := c.String("in")
+    outs := c.StringSlice("out")
+    _, err := fmt.Fprintf(c.App.Writer, "in: %s\n", in)
+    if err != nil {
+        return err
+    }
+    for _, out := range outs {
+        _, err := fmt.Fprintf(c.App.Writer, "out: %s\n", out)
+        if err != nil {
+            return err
+        }
+    }
+    return nil
 }
