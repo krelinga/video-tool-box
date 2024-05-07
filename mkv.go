@@ -6,6 +6,7 @@ import (
     "path/filepath"
     "regexp"
     "strconv"
+    "text/tabwriter"
 
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
@@ -184,7 +185,20 @@ func cmdMkvChapters(c *cli.Context) error {
         return err
     }
 
-    _, err = fmt.Fprintf(c.App.Writer, "%s\n", resp)
-
-    return err
+    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 2, byte(' '), 0)
+    _, err = fmt.Fprintf(tw, "Number\tTitle\tOffset\n")
+    if err != nil {
+        return err
+    }
+    _, err = fmt.Fprintf(tw, "======\t=====\t======\n")
+    if err != nil {
+        return err
+    }
+    for _, c := range resp.Chapters.Simple.Chapters {
+        _, err := fmt.Fprintf(tw, "%d\t%s\t%s\n", c.Number, c.Name, c.Offset.AsDuration())
+        if err != nil {
+            return err
+        }
+    }
+    return tw.Flush()
 }
