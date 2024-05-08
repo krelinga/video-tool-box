@@ -21,6 +21,7 @@ func subcmdCfgMkv() *cli.Command {
         Subcommands: []*cli.Command{
             cmdCfgMkvInfo(),
             cmdCfgMkvSplit(),
+            cmdCfgMkvConcat(),
             cmdCfgMkvChapters(),
         },
         Flags: []cli.Flag{
@@ -201,4 +202,54 @@ func cmdMkvChapters(c *cli.Context) error {
         }
     }
     return tw.Flush()
+}
+
+func cmdCfgMkvConcat() *cli.Command {
+    return &cli.Command{
+        Name: "concat",
+        Usage: "concatenate MKV files into a larger file.",
+        ArgsUsage: "-in /path/to/input1 -in path/to/input2 -out /path/to/out",
+        Description: "split an MKV file into parts",
+        Flags: []cli.Flag{
+            &cli.StringSliceFlag{
+                Name: "in",
+                Usage: ".mkv file to read",
+                Required: true,
+            },
+            &cli.StringFlag{
+                Name: "out",
+                Usage: "path to write combined file at",
+                Required: true,
+            },
+        },
+        Action: cmdMkvConcat,
+    }
+}
+
+func cmdMkvConcat(c *cli.Context) error {
+    req := &muspb.ConcatRequest{}
+    for _, in := range c.StringSlice("in") {
+        fullPath, err := filepath.Abs(in)
+        if err != nil {
+            return fmt.Errorf("Could not get absolute path: %w", err)
+        }
+        req.InputPaths = append(req.InputPaths, fullPath)
+    }
+    fullPath, err := filepath.Abs(c.String("out"))
+    if err != nil {
+        return fmt.Errorf("Could not get absolute path: %w", err)
+    }
+    req.OutputPath = fullPath
+
+    target := c.String("target")
+    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+    conn, err := grpc.DialContext(c.Context, target, creds)
+    if err != nil {
+        return fmt.Errorf("when dialing %w", err)
+    }
+    defer conn.Close()
+    client := muspb.NewMkvUtilClient(conn)
+
+    _, err = client.Concat(c.Context, req)
+    return err
 }
