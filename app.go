@@ -18,6 +18,7 @@ func appCfg() *cli.App {
             subcmdCfgRemote(),
             cmdCfgInfo(),
             subcmdCfgMkv(),
+            cmdCfgConfig(),
         },
         // Caller should set these.
         Reader: nil,
