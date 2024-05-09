@@ -24,13 +24,6 @@ func subcmdCfgMkv() *cli.Command {
             cmdCfgMkvConcat(),
             cmdCfgMkvChapters(),
         },
-        Flags: []cli.Flag{
-            &cli.StringFlag{
-                Name: "target",
-                Usage: "rpc target to talk to.",
-                Required: true,
-            },
-        },
     }
 }
 
@@ -45,6 +38,14 @@ func cmdCfgMkvInfo() *cli.Command {
 }
 
 func cmdMkvInfo(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return err
+    }
     args := c.Args().Slice()
     if len(args) != 1 {
         return errors.New("Expected a single argument")
@@ -53,9 +54,8 @@ func cmdMkvInfo(c *cli.Context) error {
     if err != nil {
         return fmt.Errorf("Could not determine absolute path name: %w", err)
     }
-    target := c.String("target")
     creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, target, creds)
+    conn, err := grpc.DialContext(c.Context, cfg.MkvUtilServerTarget, creds)
     if  err != nil {
         return fmt.Errorf("when dialing %w", err)
     }
@@ -97,6 +97,14 @@ func cmdCfgMkvSplit() *cli.Command {
 var splitSpecRe = regexp.MustCompile(`(\d+)?-(\d+)?:(.+)`)
 
 func cmdMkvSplit(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return err
+    }
     in, err := filepath.Abs(c.String("in"))
     if err != nil {
         return fmt.Errorf("Could not get absolute path: %w", err)
@@ -138,9 +146,8 @@ func cmdMkvSplit(c *cli.Context) error {
         InPath: in,
         ByChapters: outs,
     }
-    target := c.String("target")
     creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, target, creds)
+    conn, err := grpc.DialContext(c.Context, cfg.MkvUtilServerTarget, creds)
     if  err != nil {
         return fmt.Errorf("when dialing %w", err)
     }
@@ -161,6 +168,14 @@ func cmdCfgMkvChapters() *cli.Command {
 }
 
 func cmdMkvChapters(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return err
+    }
     args := c.Args().Slice()
     if len(args) != 1 {
         return errors.New("Expected a single argument")
@@ -173,9 +188,8 @@ func cmdMkvChapters(c *cli.Context) error {
         InPath: in,
         Format: muspb.ChaptersFormat_CF_SIMPLE,
     }
-    target := c.String("target")
     creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, target, creds)
+    conn, err := grpc.DialContext(c.Context, cfg.MkvUtilServerTarget, creds)
     if err != nil {
         return fmt.Errorf("when dialing %w", err)
     }
@@ -227,6 +241,14 @@ func cmdCfgMkvConcat() *cli.Command {
 }
 
 func cmdMkvConcat(c *cli.Context) error {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return err
+    }
     req := &muspb.ConcatRequest{}
     for _, in := range c.StringSlice("in") {
         fullPath, err := filepath.Abs(in)
@@ -241,9 +263,8 @@ func cmdMkvConcat(c *cli.Context) error {
     }
     req.OutputPath = fullPath
 
-    target := c.String("target")
     creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, target, creds)
+    conn, err := grpc.DialContext(c.Context, cfg.MkvUtilServerTarget, creds)
     if err != nil {
         return fmt.Errorf("when dialing %w", err)
     }
