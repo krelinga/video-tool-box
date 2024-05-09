@@ -96,6 +96,10 @@ func (tp toolPaths) TranslateNasDir(in string) (string, error) {
     return tp.NasCanonDir() + cut, nil
 }
 
+func (tp toolPaths) ConfigPath() string {
+    return filepath.Join(tp.HomeDir(), ".vtb_config.json")
+}
+
 var toolPathsContextKey string = "toolPathsContextKey"
 
 func newToolPathsContext(ctx context.Context, tp toolPaths) context.Context {

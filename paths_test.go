@@ -123,6 +123,9 @@ func TestBasicPaths(t *testing.T) {
     if tp.StatePath() != "/homedir/.vtb_state" {
         t.Error(tp.StatePath())
     }
+    if tp.ConfigPath() != "/homedir/.vtb_config.json" {
+        t.Error(tp.ConfigPath())
+    }
 }
 
 func TestTmmProjectDir(t *testing.T) {
