@@ -2,11 +2,26 @@ package main
 
 import (
     "encoding/json"
+    "fmt"
     "os"
+    "strings"
 )
 
 type config struct {
     MkvUtilServerTarget string
+}
+
+func (c *config) String() string {
+    q := func(s string) string {
+        if len(s) == 0 {
+            return "<empty>"
+        }
+        return fmt.Sprintf("\"%s\"", s)
+    }
+
+    b := &strings.Builder{}
+    fmt.Fprintf(b, "MkvUtilServerTarget: %s\n", q(c.MkvUtilServerTarget))
+    return b.String()
 }
 
 func readConfig(path string) (*config, error) {

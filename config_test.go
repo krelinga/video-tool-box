@@ -47,3 +47,30 @@ func TestConfig(t *testing.T) {
         }
     })
 }
+
+func TestConfigString(t *testing.T) {
+    t.Parallel()
+
+    t.Run("empty", func(t *testing.T) {
+        t.Parallel()
+        expected := `MkvUtilServerTarget: <empty>
+`
+        c := &config{}
+        actual := c.String()
+        if !cmp.Equal(expected, actual) {
+            t.Error(cmp.Diff(expected, actual))
+        }
+    })
+    t.Run("set", func(t *testing.T) {
+        t.Parallel()
+        expected := `MkvUtilServerTarget: "taters"
+`
+        c := &config{
+            MkvUtilServerTarget: "taters",
+        }
+        actual := c.String()
+        if !cmp.Equal(expected, actual) {
+            t.Error(cmp.Diff(expected, actual))
+        }
+    })
+}
