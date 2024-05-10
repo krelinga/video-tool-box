@@ -16,7 +16,6 @@ func appCfg() *cli.App {
             subcmdCfgRip(),
             cmdCfgTrans(),
             subcmdCfgRemote(),
-            cmdCfgInfo(),
             subcmdCfgMkv(),
             cmdCfgConfig(),
         },
