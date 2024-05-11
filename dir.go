@@ -170,5 +170,23 @@ func cmdDir(c *cli.Context) error {
         }
     }
 
+    ripDirEmpty := func() bool {
+        entries, err := os.ReadDir(rootDir)
+        if err != nil {
+            // Just swallow it ... this is only an optimization.
+            return false
+        }
+        return len(entries) == 0
+    }()
+    if rootDir != tp.CurrentDir() && ripDirEmpty {
+        fmt.Fprintf(c.App.Writer, "rip dir %s empty, delete it (y/N)? ", rootDir)
+        var confirm string
+        fmt.Fscanf(c.App.Reader, "%s", &confirm)
+        if confirm != "y" {
+            return nil
+        }
+        return os.Remove(rootDir)
+    }
+
     return nil
 }
