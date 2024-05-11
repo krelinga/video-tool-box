@@ -77,11 +77,7 @@ func cmdCfgDir() *cli.Command {
 }
 
 func cmdDir(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("missing toolPaths in context.")
-    }
-    ts, err := readToolState(tp.StatePath())
+    tp, ts, _, err := ripCmdInit(c)
     if err != nil {
         return err
     }

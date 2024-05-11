@@ -20,11 +20,7 @@ func cmdCfgNew() *cli.Command {
 }
 
 func cmdNew(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
-    ts, err := readToolState(tp.StatePath())
+    tp, ts, save, err := ripCmdInit(c)
     if err != nil {
         return err
     }
@@ -60,7 +56,7 @@ func cmdNew(c *cli.Context) error {
         return fmt.Errorf("Could not create project dir %s: %w", projectDir, err)
     }
 
-    return writeToolState(ts, tp.StatePath())
+    return save()
 }
 
 func cmdCfgFinish() *cli.Command {
@@ -80,15 +76,10 @@ func cmdCfgFinish() *cli.Command {
 }
 
 func cmdFinish(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
-    ts, err := readToolState(tp.StatePath())
+    tp, ts, save, err := ripCmdInit(c)
     if err != nil {
         return err
     }
-
     projectDir, err := tp.TmmProjectDir(ts)
     if err != nil {
         return err
@@ -105,8 +96,8 @@ func cmdFinish(c *cli.Context) error {
     if err := os.RemoveAll(projectDir); err != nil {
         return fmt.Errorf("Could not remove %s: %w", projectDir, err)
     }
-
-    return writeToolState(&toolState{}, tp.StatePath())
+    *ts = toolState{}
+    return save()
 }
 
 func cmdCfgMeta() *cli.Command {
@@ -119,11 +110,7 @@ func cmdCfgMeta() *cli.Command {
 }
 
 func cmdMeta(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
-    ts, err := readToolState(tp.StatePath())
+    _, ts, _, err := ripCmdInit(c)
     if err != nil {
         return err
     }
