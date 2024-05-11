@@ -70,7 +70,7 @@ func cmdCfgDir() *cli.Command {
     return &cli.Command{
         Name: "dir",
         Usage: "process .mkv files in current directory one at a time",
-        ArgsUsage: " ",  // Makes help text a bit nicer
+        ArgsUsage: "<dir, or pwd by default>",  // Makes help text a bit nicer
         Description: "Requires an existing project.",
         Action: cmdDir,
     }
@@ -85,7 +85,22 @@ func cmdDir(c *cli.Context) error {
         return errors.New("no active project")
     }
 
-    paths, err := listMkvFilePaths(tp.CurrentDir())
+    rootDir, err := func() (string, error) {
+        args := c.Args().Slice()
+        switch len(args) {
+        case 0:
+            return tp.CurrentDir(), nil
+        case 1:
+            return filepath.Abs(args[0])
+        default:
+            return "", errors.New("only zero or one arguments supported.")
+        }
+    }()
+    if err != nil {
+        return err
+    }
+
+    paths, err := listMkvFilePaths(rootDir)
     if err != nil {
         return err
     }
