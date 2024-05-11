@@ -106,7 +106,7 @@ func cmdFinish(c *cli.Context) error {
         return fmt.Errorf("Could not remove %s: %w", projectDir, err)
     }
 
-    return writeToolState(toolState{}, tp.StatePath())
+    return writeToolState(&toolState{}, tp.StatePath())
 }
 
 func cmdCfgMeta() *cli.Command {

@@ -62,7 +62,7 @@ func TestStateFileWrites(t *testing.T) {
     defer tearDownTempDir(t, tempDir)
 
     tsPath := filepath.Join(tempDir, "state")
-    ts1 := toolState{
+    ts1 := &toolState{
         Pt: ptMovie,
         Name: "movie",
     }
@@ -74,11 +74,11 @@ func TestStateFileWrites(t *testing.T) {
     if err != nil {
         t.Errorf("error reading toolState: %s", err)
     }
-    if ts1 != ts1Read {
-        t.Errorf("%v != %v", ts1, ts1Read)
+    if *ts1 != *ts1Read {
+        t.Errorf("%v != %v", *ts1, *ts1Read)
     }
 
-    ts2 := toolState{
+    ts2 := &toolState{
         Pt: ptShow,
         Name: "show",
     }
@@ -86,7 +86,7 @@ func TestStateFileWrites(t *testing.T) {
         t.Errorf("error overwriting existing state file: %s", err)
     }
     ts2Read, err := readToolState(tsPath)
-    if ts2 != ts2Read {
-        t.Errorf("%v != %v", ts1, ts1Read)
+    if *ts2 != *ts2Read {
+        t.Errorf("%v != %v", *ts1, *ts1Read)
     }
 }

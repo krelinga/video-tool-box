@@ -62,7 +62,7 @@ func (tp *toolPaths) StatePath() string {
     return filepath.Join(tp.HomeDir(), ".vtb_state")
 }
 
-func (tp *toolPaths) TmmProjectDir(ts toolState) (string, error) {
+func (tp *toolPaths) TmmProjectDir(ts *toolState) (string, error) {
     if len(ts.Name) == 0 {
         return "", errors.New("Empty Name field in toolState")
     }
@@ -78,7 +78,7 @@ func (tp *toolPaths) TmmProjectDir(ts toolState) (string, error) {
     return "", errors.New("Unexpected value of ts.Pt")
 }
 
-func (tp *toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
+func (tp *toolPaths) TmmProjectExtrasDir(ts *toolState) (string, error) {
     projectDir, err := tp.TmmProjectDir(ts)
     if err != nil { return "", err }
     return filepath.Join(projectDir, ".extras"), nil

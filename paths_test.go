@@ -137,21 +137,21 @@ func TestTmmProjectDir(t *testing.T) {
 
     type testCase struct {
         Name string
-        Ts toolState
+        Ts *toolState
         Err bool
         Path string
     }
     testCases := []testCase{
         {
             Name: "empty name",
-            Ts: toolState{
+            Ts: &toolState{
                 Pt: ptMovie,
             },
             Err: true,
         },
         {
             Name: "undefined project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptUndef,
             },
@@ -159,7 +159,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "movie project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptMovie,
             },
@@ -167,7 +167,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "tv show project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptShow,
             },
@@ -175,7 +175,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "Override Set",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 TmmDirOverride: "/foo/bar",
             },
@@ -211,21 +211,21 @@ func TestTmmProjectExtrasDir(t *testing.T) {
 
     type testCase struct {
         Name string
-        Ts toolState
+        Ts *toolState
         Err bool
         Path string
     }
     testCases := []testCase{
         {
             Name: "empty name",
-            Ts: toolState{
+            Ts: &toolState{
                 Pt: ptMovie,
             },
             Err: true,
         },
         {
             Name: "undefined project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptUndef,
             },
@@ -233,7 +233,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "movie project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptMovie,
             },
@@ -241,7 +241,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "tv show project type",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 Pt: ptShow,
             },
@@ -249,7 +249,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "Override Set",
-            Ts: toolState{
+            Ts: &toolState{
                 Name: "some name",
                 TmmDirOverride: "/foo/bar",
             },
