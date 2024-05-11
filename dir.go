@@ -69,7 +69,7 @@ func readableFileSize(path string) (string, error) {
 func cmdCfgDir() *cli.Command {
     return &cli.Command{
         Name: "dir",
-        Usage: "process .mkv files in current directory one at a time",
+        Usage: "process .mkv files in a directory one at a time",
         ArgsUsage: "<dir, or pwd by default>",  // Makes help text a bit nicer
         Description: "Requires an existing project.",
         Action: cmdDir,
