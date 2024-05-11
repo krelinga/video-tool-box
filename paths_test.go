@@ -93,7 +93,7 @@ func TestNewProdToolPaths(t *testing.T) {
 
 func TestBasicPaths(t *testing.T) {
     t.Parallel()
-    tp := toolPaths{
+    tp := &toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
         nasMountDir: "/nas",
@@ -130,7 +130,7 @@ func TestBasicPaths(t *testing.T) {
 
 func TestTmmProjectDir(t *testing.T) {
     t.Parallel()
-    tp := toolPaths{
+    tp := &toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
     }
@@ -204,7 +204,7 @@ func TestTmmProjectDir(t *testing.T) {
 
 func TestTmmProjectExtrasDir(t *testing.T) {
     t.Parallel()
-    tp := toolPaths{
+    tp := &toolPaths{
         homeDir: "/homedir",
         currentDir: "/workdir",
     }
@@ -277,7 +277,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
 }
 
 func TestTranslateNasDir(t *testing.T) {
-    tp := toolPaths {
+    tp := &toolPaths {
         nasMountDir: "/nas",
         nasCanonDir: "smb://nas",
     }

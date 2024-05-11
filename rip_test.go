@@ -10,7 +10,7 @@ import (
 )
 
 type testApp struct {
-    paths toolPaths
+    paths *toolPaths
 
     stdin bytes.Buffer
     stdout bytes.Buffer
@@ -20,7 +20,7 @@ type testApp struct {
 func newTestApp(t *testing.T) *testApp {
     t.Helper()
     return &testApp{
-        paths: toolPaths{
+        paths: &toolPaths{
             homeDir: setUpTempDir(t),
             currentDir: setUpTempDir(t),
         },
@@ -33,7 +33,7 @@ func (ta *testApp) Delete(t *testing.T) {
     tearDownTempDir(t, ta.Paths().CurrentDir())
 }
 
-func (ta *testApp) Paths() toolPaths {
+func (ta *testApp) Paths() *toolPaths {
     return ta.paths
 }
 

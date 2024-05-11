@@ -16,8 +16,8 @@ type toolPaths struct {
     nasCanonDir string
 }
 
-func newProdToolPaths() (toolPaths, error) {
-    tp := toolPaths{}
+func newProdToolPaths() (*toolPaths, error) {
+    tp := &toolPaths{}
     var err error
     tp.currentDir, err = getEnvVar("PWD")
     if err != nil { return tp, err }
@@ -30,39 +30,39 @@ func newProdToolPaths() (toolPaths, error) {
     return tp, nil
 }
 
-func (tp toolPaths) HomeDir() string {
+func (tp *toolPaths) HomeDir() string {
     return tp.homeDir
 }
 
-func (tp toolPaths) CurrentDir() string {
+func (tp *toolPaths) CurrentDir() string {
     return tp.currentDir
 }
 
-func (tp toolPaths) NasMountDir() string {
+func (tp *toolPaths) NasMountDir() string {
     return tp.nasMountDir
 }
 
-func (tp toolPaths) NasCanonDir() string {
+func (tp *toolPaths) NasCanonDir() string {
     return tp.nasCanonDir
 }
 
-func (tp toolPaths) MoviesDir() string {
+func (tp *toolPaths) MoviesDir() string {
     return filepath.Join(tp.HomeDir(), "Movies")
 }
 
-func (tp toolPaths) TmmMoviesDir() string {
+func (tp *toolPaths) TmmMoviesDir() string {
     return filepath.Join(tp.MoviesDir(), "tmm_movies")
 }
 
-func (tp toolPaths) TmmShowsDir() string {
+func (tp *toolPaths) TmmShowsDir() string {
     return filepath.Join(tp.MoviesDir(), "tmm_shows")
 }
 
-func (tp toolPaths) StatePath() string {
+func (tp *toolPaths) StatePath() string {
     return filepath.Join(tp.HomeDir(), ".vtb_state")
 }
 
-func (tp toolPaths) TmmProjectDir(ts toolState) (string, error) {
+func (tp *toolPaths) TmmProjectDir(ts toolState) (string, error) {
     if len(ts.Name) == 0 {
         return "", errors.New("Empty Name field in toolState")
     }
@@ -78,13 +78,13 @@ func (tp toolPaths) TmmProjectDir(ts toolState) (string, error) {
     return "", errors.New("Unexpected value of ts.Pt")
 }
 
-func (tp toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
+func (tp *toolPaths) TmmProjectExtrasDir(ts toolState) (string, error) {
     projectDir, err := tp.TmmProjectDir(ts)
     if err != nil { return "", err }
     return filepath.Join(projectDir, ".extras"), nil
 }
 
-func (tp toolPaths) TranslateNasDir(in string) (string, error) {
+func (tp *toolPaths) TranslateNasDir(in string) (string, error) {
     inAbs, err := filepath.Abs(in)
     if err != nil {
         return "", err
@@ -96,17 +96,17 @@ func (tp toolPaths) TranslateNasDir(in string) (string, error) {
     return tp.NasCanonDir() + cut, nil
 }
 
-func (tp toolPaths) ConfigPath() string {
+func (tp *toolPaths) ConfigPath() string {
     return filepath.Join(tp.HomeDir(), ".vtb_config.json")
 }
 
 var toolPathsContextKey string = "toolPathsContextKey"
 
-func newToolPathsContext(ctx context.Context, tp toolPaths) context.Context {
+func newToolPathsContext(ctx context.Context, tp *toolPaths) context.Context {
     return context.WithValue(ctx, toolPathsContextKey, tp)
 }
 
-func toolPathsFromContext(ctx context.Context) (toolPaths, bool) {
-    value, ok := ctx.Value(toolPathsContextKey).(toolPaths)
+func toolPathsFromContext(ctx context.Context) (*toolPaths, bool) {
+    value, ok := ctx.Value(toolPathsContextKey).(*toolPaths)
     return value, ok
 }
