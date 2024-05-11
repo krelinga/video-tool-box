@@ -71,7 +71,7 @@ func cmdCfgDir() *cli.Command {
         Name: "dir",
         Usage: "process .mkv files in current directory one at a time",
         ArgsUsage: " ",  // Makes help text a bit nicer
-        Description: "Requires and existing project.",
+        Description: "Requires an existing project.",
         Action: cmdDir,
     }
 }
