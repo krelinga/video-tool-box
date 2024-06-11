@@ -1,1 +1,1 @@
-export VTB_NAS_MOUNT_DIR=/media
+export VTB_NAS_MOUNT_DIR=/nas/media
