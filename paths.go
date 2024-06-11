@@ -11,7 +11,6 @@ type toolPaths struct {
     homeDir     string
     currentDir  string
     nasMountDir string
-    nasCanonDir string
 }
 
 func newProdToolPaths() (*toolPaths, error) {
@@ -22,8 +21,6 @@ func newProdToolPaths() (*toolPaths, error) {
     tp.homeDir, err = getEnvVar("HOME")
     if err != nil { return tp, err }
     tp.nasMountDir, err = getEnvVar("VTB_NAS_MOUNT_DIR")
-    if err != nil { return tp, err }
-    tp.nasCanonDir, err = getEnvVar("VTB_NAS_CANON_DIR")
     if err != nil { return tp, err }
     return tp, nil
 }
@@ -38,10 +35,6 @@ func (tp *toolPaths) CurrentDir() string {
 
 func (tp *toolPaths) NasMountDir() string {
     return tp.nasMountDir
-}
-
-func (tp *toolPaths) NasCanonDir() string {
-    return tp.nasCanonDir
 }
 
 func (tp *toolPaths) MoviesDir() string {
