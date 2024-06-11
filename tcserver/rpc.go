@@ -28,11 +28,7 @@ func newTcServer(statePath, profile string) *tcServer {
 func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) (*pb.HelloWorldReply, error) {
     fmt.Printf("Saw request: %v\n", req)
     fileSize := func() int64 {
-        translated, err := translatePath(req.In)
-        if err != nil {
-            return -1
-        }
-        stat, err := os.Stat(translated)
+        stat, err := os.Stat(req.In)
         if err != nil {
             return -1
         }
@@ -92,16 +88,7 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
     },
 }
 
-func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
-    inPath, err := translatePath(inNasPath)
-    if err != nil {
-        return err
-    }
-    outPath, err := translatePath(outNasPath)
-    if err != nil {
-        return err
-    }
-
+func transcodeImpl(inPath, outPath, profile string, s *state) error {
     profileFlags, ok := gHandbrakeProfile[profile]
     if !ok {
         return fmt.Errorf("unknown profile %s", profile)
@@ -168,8 +155,8 @@ func transcodeImpl(inNasPath, outNasPath, profile string, s *state) error {
 }
 
 // Starts Handbrake and blocks until it finishes.
-func (tcs *tcServer) transcode(inCanon, outCanon, profile string) {
-    err := transcodeImpl(inCanon, outCanon, profile, tcs.s)
+func (tcs *tcServer) transcode(inPath, outPath, profile string) {
+    err := transcodeImpl(inPath, outPath, profile, tcs.s)
     persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
