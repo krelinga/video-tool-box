@@ -1,11 +1,12 @@
 package main
 
 import (
+    "context"
     "os"
     "path/filepath"
     "testing"
 
-    //"github.com/krelinga/video-tool-box/pb"
+    "github.com/krelinga/video-tool-box/pb"
 )
 
 func TestOutputPathExists(t *testing.T) {
@@ -29,4 +30,19 @@ func TestOutputPathExists(t *testing.T) {
     outPath := filepath.Join(tmpDir, "out.mkv")
     touch(inPath)
     touch(outPath)
+
+    statePath := filepath.Join(tmpDir, "state")
+    defaultProfile := "mkv_h265_1080p30"
+    tcServer := newTcServer(statePath, defaultProfile)
+
+
+    startReq := &pb.StartAsyncTranscodeRequest{
+        Name: "test",
+        InPath: inPath,
+        OutPath: outPath,
+    }
+    _, err = tcServer.StartAsyncTranscode(context.Background(), startReq)
+    if err != nil {
+        t.Fatal(err)
+    }
 }
