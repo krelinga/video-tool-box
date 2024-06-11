@@ -38,19 +38,11 @@ func cmdCfgHello() *cli.Command {
 }
 
 func cmdHello(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
     args := c.Args().Slice()
     if len(args) != 1 {
         return errors.New("Expected a single file path")
     }
-    mountPath := args[0]
-    canonPath, err := tp.TranslateNasDir(mountPath)
-    if err != nil {
-        return err
-    }
+    inPath := args[0]
     conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
     if  err != nil {
         return fmt.Errorf("when dialing %w", err)
@@ -59,7 +51,7 @@ func cmdHello(c *cli.Context) error {
 
     client := pb.NewTCServerClient(conn)
 
-    resp, err := client.HelloWorld(c.Context, &pb.HelloWorldRequest{In: canonPath})
+    resp, err := client.HelloWorld(c.Context, &pb.HelloWorldRequest{In: inPath})
     if err != nil {
         return fmt.Errorf("from RPC: %w", err)
     }
@@ -83,10 +75,6 @@ func cmdCfgStart() *cli.Command {
 }
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
     args := c.Args().Slice()
     if len(args) != 3 {
         return errors.New("Expected a name and two file paths")
@@ -96,14 +84,8 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
     if len(name) == 0 {
         return errors.New("name must be non-empty")
     }
-    inPath, err := tp.TranslateNasDir(args[1])
-    if err != nil {
-        return err
-    }
-    outPath, err := tp.TranslateNasDir(args[2])
-    if err != nil {
-        return err
-    }
+    inPath := args[1]
+    outPath := args[2]
 
     conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
     if  err != nil {
