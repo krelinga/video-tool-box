@@ -9,6 +9,9 @@ services:
       - type: volume
         source: videos
         target: /videos
+      - type: volume
+        source: videos
+        target: /nas/media
       - state:/state
     environment:
       VTB_TCSERVER_STATE_PATH: /state/state
