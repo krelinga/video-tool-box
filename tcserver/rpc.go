@@ -99,6 +99,10 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
         "--json",
     }
 
+    if _, err := os.Stat(outPath); !errors.Is(err, os.ErrNotExist) {
+        return errors.New("Output file already exists")
+    }
+
     stdOutPath := outPath + ".stdout"
     stdOutFile, err := os.Create(stdOutPath)
     if err != nil {
