@@ -160,7 +160,15 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
 
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inPath, outPath, profile string) {
-    err := transcodeImpl(inPath, outPath, profile, tcs.s)
+    err := func() error {
+        if err := copyRelatedFiles(inPath, outPath); err != nil {
+            return err
+        }
+        if err := transcodeImpl(inPath, outPath, profile, tcs.s); err != nil {
+            return err
+        }
+        return nil
+    }()
     persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
