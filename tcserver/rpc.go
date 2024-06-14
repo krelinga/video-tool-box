@@ -7,6 +7,7 @@ import (
     "io"
     "os"
     "os/exec"
+    "path/filepath"
 
     "github.com/krelinga/video-tool-box/pb"
 )
@@ -161,6 +162,9 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
 // Starts Handbrake and blocks until it finishes.
 func (tcs *tcServer) transcode(inPath, outPath, profile string) {
     err := func() error {
+        if err := os.MkdirAll(filepath.Dir(outPath), 0777); err != nil {
+            return err
+        }
         if err := copyRelatedFiles(inPath, outPath); err != nil {
             return err
         }
