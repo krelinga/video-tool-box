@@ -38,14 +38,15 @@ message CheckAsyncTranscodeRequest {
     string name = 1;
 }
 
+enum TranscodeState {
+    UNKNOWN = 0;
+    IN_PROGRESS = 1;
+    DONE = 2;
+    FAILED = 3;
+}
+
 message CheckAsyncTranscodeReply {
-    enum State {
-        STATE_UNKNOWN = 0;
-        STATE_IN_PROGRESS = 1;
-        STATE_DONE = 2;
-        STATE_FAILED = 3;
-    }
-    State state = 1;
+    TranscodeState state = 1;
     string error_message = 2;
     // Only set if state is STATE_IN_PROGRESS
     string progress = 3;

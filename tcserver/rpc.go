@@ -222,16 +222,16 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsync
         if sp.Op.Name != req.Name {
             return fmt.Errorf("Active transcode is named '%s', but '%s' was requested", sp.Op.Name, req.Name)
         }
-        reply.State = func() pb.CheckAsyncTranscodeReply_State {
+        reply.State = func() pb.TranscodeState {
             switch sp.Op.State {
             case pb.TCSState_Op_STATE_UNKNOWN:
-                return pb.CheckAsyncTranscodeReply_STATE_UNKNOWN
+                return pb.TranscodeState_UNKNOWN
             case pb.TCSState_Op_STATE_IN_PROGRESS:
-                return pb.CheckAsyncTranscodeReply_STATE_IN_PROGRESS
+                return pb.TranscodeState_IN_PROGRESS
             case pb.TCSState_Op_STATE_DONE:
-                return pb.CheckAsyncTranscodeReply_STATE_DONE
+                return pb.TranscodeState_DONE
             case pb.TCSState_Op_STATE_FAILED:
-                return pb.CheckAsyncTranscodeReply_STATE_FAILED
+                return pb.TranscodeState_FAILED
             default:
                 panic(fmt.Sprintf("Unexpected op state %v", sp.Op.State))
             }

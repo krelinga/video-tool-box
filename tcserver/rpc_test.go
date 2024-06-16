@@ -57,11 +57,11 @@ func TestOutputPathExists(t *testing.T) {
         if err != nil {
             t.Fatal(err)
         }
-        if checkReply.State == pb.CheckAsyncTranscodeReply_STATE_IN_PROGRESS {
+        if checkReply.State == pb.TranscodeState_IN_PROGRESS {
             retry = true
             return
         }
-        failed := checkReply.State == pb.CheckAsyncTranscodeReply_STATE_FAILED
+        failed := checkReply.State == pb.TranscodeState_FAILED
         correctError := strings.Contains(checkReply.ErrorMessage, "already exists")
         if failed && correctError {
             // This is our expected case.
