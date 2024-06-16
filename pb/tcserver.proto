@@ -52,9 +52,40 @@ message CheckAsyncTranscodeReply {
     string progress = 3;
 }
 
+message StartAsyncShowTranscodeRequest {
+    string name = 1;
+
+    string in_dir_path = 2;
+    string out_parent_dir_path = 3;
+
+    string profile = 4;
+}
+
+message StartAsyncShowTranscodeReply {
+}
+
+message CheckAsyncShowTranscodeRequest {
+    // Must match the name given in StartAsyncTranscodeRequest.
+    string name = 1;
+}
+
+message CheckAsyncShowTranscodeReply {
+    message File {
+        string in_path = 1;
+        TranscodeState state = 2;
+        string error_message = 3;
+        // Only set if state is STATE_IN_PROGRESS
+        string progress = 4;
+    }
+    repeated File file = 1;
+}
+
 service TCServer {
     rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
 
     rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
+
+    rpc StartAsyncShowTranscode(StartAsyncShowTranscodeRequest) returns (StartAsyncShowTranscodeReply) {}
+    rpc CheckAsyncShowTranscode(CheckAsyncShowTranscodeRequest) returns (CheckAsyncShowTranscodeReply) {}
 }
