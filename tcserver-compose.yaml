@@ -22,7 +22,7 @@ volumes:
     driver: local
     driver_opts:
       type: cifs
-      device: //192.168.86.97/media
+      device: //192.168.86.46/media
       o: "username=${SMB_USER},password=${SMB_PASSWORD},file_mode=0666,dir_mode=0777"
   state: {}
 
