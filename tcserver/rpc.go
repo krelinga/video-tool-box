@@ -269,6 +269,15 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsync
 }
 
 func (tcs *tcServer) StartAsyncShowTranscode(ctx context.Context, req *pb.StartAsyncShowTranscodeRequest) (*pb.StartAsyncShowTranscodeReply, error) {
+    fmt.Printf("StartAsyncShowTranscode: %v\n", req)
+    profile := func() string {
+        if len(req.Profile) > 0 {
+            return req.Profile
+        }
+        return tcs.defaultProfile
+    }()
+    fmt.Printf("using profile %s\n", profile)
+
     return nil, nil
 }
 
