@@ -110,6 +110,22 @@ var gHandbrakeProfile = map[string]handbrakeFlags{
         "--all-subtitles",
         "--subtitle-burned=none",
     },
+    "mkv_h265_2060p60_4k_19.0": {
+        "-Z", "Matroska/H.265 MKV 2160p60 4K",
+        "-q", "19.0",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
+    "mkv_h265_2060p60_4k_20.0": {
+        "-Z", "Matroska/H.265 MKV 2160p60 4K",
+        "-q", "20.0",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
 }
 
 func transcodeImpl(inPath, outPath, profile string, s *state) error {
