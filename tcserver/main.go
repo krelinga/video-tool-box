@@ -29,10 +29,6 @@ func mainOrError() error {
     if err != nil {
         return err
     }
-    statePath, err := getEnvVar("VTB_TCSERVER_STATE_PATH")
-    if err != nil {
-        return err
-    }
     profile, err := getEnvVar("VTB_TCSERVER_PROFILE")
     if err != nil {
         return err
@@ -42,7 +38,7 @@ func mainOrError() error {
         return err
     }
     grpcServer := grpc.NewServer()
-    pb.RegisterTCServerServer(grpcServer, newTcServer(statePath, profile))
+    pb.RegisterTCServerServer(grpcServer, newTcServer(profile))
     grpcServer.Serve(lis)  // Runs as long as the server is alive.
 
     return nil

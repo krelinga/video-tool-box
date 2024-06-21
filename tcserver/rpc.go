@@ -19,9 +19,9 @@ type tcServer struct {
     s               *state
 }
 
-func newTcServer(statePath, profile string) *tcServer {
+func newTcServer(profile string) *tcServer {
     return &tcServer{
-        s: newState(statePath),
+        s: &state{},
         defaultProfile: profile,
     }
 }

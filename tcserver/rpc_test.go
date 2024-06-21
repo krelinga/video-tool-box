@@ -33,9 +33,8 @@ func TestOutputPathExists(t *testing.T) {
     touch(inPath)
     touch(outPath)
 
-    statePath := filepath.Join(tmpDir, "state")
     defaultProfile := "mkv_h265_1080p30"
-    tcServer := newTcServer(statePath, defaultProfile)
+    tcServer := newTcServer(defaultProfile)
 
 
     const name = "test"
