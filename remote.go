@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "errors"
+    "text/tabwriter"
 
     cli "github.com/urfave/cli/v2"
     "github.com/krelinga/video-tool-box/pb"
@@ -228,9 +229,24 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         return err
     }
 
-    fmt.Fprintln(c.App.Writer, reply)
+    fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.State)
     if len(reply.ErrorMessage) > 0 {
-        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.ErrorMessage)
     }
-    return nil
+    fmt.Fprintf(c.App.Writer, "Episodes:\n")
+    fmt.Fprintf(c.App.Writer, "=========\n")
+    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 1, byte(' '), 0)
+    fmt.Fprintln(tw, "index\tstate\tprogress/error")
+    fmt.Fprintln(tw, "-----\t-----\t--------------")
+    for i, f := range reply.File {
+        progOrError := func() string {
+            if len(f.ErrorMessage) > 0 {
+                return f.ErrorMessage
+            }
+            return f.Progress
+        }
+        fmt.Fprintf(tw, "%d\t%s\t%s\n", i, f.State, progOrError())
+    }
+
+    return tw.Flush()
 }
