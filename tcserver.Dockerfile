@@ -12,6 +12,9 @@ RUN go mod download
 COPY *.go ./
 COPY pb/*.go ./pb/
 COPY tcserver/*.go ./tcserver/
+COPY tcserver/hb/*.go ./tcserver/hb/
+COPY tcserver/transcoder/*.go ./tcserver/transcoder/
+COPY tcserver/transcoder/related/*.go ./tcserver/transcoder/related/
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /tcserver ./tcserver/
 
