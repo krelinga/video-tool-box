@@ -16,8 +16,8 @@ services:
     environment:
       VTB_TCSERVER_STATE_PATH: /state/state
       # This is tuned for my gaming PC
-      VTB_TCSERVER_FILE_WORKERS=3
-      VTB_TCSERVER_SHOW_WORKERS=2
+      VTB_TCSERVER_FILE_WORKERS: 3
+      VTB_TCSERVER_SHOW_WORKERS: 2
     restart: unless-stopped
 
 volumes:
