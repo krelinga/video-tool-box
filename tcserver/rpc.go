@@ -9,6 +9,7 @@ import (
 
     "github.com/krelinga/video-tool-box/pb"
     "github.com/krelinga/video-tool-box/tcserver/hb"
+    "github.com/krelinga/video-tool-box/tcserver/transcoder/related"
 )
 
 type tcServer struct {
@@ -57,7 +58,7 @@ func (tcs *tcServer) transcode(inPath, outPath, profile string) {
         if err := os.MkdirAll(filepath.Dir(outPath), 0777); err != nil {
             return err
         }
-        if err := copyRelatedFiles(inPath, outPath); err != nil {
+        if err := related.CopyRelatedFiles(inPath, outPath); err != nil {
             return err
         }
         if err := transcodeImpl(inPath, outPath, profile, tcs.s); err != nil {

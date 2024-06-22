@@ -1,4 +1,4 @@
-package main
+package related
 
 import (
     "errors"
@@ -72,7 +72,7 @@ func copyFilesByMapping(m map[string]string) error {
 
 // removes the '.mkv' suffix from inPath, finds matching files, and copies them
 // to the correspondingly-transformed part of outPath.
-func copyRelatedFiles(inPath, outPath string) error {
+func CopyRelatedFiles(inPath, outPath string) error {
     inPrefix, err := stripMkvPathSuffix(inPath)
     if err != nil {
         return err
