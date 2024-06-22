@@ -7,16 +7,16 @@ import (
     "github.com/krelinga/video-tool-box/tcserver/hb"
 )
 
-type newState int
+type State int
 const (
-    newStateUnknown newState = iota
-    newStateNotStarted
-    newStateInProgress
-    newStateComplete
-    newStateError
+    StateUnknown State = iota
+    StateNotStarted
+    StateInProgress
+    StateComplete
+    StateError
 )
 
-type newSingleFileState struct {
+type SingleFileState struct {
     // Read-only after the struct is created.
     inPath string
     outPath string
@@ -25,7 +25,7 @@ type newSingleFileState struct {
 
     // Read/written concurrently.
     latest *hb.Progress
-    state newState
+    state State
     err error
 
     // Must be held when reading or writing latest, state, or err.
@@ -35,17 +35,17 @@ type newSingleFileState struct {
 // Transcodes sfs.inPath into sfs.outPath according to sfs.profile.
 //
 // Blocks until transcoding is finished, returning any error.
-func (sfs *newSingleFileState) Transcode() error {
+func (sfs *SingleFileState) Transcode() error {
     // TODO: implement.
     return nil
 }
 
-func newTranscodeFileWorker(in <-chan *newSingleFileState) {
+func TranscodeFileWorker(in <-chan *SingleFileState) {
     for work := range in {
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
-            work.state = newStateInProgress
+            work.state = StateInProgress
         }()
         err := work.Transcode()
         func() {
@@ -53,9 +53,9 @@ func newTranscodeFileWorker(in <-chan *newSingleFileState) {
             defer work.mu.Unlock()
             if err != nil {
                 work.err = err
-                work.state = newStateError
+                work.state = StateError
             } else {
-                work.state = newStateComplete
+                work.state = StateComplete
             }
         }()
         if work.onDone != nil {
@@ -64,15 +64,15 @@ func newTranscodeFileWorker(in <-chan *newSingleFileState) {
     }
 }
 
-type newShowState struct {
+type ShowState struct {
     // Read-only after the struct is created.
     inDirPath string
     outParentDirPath string
     profile string
 
     // Read/written concurrently.
-    fileStates []*newSingleFileState
-    state newState
+    fileStates []*SingleFileState
+    state State
     err error
 
     mu sync.Mutex
@@ -89,7 +89,7 @@ type newShowState struct {
 // ss.fileStates.
 //
 // The work of transcoding individual files is delegated to fileQueue
-func (ss *newShowState) Transcode(fileQueue chan<- *newSingleFileState) error {
+func (ss *ShowState) Transcode(fileQueue chan<- *SingleFileState) error {
     // TODO: check if the output path already exists.
     // TODO: discover .mkv files & map in file paths to out file paths.
     mkvMap := make(map[string]string)
@@ -97,7 +97,7 @@ func (ss *newShowState) Transcode(fileQueue chan<- *newSingleFileState) error {
     wg := sync.WaitGroup{}
     wg.Add(len(mkvMap))
     for fromPath, toPath := range mkvMap {
-        sfs := &newSingleFileState{
+        sfs := &SingleFileState{
             inPath: fromPath,
             outPath: toPath,
             profile: ss.profile,
@@ -113,12 +113,12 @@ func (ss *newShowState) Transcode(fileQueue chan<- *newSingleFileState) error {
     return nil
 }
 
-func newTranscodeShowWorker(in <-chan *newShowState, fileQueue chan<- *newSingleFileState) {
+func TranscodeShowWorker(in <-chan *ShowState, fileQueue chan<- *SingleFileState) {
     for work := range in {
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
-            work.state = newStateInProgress
+            work.state = StateInProgress
         }()
         err := work.Transcode(fileQueue)
         func() {
@@ -126,25 +126,25 @@ func newTranscodeShowWorker(in <-chan *newShowState, fileQueue chan<- *newSingle
             defer work.mu.Unlock()
             if err != nil {
                 work.err = err
-                work.state = newStateError
+                work.state = StateError
             } else {
-                work.state = newStateComplete
+                work.state = StateComplete
             }
         }()
     }
 }
 
 var (
-    newTranscoderStoppedErr = errors.New("Transcoder has been stopped")
-    newTranscoderAlreadyExistsErr = errors.New("Transcode already exists for this name")
-    newTranscoderAlreadyStartedErr = errors.New("Transcoder already started.")
-    newTranscoderInvalidConfigErr = errors.New("Transcoder config is invalid.")
-    newTranscoderNotStartedErr = errors.New("Transcoder not started.")
-    newTranscoderFullErr = errors.New("Transcoder is full.")
-    newTranscoderNotExistErr = errors.New("Transcode does not exist.")
+    TranscoderStoppedErr = errors.New("Transcoder has been stopped")
+    TranscoderAlreadyExistsErr = errors.New("Transcode already exists for this name")
+    TranscoderAlreadyStartedErr = errors.New("Transcoder already started.")
+    TranscoderInvalidConfigErr = errors.New("Transcoder config is invalid.")
+    TranscoderNotStartedErr = errors.New("Transcoder not started.")
+    TranscoderFullErr = errors.New("Transcoder is full.")
+    TranscoderNotExistErr = errors.New("Transcode does not exist.")
 )
 
-type newTranscoder struct {
+type Transcoder struct {
     // Exposed configuration variables.
     FileWorkers int
     MaxQueuedFiles int
@@ -157,36 +157,36 @@ type newTranscoder struct {
     stop chan struct{}
 
     // processing queues.
-    fileQueue chan *newSingleFileState
-    showQueue chan *newShowState
+    fileQueue chan *SingleFileState
+    showQueue chan *ShowState
 
-    files map[string]*newSingleFileState
-    shows map[string]*newShowState
+    files map[string]*SingleFileState
+    shows map[string]*ShowState
     mu sync.Mutex
 }
 
-func (t *newTranscoder) Start() error {
+func (t *Transcoder) Start() error {
     t.mu.Lock()
     defer t.mu.Unlock()
     select {
     case <- t.stop:
-        return newTranscoderStoppedErr
+        return TranscoderStoppedErr
     }
     if t.started {
-        return newTranscoderAlreadyStartedErr
+        return TranscoderAlreadyStartedErr
     }
     filesCfgValid := t.FileWorkers >= 1 && t.MaxQueuedFiles >= 1
     showsCfgValid := t.ShowWorkers >= 1 && t.MaxQueuedShows >= 1
     if !(filesCfgValid && showsCfgValid) {
-        return newTranscoderInvalidConfigErr
+        return TranscoderInvalidConfigErr
     }
-    t.fileQueue = make(chan *newSingleFileState, t.MaxQueuedFiles)
+    t.fileQueue = make(chan *SingleFileState, t.MaxQueuedFiles)
     for i := 0; i < t.FileWorkers; i++ {
-        go newTranscodeFileWorker(t.fileQueue)
+        go TranscodeFileWorker(t.fileQueue)
     }
-    t.showQueue = make(chan *newShowState, t.MaxQueuedShows)
+    t.showQueue = make(chan *ShowState, t.MaxQueuedShows)
     for i := 0; i < t.ShowWorkers; i++ {
-        go newTranscodeShowWorker(t.showQueue, t.fileQueue)
+        go TranscodeShowWorker(t.showQueue, t.fileQueue)
     }
     go func() {
         <- t.stop
@@ -196,7 +196,7 @@ func (t *newTranscoder) Start() error {
     return nil
 }
 
-func (t *newTranscoder) Stop() {
+func (t *Transcoder) Stop() {
     t.mu.Lock()
     defer t.mu.Unlock()
 
@@ -211,78 +211,78 @@ func (t *newTranscoder) Stop() {
     }
 }
 
-func (t *newTranscoder) StartFile(name, inPath, outPath, profile string) error {
+func (t *Transcoder) StartFile(name, inPath, outPath, profile string) error {
     t.mu.Lock()
     defer t.mu.Unlock()
     if !t.started {
-        return newTranscoderNotStartedErr
+        return TranscoderNotStartedErr
     }
     state, found := t.files[name]
-    if found && (state.state == newStateInProgress || state.state == newStateNotStarted) {
-        return newTranscoderAlreadyExistsErr
+    if found && (state.state == StateInProgress || state.state == StateNotStarted) {
+        return TranscoderAlreadyExistsErr
     }
-    state = &newSingleFileState{
+    state = &SingleFileState{
         inPath: inPath,
         outPath: outPath,
         profile: profile,
-        state: newStateNotStarted,
+        state: StateNotStarted,
         mu: &sync.Mutex{},
     }
     select {
     case <- t.stop:
-        return newTranscoderStoppedErr
+        return TranscoderStoppedErr
     case t.fileQueue <- state:
         t.files[name] = state
         return nil
     default:
-        return newTranscoderFullErr
+        return TranscoderFullErr
     }
 }
 
-func (t *newTranscoder) CheckFile(name string, fn func(*newSingleFileState)) error {
+func (t *Transcoder) CheckFile(name string, fn func(*SingleFileState)) error {
     t.mu.Lock()
     defer t.mu.Unlock()
     state, found := t.files[name]
     if !found {
-        return newTranscoderNotExistErr
+        return TranscoderNotExistErr
     }
     fn(state)
     return nil
 }
 
-func (t *newTranscoder) StartShow(name, inDirPath, outParentDirPath, profile string) error {
+func (t *Transcoder) StartShow(name, inDirPath, outParentDirPath, profile string) error {
     t.mu.Lock()
     defer t.mu.Unlock()
     if !t.started {
-        return newTranscoderNotStartedErr
+        return TranscoderNotStartedErr
     }
     state, found := t.shows[name]
-    if found && (state.state == newStateInProgress || state.state == newStateNotStarted) {
-        return newTranscoderAlreadyExistsErr
+    if found && (state.state == StateInProgress || state.state == StateNotStarted) {
+        return TranscoderAlreadyExistsErr
     }
-    state = &newShowState{
+    state = &ShowState{
         inDirPath: inDirPath,
         outParentDirPath: outParentDirPath,
         profile: profile,
-        state: newStateNotStarted,
+        state: StateNotStarted,
     }
     select {
     case <- t.stop:
-        return newTranscoderStoppedErr
+        return TranscoderStoppedErr
     case t.showQueue <- state:
         t.shows[name] = state
         return nil
     default:
-        return newTranscoderFullErr
+        return TranscoderFullErr
     }
 }
 
-func (t *newTranscoder) CheckShow(name string, fn func(*newShowState)) error {
+func (t *Transcoder) CheckShow(name string, fn func(*ShowState)) error {
     t.mu.Lock()
     defer t.mu.Unlock()
     state, found := t.shows[name]
     if !found {
-        return newTranscoderNotExistErr
+        return TranscoderNotExistErr
     }
     fn(state)
     return nil
