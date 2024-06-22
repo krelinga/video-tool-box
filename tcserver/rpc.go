@@ -49,7 +49,7 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
             return nil
         })
     }
-    return hb.Run(profile, inPath, outPath, prog)
+    return hb.Run(inPath, outPath, profile, prog)
 }
 
 // Starts Handbrake and blocks until it finishes.
