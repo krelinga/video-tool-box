@@ -236,8 +236,8 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
     fmt.Fprintf(c.App.Writer, "Episodes:\n")
     fmt.Fprintf(c.App.Writer, "=========\n")
     tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 1, byte(' '), 0)
-    fmt.Fprintln(tw, "index\tstate\tprogress/error")
-    fmt.Fprintln(tw, "-----\t-----\t--------------")
+    fmt.Fprintln(tw, "index\tepisode\tstate\tprogress/error")
+    fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
     for i, f := range reply.File {
         progOrError := func() string {
             if len(f.ErrorMessage) > 0 {
@@ -245,7 +245,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
             }
             return f.Progress
         }
-        fmt.Fprintf(tw, "%d\t%s\t%s\n", i, f.State, progOrError())
+        fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, f.State, progOrError())
     }
 
     return tw.Flush()
