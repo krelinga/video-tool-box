@@ -96,6 +96,10 @@ type ShowState struct {
     mu sync.Mutex
 }
 
+func (ss *ShowState) InDirPath() string {
+    return ss.inDirPath
+}
+
 // Discovers all the .mkv files under ss.inDirPath, and transcodes them.
 //
 // A corresponding output directory is created under ss.outParentDirPath to
