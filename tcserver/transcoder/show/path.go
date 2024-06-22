@@ -11,6 +11,8 @@ func OutputDir(inDir, outParentDir string) string {
 }
 
 func MapPaths(inPaths []string, inDir, outDir string) map[string]string {
+    inDir = filepath.Clean(inDir)
+    outDir = filepath.Clean(outDir)
     out := make(map[string]string)
     for _, p := range inPaths {
         child, found := strings.CutPrefix(p, inDir)
