@@ -88,12 +88,22 @@ var profiles = map[string]flags{
     },
 }
 
-var ProfileNotFoundErr = errors.New("Profile not found")
+var (
+    ProfileNotFoundErr = errors.New("Profile not found")
+    InvalidInPathErr = errors.New("Invalid inPath")
+    InvalidOutPathErr = errors.New("Invalid outPath")
+)
 
 func getFlags(profile, inPath, outPath string) (flags, error) {
     profileFlags, found := profiles[profile]
     if !found {
         return nil, ProfileNotFoundErr
+    }
+    if len(inPath) == 0 {
+        return nil, InvalidInPathErr
+    }
+    if len(outPath) == 0 {
+        return nil, InvalidOutPathErr
     }
     standardFlags := []string{
         "-i", inPath,
