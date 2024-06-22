@@ -61,7 +61,9 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsync
             reply.State = pb.TranscodeState_NOT_STARTED
         case transcoder.StateInProgress:
             reply.State = pb.TranscodeState_IN_PROGRESS
-            reply.Progress = s.Latest.String()
+            if s.Latest != nil {
+                reply.Progress = s.Latest.String()
+            }
         case transcoder.StateComplete:
             reply.State = pb.TranscodeState_DONE
         case transcoder.StateError:
