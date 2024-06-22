@@ -15,8 +15,9 @@ services:
       - state:/state
     environment:
       VTB_TCSERVER_STATE_PATH: /state/state
-      # This is tuned for my gaming PC
-      VTB_TCSERVER_FILE_WORKERS: 3
+      # This is tuned for my gaming PC.  18 cores available for work, 3 cores
+      # per-file = 6 workers.
+      VTB_TCSERVER_FILE_WORKERS: 6
       VTB_TCSERVER_SHOW_WORKERS: 2
     restart: unless-stopped
 
