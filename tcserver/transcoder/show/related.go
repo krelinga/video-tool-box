@@ -15,7 +15,7 @@ func FindRelatedFiles(dir string) ([]string, error) {
     for _, file := range filesInDir {
         // This will exclude season & "extras" dirs.
         if !file.IsDir() {
-            out = append(out, file.Name())
+            out = append(out, filepath.Join(dir, file.Name()))
         }
     }
     return out, nil
