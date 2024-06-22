@@ -8,6 +8,7 @@ import (
 
     "github.com/krelinga/video-tool-box/tcserver/hb"
     "github.com/krelinga/video-tool-box/tcserver/transcoder/related"
+    "github.com/krelinga/video-tool-box/tcserver/transcoder/show"
 )
 
 type State int
@@ -103,7 +104,14 @@ type ShowState struct {
 //
 // The work of transcoding individual files is delegated to fileQueue
 func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
-    // TODO: check if the output path already exists.
+    outDir := show.OutputDir(ss.inDirPath, ss.outParentDirPath)
+    if _, err := os.Stat(outDir); errors.Is(err, os.ErrNotExist) {
+        // Nothing to do here, this is the expected state.
+    } else if err == nil {
+        return AlreadyExistsErr
+    } else {
+        return err
+    }
     // TODO: discover .mkv files & map in file paths to out file paths.
     mkvMap := make(map[string]string)
     // TODO: copy over any show-level files.
