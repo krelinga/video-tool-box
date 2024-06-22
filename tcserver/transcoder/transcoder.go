@@ -36,8 +36,13 @@ type SingleFileState struct {
 //
 // Blocks until transcoding is finished, returning any error.
 func (sfs *SingleFileState) transcode() error {
-    // TODO: implement.
-    return nil
+    prog := func(u *hb.Progress) {
+        sfs.mu.Lock()
+        defer sfs.mu.Unlock()
+        sfs.latest = u
+    }
+    // TODO: right now this doesn't provide for copying over supporting files.
+    return hb.Run(sfs.inPath, sfs.outPath, sfs.profile, prog)
 }
 
 func transcodeFileWorker(in <-chan *SingleFileState) {
