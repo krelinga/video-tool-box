@@ -2,6 +2,8 @@ package transcoder
 
 import (
     "errors"
+    "os"
+    "path/filepath"
     "sync"
 
     "github.com/krelinga/video-tool-box/tcserver/hb"
@@ -43,6 +45,9 @@ func (sfs *SingleFileState) transcode() error {
         sfs.latest = u
     }
     // TODO: make sure that containing directories exist.
+    if err := os.MkdirAll(filepath.Dir(sfs.outPath), 0777); err != nil {
+        return err
+    }
     if err := related.CopyRelatedFiles(sfs.inPath, sfs.outPath); err != nil {
         return err
     }
