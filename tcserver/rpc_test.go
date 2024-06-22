@@ -9,6 +9,7 @@ import (
     "testing"
 
     "github.com/krelinga/video-tool-box/pb"
+    "github.com/krelinga/video-tool-box/tcserver/transcoder"
 )
 
 func TestOutputPathExists(t *testing.T) {
@@ -33,9 +34,18 @@ func TestOutputPathExists(t *testing.T) {
     touch(inPath)
     touch(outPath)
 
-    defaultProfile := "mkv_h265_1080p30"
-    tcServer := newTcServer(defaultProfile)
-
+    const defaultProfile = "mkv_h265_1080p30"
+    tran := transcoder.Transcoder{
+        FileWorkers: 1,
+        MaxQueuedFiles: 10000,
+        ShowWorkers: 1,
+        MaxQueuedShows: 1,
+    }
+    if err := tran.Start(); err != nil {
+        t.Fatal(err)
+    }
+    defer tran.Stop()
+    tcServer := newTcServer(defaultProfile, &tran)
 
     const name = "test"
     startReq := &pb.StartAsyncTranscodeRequest{
@@ -56,7 +66,9 @@ func TestOutputPathExists(t *testing.T) {
         if err != nil {
             t.Fatal(err)
         }
-        if checkReply.State == pb.TranscodeState_IN_PROGRESS {
+        isInProgress := checkReply.State == pb.TranscodeState_IN_PROGRESS
+        isNotStarted := checkReply.State == pb.TranscodeState_NOT_STARTED
+        if isInProgress || isNotStarted {
             retry = true
             return
         }

@@ -27,11 +27,11 @@ type SingleFileState struct {
     onDone func()  // mu will not be held when this is called.
 
     // Read/written concurrently.
-    latest *hb.Progress
-    state State
-    err error
+    Latest *hb.Progress
+    St State
+    Err error
 
-    // Must be held when reading or writing latest, state, or err.
+    // Must be held when reading or writing Latest, St, or Err.
     mu *sync.Mutex
 }
 
@@ -42,7 +42,7 @@ func (sfs *SingleFileState) transcode() error {
     prog := func(u *hb.Progress) {
         sfs.mu.Lock()
         defer sfs.mu.Unlock()
-        sfs.latest = u
+        sfs.Latest = u
     }
     // TODO: make sure that containing directories exist.
     if err := os.MkdirAll(filepath.Dir(sfs.outPath), 0777); err != nil {
@@ -59,17 +59,17 @@ func transcodeFileWorker(in <-chan *SingleFileState) {
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
-            work.state = StateInProgress
+            work.St = StateInProgress
         }()
         err := work.transcode()
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
             if err != nil {
-                work.err = err
-                work.state = StateError
+                work.Err = err
+                work.St = StateError
             } else {
-                work.state = StateComplete
+                work.St = StateComplete
             }
         }()
         if work.onDone != nil {
@@ -85,9 +85,9 @@ type ShowState struct {
     profile string
 
     // Read/written concurrently.
-    fileStates []*SingleFileState
-    state State
-    err error
+    FileStates []*SingleFileState
+    St State
+    Err error
 
     mu sync.Mutex
 }
@@ -132,17 +132,17 @@ func transcodeShowWorker(in <-chan *ShowState, fileQueue chan<- *SingleFileState
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
-            work.state = StateInProgress
+            work.St = StateInProgress
         }()
         err := work.transcode(fileQueue)
         func() {
             work.mu.Lock()
             defer work.mu.Unlock()
             if err != nil {
-                work.err = err
-                work.state = StateError
+                work.Err = err
+                work.St = StateError
             } else {
-                work.state = StateComplete
+                work.St = StateComplete
             }
         }()
     }
@@ -182,12 +182,15 @@ type Transcoder struct {
 func (t *Transcoder) Start() error {
     t.mu.Lock()
     defer t.mu.Unlock()
+    if t.started {
+        return AlreadyStartedErr
+    }
+    t.stop = make(chan struct{})
     select {
     case <- t.stop:
         return StoppedErr
-    }
-    if t.started {
-        return AlreadyStartedErr
+    default:
+        // nothing to do.
     }
     filesCfgValid := t.FileWorkers >= 1 && t.MaxQueuedFiles >= 1
     showsCfgValid := t.ShowWorkers >= 1 && t.MaxQueuedShows >= 1
@@ -207,6 +210,9 @@ func (t *Transcoder) Start() error {
         close(t.fileQueue)
         close(t.showQueue)
     }()
+    t.files = make(map[string]*SingleFileState)
+    t.shows = make(map[string]*ShowState)
+    t.started = true
     return nil
 }
 
@@ -232,14 +238,14 @@ func (t *Transcoder) StartFile(name, inPath, outPath, profile string) error {
         return NotStartedErr
     }
     state, found := t.files[name]
-    if found && (state.state == StateInProgress || state.state == StateNotStarted) {
+    if found && (state.St == StateInProgress || state.St == StateNotStarted) {
         return AlreadyExistsErr
     }
     state = &SingleFileState{
         inPath: inPath,
         outPath: outPath,
         profile: profile,
-        state: StateNotStarted,
+        St: StateNotStarted,
         mu: &sync.Mutex{},
     }
     select {
@@ -260,6 +266,8 @@ func (t *Transcoder) CheckFile(name string, fn func(*SingleFileState)) error {
     if !found {
         return NotExistErr
     }
+    state.mu.Lock()
+    defer state.mu.Unlock()
     fn(state)
     return nil
 }
@@ -271,14 +279,14 @@ func (t *Transcoder) StartShow(name, inDirPath, outParentDirPath, profile string
         return NotStartedErr
     }
     state, found := t.shows[name]
-    if found && (state.state == StateInProgress || state.state == StateNotStarted) {
+    if found && (state.St == StateInProgress || state.St == StateNotStarted) {
         return AlreadyExistsErr
     }
     state = &ShowState{
         inDirPath: inDirPath,
         outParentDirPath: outParentDirPath,
         profile: profile,
-        state: StateNotStarted,
+        St: StateNotStarted,
     }
     select {
     case <- t.stop:
@@ -298,6 +306,8 @@ func (t *Transcoder) CheckShow(name string, fn func(*ShowState)) error {
     if !found {
         return NotExistErr
     }
+    state.mu.Lock()
+    defer state.mu.Unlock()
     fn(state)
     return nil
 }

@@ -40,6 +40,7 @@ message CheckAsyncTranscodeRequest {
 
 enum TranscodeState {
     UNKNOWN = 0;
+    NOT_STARTED = 4;
     IN_PROGRESS = 1;
     DONE = 2;
     FAILED = 3;

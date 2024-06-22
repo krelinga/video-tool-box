@@ -7,6 +7,7 @@ import (
     "strconv"
 
     "github.com/krelinga/video-tool-box/pb"
+    "github.com/krelinga/video-tool-box/tcserver/transcoder"
     "google.golang.org/grpc"
 )
 
@@ -38,7 +39,17 @@ func mainOrError() error {
         return err
     }
     grpcServer := grpc.NewServer()
-    pb.RegisterTCServerServer(grpcServer, newTcServer(profile))
+    tran := transcoder.Transcoder{
+        FileWorkers: 1,
+        MaxQueuedFiles: 10000,
+        ShowWorkers: 1,
+        MaxQueuedShows: 1,
+    }
+    if err := tran.Start(); err != nil {
+        return err
+    }
+    defer tran.Stop()
+    pb.RegisterTCServerServer(grpcServer, newTcServer(profile, &tran))
     grpcServer.Serve(lis)  // Runs as long as the server is alive.
 
     return nil
