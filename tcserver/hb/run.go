@@ -9,7 +9,7 @@ import (
 )
 
 func Run(inPath, outPath, profile string, prog func(*Progress)) error {
-    flags, err := GetFlags(profile, inPath, outPath)
+    allFlags, err := getFlags(profile, inPath, outPath)
     if err != nil {
         return err
     }
@@ -53,7 +53,7 @@ func Run(inPath, outPath, profile string, prog func(*Progress)) error {
     }()
 
     cmd := exec.Command("HandBrakeCLI")
-    cmd.Args = flags
+    cmd.Args = allFlags
     cmd.Stdin = os.Stdin
     cmd.Stdout = hbPipeWriter
     cmd.Stderr = stdErrFile

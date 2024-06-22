@@ -2,9 +2,9 @@ package hb
 
 import "errors"
 
-type Flags []string
+type flags []string
 
-var profiles = map[string]Flags{
+var profiles = map[string]flags{
     "mkv_h265_1080p30": {
         "-Z", "Matroska/H.265 MKV 1080p30",
         "--all-audio",
@@ -90,7 +90,7 @@ var profiles = map[string]Flags{
 
 var ProfileNotFoundErr = errors.New("Profile not found")
 
-func GetFlags(profile, inPath, outPath string) (Flags, error) {
+func getFlags(profile, inPath, outPath string) (flags, error) {
     profileFlags, found := profiles[profile]
     if !found {
         return nil, ProfileNotFoundErr
@@ -100,6 +100,6 @@ func GetFlags(profile, inPath, outPath string) (Flags, error) {
         "-o", outPath,
         "--json",
     }
-    flags := append(standardFlags, profileFlags...)
-    return flags, nil
+    combinedFlags := append(standardFlags, profileFlags...)
+    return combinedFlags, nil
 }
