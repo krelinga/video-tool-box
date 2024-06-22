@@ -15,6 +15,7 @@ COPY tcserver/*.go ./tcserver/
 COPY tcserver/hb/*.go ./tcserver/hb/
 COPY tcserver/transcoder/*.go ./tcserver/transcoder/
 COPY tcserver/transcoder/related/*.go ./tcserver/transcoder/related/
+COPY tcserver/transcoder/show/*.go ./tcserver/transcoder/show/
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o /tcserver ./tcserver/
 
