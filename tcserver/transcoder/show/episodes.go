@@ -38,7 +38,7 @@ func FindEpisodes(dir string) ([]string, error) {
     return episodes, nil
 }
 
-func MapEpisodePaths(inPaths []string, inDir, outDir string) map[string]string {
+func MapPaths(inPaths []string, inDir, outDir string) map[string]string {
     out := make(map[string]string)
     for _, p := range inPaths {
         child, found := strings.CutPrefix(p, inDir)

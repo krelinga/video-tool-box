@@ -118,7 +118,7 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
     if err != nil {
         return err
     }
-    mkvMap := show.MapEpisodePaths(episodes, ss.inDirPath, outDir)
+    mkvMap := show.MapPaths(episodes, ss.inDirPath, outDir)
 
     // Find and map related non-episode files
     _, err = show.FindRelatedFiles(ss.inDirPath)
