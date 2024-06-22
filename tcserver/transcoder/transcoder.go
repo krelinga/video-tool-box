@@ -5,6 +5,7 @@ import (
     "sync"
 
     "github.com/krelinga/video-tool-box/tcserver/hb"
+    "github.com/krelinga/video-tool-box/tcserver/transcoder/related"
 )
 
 type State int
@@ -41,7 +42,10 @@ func (sfs *SingleFileState) transcode() error {
         defer sfs.mu.Unlock()
         sfs.latest = u
     }
-    // TODO: right now this doesn't provide for copying over supporting files.
+    // TODO: make sure that containing directories exist.
+    if err := related.CopyRelatedFiles(sfs.inPath, sfs.outPath); err != nil {
+        return err
+    }
     return hb.Run(sfs.inPath, sfs.outPath, sfs.profile, prog)
 }
 
