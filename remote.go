@@ -18,6 +18,8 @@ func subcmdCfgRemote() *cli.Command {
             cmdCfgHello(),
             cmdCfgStart(),
             cmdCfgCheck(),
+            cmdCfgStartShow(),
+            cmdCfgCheckShow(),
         },
         Flags: []cli.Flag{
             &cli.StringFlag{
@@ -134,6 +136,93 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
     client := pb.NewTCServerClient(conn)
 
     reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
+
+    if err != nil {
+        return err
+    }
+
+    fmt.Fprintln(c.App.Writer, reply)
+    if len(reply.ErrorMessage) > 0 {
+        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+    }
+    return nil
+}
+
+func cmdCfgStartShow() *cli.Command {
+    return &cli.Command{
+        Name: "startshow",
+        Usage: "start an async transcode of a show on the server.",
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "profile",
+                Value: "",  // Use the server-side default.
+                Usage: "Profile to use for transcoding.",
+            },
+        },
+        Action: cmdAsyncTranscodeStartShow,
+    }
+}
+
+func cmdAsyncTranscodeStartShow(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 3 {
+        return errors.New("Expected a name and two file paths")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+    inDirPath := args[1]
+    outParentDirPath := args[2]
+
+    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+    if  err != nil {
+        return fmt.Errorf("when dialing: %w", err)
+    }
+    defer conn.Close()
+    client := pb.NewTCServerClient(conn)
+
+    req := &pb.StartAsyncShowTranscodeRequest{
+        Name: name,
+        InDirPath: inDirPath,
+        OutParentDirPath: outParentDirPath,
+        Profile: c.String("profile"),
+    }
+
+    _, err = client.StartAsyncShowTranscode(c.Context, req)
+
+    return err
+}
+
+func cmdCfgCheckShow() *cli.Command {
+    return &cli.Command{
+        Name: "checkshow",
+        Usage: "check on an async show transcode on the server.",
+        Action: cmdAsyncTranscodeCheckShow,
+    }
+}
+
+func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected a name")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+
+    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
+    if  err != nil {
+        return fmt.Errorf("when dialing: %w", err)
+    }
+    defer conn.Close()
+
+    client := pb.NewTCServerClient(conn)
+
+    reply, err := client.CheckAsyncShowTranscode(c.Context, &pb.CheckAsyncShowTranscodeRequest{Name: name})
 
     if err != nil {
         return err
