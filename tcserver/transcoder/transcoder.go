@@ -125,9 +125,12 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
     if err != nil {
         return err
     }
-    _ = show.MapPaths(others, ss.inDirPath, outDir)
+    otherMap := show.MapPaths(others, ss.inDirPath, outDir)
 
-    // TODO: copy over any show-level files.
+    // Copy over any non-episode files.
+    if err := show.CopyFiles(otherMap); err != nil {
+        return err
+    }
 
     // Transcode individual episodes.
     wg := sync.WaitGroup{}
