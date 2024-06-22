@@ -53,8 +53,7 @@ func Run(inPath, outPath, profile string, prog func(*Progress)) error {
         progressDone <- struct{}{}
     }()
 
-    cmd := exec.Command("HandBrakeCLI")
-    cmd.Args = allFlags
+    cmd := exec.Command("HandBrakeCLI", allFlags...)
     cmd.Stdin = os.Stdin
     cmd.Stdout = hbPipeWriter
     cmd.Stderr = stdErrFile
