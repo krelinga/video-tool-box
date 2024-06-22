@@ -36,6 +36,10 @@ type SingleFileState struct {
     mu *sync.Mutex
 }
 
+func (sfs *SingleFileState) InPath() string {
+    return sfs.inPath
+}
+
 // Transcodes sfs.inPath into sfs.outPath according to sfs.profile.
 //
 // Blocks until transcoding is finished, returning any error.
