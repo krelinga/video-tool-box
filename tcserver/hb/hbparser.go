@@ -1,4 +1,4 @@
-package main
+package hb
 
 import (
     "bufio"
@@ -8,29 +8,29 @@ import (
     "io"
 )
 
-type hbProgress struct {
+type Progress struct {
     State       string
-    Working     *hbProgressWorking
-    Muxing      *hbProgressMuxing
-    WorkDone    *hbProgressWorkDone
-    Scanning    *hbProgressScanning
+    Working     *ProgressWorking
+    Muxing      *ProgressMuxing
+    WorkDone    *ProgressWorkDone
+    Scanning    *ProgressScanning
 }
 
-func (hbp *hbProgress) String() string {
+func (p *Progress) String() string {
     switch {
-    case hbp.Working != nil:
-        return fmt.Sprintf("Working: %s", hbp.Working)
-    case hbp.Muxing != nil:
-        return fmt.Sprintf("Muxing: %s", hbp.Muxing)
-    case hbp.WorkDone != nil:
-        return fmt.Sprintf("WorkDone: %s", hbp.WorkDone)
-    case hbp.Scanning != nil:
-        return fmt.Sprintf("Scanning:  %s", hbp.Scanning)
+    case p.Working != nil:
+        return fmt.Sprintf("Working: %s", p.Working)
+    case p.Muxing != nil:
+        return fmt.Sprintf("Muxing: %s", p.Muxing)
+    case p.WorkDone != nil:
+        return fmt.Sprintf("WorkDone: %s", p.WorkDone)
+    case p.Scanning != nil:
+        return fmt.Sprintf("Scanning:  %s", p.Scanning)
     }
-    return fmt.Sprintf("Unexpected state '%s'", hbp.State)
+    return fmt.Sprintf("Unexpected state '%s'", p.State)
 }
 
-type hbProgressWorking struct {
+type ProgressWorking struct {
     ETASeconds  int
     Hours       int
     Minutes     int
@@ -45,7 +45,7 @@ type hbProgressWorking struct {
     SequenceID  int
 }
 
-func (w *hbProgressWorking) String() string {
+func (w *ProgressWorking) String() string {
     etaPart := func() string {
         if w.Hours == -1 && w.Minutes == -1 && w.Seconds == -1 {
             return fmt.Sprintf("%21s", "UKNOWN")
@@ -56,23 +56,23 @@ func (w *hbProgressWorking) String() string {
     return fmt.Sprintf("Pass %d/%d %7.3f%%, ETA %s, %7.3f FPS (%7.3f aFPS)", w.Pass, w.PassCount, w.Progress * 100.0, etaPart, w.Rate, w.RateAvg)
 }
 
-type hbProgressMuxing struct {
+type ProgressMuxing struct {
     Progress    float64
 }
 
-func (m *hbProgressMuxing) String() string {
+func (m *ProgressMuxing) String() string {
     return fmt.Sprintf("%7.3f%%", m.Progress * 100.0)
 }
 
-type hbProgressWorkDone struct {
+type ProgressWorkDone struct {
     Error   int
 }
 
-func (wd *hbProgressWorkDone) String() string {
+func (wd *ProgressWorkDone) String() string {
     return fmt.Sprintf("Error: %d", wd.Error)
 }
 
-type hbProgressScanning struct {
+type ProgressScanning struct {
     Preview         int
     PreviewCount    int
     Progress        float64
@@ -81,16 +81,15 @@ type hbProgressScanning struct {
     TitleCount      int
 }
 
-func (s *hbProgressScanning) String() string {
+func (s *ProgressScanning) String() string {
     return fmt.Sprintf("Preview %d/%d %7.3f%%", s.Preview, s.PreviewCount, s.Progress * 100.0)
 }
 
-// TODO: mark the output channel as consume-only.
-// Returned channel is closed once hbOutput returns EOF.
-func parseHbOutput(hbOutput io.Reader) chan *hbProgress {
-    out := make(chan *hbProgress)
+// Returned channel is closed once Output returns EOF.
+func ParseOutput(Output io.Reader) <-chan *Progress {
+    out := make(chan *Progress)
     go func() {
-        scanner := bufio.NewScanner(hbOutput)
+        scanner := bufio.NewScanner(Output)
         var byteBuffer *bytes.Buffer
         for scanner.Scan() {
             line := scanner.Text()
@@ -99,7 +98,7 @@ func parseHbOutput(hbOutput io.Reader) chan *hbProgress {
                 byteBuffer.WriteString(line)
                 if line == "}" {
                     // We're at the end of a "Progress: {" stanza.
-                    current := &hbProgress{}
+                    current := &Progress{}
                     if err := json.Unmarshal(byteBuffer.Bytes(), current); err != nil {
                         // TODO: find a better way to signal this.
                         panic(err)

@@ -3,6 +3,8 @@ package main
 import (
     "errors"
     "sync"
+
+    "github.com/krelinga/video-tool-box/tcserver/hb"
 )
 
 type newState int
@@ -22,7 +24,7 @@ type newSingleFileState struct {
     onDone func()  // mu will not be held when this is called.
 
     // Read/written concurrently.
-    latest *hbProgress
+    latest *hb.Progress
     state newState
     err error
 

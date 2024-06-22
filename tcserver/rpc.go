@@ -10,6 +10,7 @@ import (
     "path/filepath"
 
     "github.com/krelinga/video-tool-box/pb"
+    "github.com/krelinga/video-tool-box/tcserver/hb"
 )
 
 type tcServer struct {
@@ -165,14 +166,14 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
     progressReader := io.TeeReader(hbPipeReader, stdOutFile)
 
     // parse entries out of progressReader and into a channel.
-    progressCh := parseHbOutput(progressReader)
+    progressCh := hb.ParseOutput(progressReader)
 
     // Consume from progressCh while Handbrake is running, and update s.
     // Notify progressDone when all updates have been consumed.
     progressDone := make(chan struct{})
     go func() {
         for u := range(progressCh) {
-            s.Do(func(_ *pb.TCSState, prog **hbProgress) error {
+            s.Do(func(_ *pb.TCSState, prog **hb.Progress) error {
                 *prog = u
                 return nil
             })
@@ -212,7 +213,7 @@ func (tcs *tcServer) transcode(inPath, outPath, profile string) {
         }
         return nil
     }()
-    persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
+    persistErr := tcs.s.Do(func(sp *pb.TCSState, prog **hb.Progress) error {
         if err != nil {
             sp.Op.State = pb.TCSState_Op_STATE_FAILED
             sp.Op.ErrorMessage = err.Error()
@@ -237,7 +238,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
         return tcs.defaultProfile
     }()
     fmt.Printf("using profile %s\n", profile)
-    err := tcs.s.Do(func(sp *pb.TCSState, _ **hbProgress) error {
+    err := tcs.s.Do(func(sp *pb.TCSState, _ **hb.Progress) error {
         if sp.Op != nil && sp.Op.State == pb.TCSState_Op_STATE_IN_PROGRESS {
             return fmt.Errorf("Async transcode %s already in-progress", sp.Op.Name)
         }
@@ -254,7 +255,7 @@ func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsync
 func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeReply, error) {
     fmt.Printf("CheckAsyncTranscode: %v\n", req)
     reply := &pb.CheckAsyncTranscodeReply{}
-    err := tcs.s.Do(func(sp *pb.TCSState, prog **hbProgress) error {
+    err := tcs.s.Do(func(sp *pb.TCSState, prog **hb.Progress) error {
         if sp.Op == nil || sp.Op.State == pb.TCSState_Op_STATE_UNKNOWN {
             return errors.New("No active transcode")
         }
