@@ -2,6 +2,7 @@ package show
 
 import (
     "path/filepath"
+    "strings"
 )
 
 func OutputDir(inDir, outParentDir string) string {

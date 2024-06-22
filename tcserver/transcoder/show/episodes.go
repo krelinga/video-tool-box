@@ -4,7 +4,6 @@ import (
     "os"
     "path/filepath"
     "regexp"
-    "strings"
 )
 
 var seasonRE = regexp.MustCompile(`Season \d+`)
