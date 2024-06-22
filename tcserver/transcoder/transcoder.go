@@ -112,12 +112,11 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
     } else {
         return err
     }
-    // TODO: discover .mkv files & map in file paths to out file paths.
-    _, err := show.FindEpisodes(ss.inDirPath)
+    episodes, err := show.FindEpisodes(ss.inDirPath)
     if err != nil {
         return err
     }
-    mkvMap := make(map[string]string)
+    mkvMap := show.MapEpisodePaths(episodes, ss.inDirPath, outDir)
     // TODO: copy over any show-level files.
     wg := sync.WaitGroup{}
     wg.Add(len(mkvMap))

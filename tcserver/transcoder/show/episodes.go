@@ -4,6 +4,7 @@ import (
     "os"
     "path/filepath"
     "regexp"
+    "strings"
 )
 
 var seasonRE = regexp.MustCompile(`Season \d+`)
@@ -35,4 +36,16 @@ func FindEpisodes(dir string) ([]string, error) {
         }
     }
     return episodes, nil
+}
+
+func MapEpisodePaths(inPaths []string, inDir, outDir string) map[string]string {
+    out := make(map[string]string)
+    for _, p := range inPaths {
+        child, found := strings.CutPrefix(p, inDir)
+        if !found {
+            panic(p)
+        }
+        out[p] = outDir + child
+    }
+    return out
 }
