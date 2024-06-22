@@ -44,7 +44,6 @@ func (sfs *SingleFileState) transcode() error {
         defer sfs.mu.Unlock()
         sfs.Latest = u
     }
-    // TODO: make sure that containing directories exist.
     if err := os.MkdirAll(filepath.Dir(sfs.outPath), 0777); err != nil {
         return err
     }
