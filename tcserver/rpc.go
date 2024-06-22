@@ -4,6 +4,7 @@ import (
     "context"
     "fmt"
     "os"
+    "strings"
 
     "github.com/krelinga/video-tool-box/pb"
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
@@ -89,6 +90,15 @@ func (tcs *tcServer) StartAsyncShowTranscode(ctx context.Context, req *pb.StartA
     return &pb.StartAsyncShowTranscodeReply{}, err
 }
 
+func cleanEpisode(episodePath, showDir string) string {
+    suffix, found := strings.CutPrefix(episodePath, showDir)
+    if !found {
+        panic(episodePath)
+    }
+    clean, _ := strings.CutPrefix(suffix, "/")
+    return clean
+}
+
 func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckAsyncShowTranscodeRequest) (*pb.CheckAsyncShowTranscodeReply, error) {
     fmt.Printf("CheckAsyncShowTranscode: %v\n", req)
     reply := &pb.CheckAsyncShowTranscodeReply{}
@@ -96,6 +106,7 @@ func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckA
         for _, fileState := range s.FileStates {
             fileStateProto := &pb.CheckAsyncShowTranscodeReply_File{}
             reply.File = append(reply.File, fileStateProto)
+            fileStateProto.Episode = cleanEpisode(fileState.InPath(), s.InDirPath())
             switch fileState.St {
             case transcoder.StateNotStarted:
                 fileStateProto.State = pb.TranscodeState_NOT_STARTED
