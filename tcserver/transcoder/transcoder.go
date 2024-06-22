@@ -135,6 +135,7 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
     // Transcode individual episodes.
     wg := sync.WaitGroup{}
     wg.Add(len(mkvMap))
+    fileStates := make([]*SingleFileState, 0, len(mkvMap))
     for fromPath, toPath := range mkvMap {
         sfs := &SingleFileState{
             inPath: fromPath,
@@ -145,8 +146,17 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
             },
             mu: &ss.mu,
         }
+        fileStates = append(ss.FileStates, sfs)
+        // It's fine if we end up blocking here, although it should be rare if
+        // the single-file queue is sized correctly.
         fileQueue <- sfs
     }
+    func() {
+        ss.mu.Lock()
+        defer ss.mu.Unlock()
+        ss.FileStates = fileStates
+    }()
+
     wg.Wait()
 
     return nil
