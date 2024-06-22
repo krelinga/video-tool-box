@@ -90,10 +90,16 @@ var profiles = map[string]Flags{
 
 var ProfileNotFoundErr = errors.New("Profile not found")
 
-func GetFlags(profile string) (Flags, error) {
-    flags, found := profiles[profile]
+func GetFlags(profile, inPath, outPath string) (Flags, error) {
+    profileFlags, found := profiles[profile]
     if !found {
         return nil, ProfileNotFoundErr
     }
+    standardFlags := []string{
+        "-i", inPath,
+        "-o", outPath,
+        "--json",
+    }
+    flags := append(standardFlags, profileFlags...)
     return flags, nil
 }

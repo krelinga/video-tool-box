@@ -44,14 +44,9 @@ func (tcs *tcServer) HelloWorld(ctx context.Context, req *pb.HelloWorldRequest) 
 }
 
 func transcodeImpl(inPath, outPath, profile string, s *state) error {
-    profileFlags, err := hb.GetFlags(profile)
+    flags, err := hb.GetFlags(profile, inPath, outPath)
     if err != nil {
         return err
-    }
-    standardFlags := []string{
-        "-i", inPath,
-        "-o", outPath,
-        "--json",
     }
 
     if _, err := os.Stat(outPath); !errors.Is(err, os.ErrNotExist) {
@@ -96,8 +91,7 @@ func transcodeImpl(inPath, outPath, profile string, s *state) error {
     }()
 
     cmd := exec.Command("HandBrakeCLI")
-    cmd.Args = append(cmd.Args, standardFlags...)
-    cmd.Args = append(cmd.Args, profileFlags...)
+    cmd.Args = flags
     cmd.Stdin = os.Stdin
     cmd.Stdout = hbPipeWriter
     cmd.Stderr = stdErrFile
