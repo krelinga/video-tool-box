@@ -85,10 +85,45 @@ func (tcs *tcServer) StartAsyncShowTranscode(ctx context.Context, req *pb.StartA
         return tcs.defaultProfile
     }()
     fmt.Printf("using profile %s\n", profile)
-
-    return nil, nil
+    err := tcs.tc.StartShow(req.Name, req.InDirPath, req.OutParentDirPath, profile)
+    return &pb.StartAsyncShowTranscodeReply{}, err
 }
 
 func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckAsyncShowTranscodeRequest) (*pb.CheckAsyncShowTranscodeReply, error) {
-    return nil, nil
+    fmt.Printf("CheckAsyncShowTranscode: %v\n", req)
+    reply := &pb.CheckAsyncShowTranscodeReply{}
+    readState := func(s *transcoder.ShowState) {
+        for _, fileState := range s.FileStates {
+            fileStateProto := &pb.CheckAsyncShowTranscodeReply_File{}
+            reply.File = append(reply.File, fileStateProto)
+            switch fileState.St {
+            case transcoder.StateNotStarted:
+                fileStateProto.State = pb.TranscodeState_NOT_STARTED
+            case transcoder.StateInProgress:
+                fileStateProto.State = pb.TranscodeState_IN_PROGRESS
+                if fileState.Latest != nil {
+                    fileStateProto.Progress = fileState.Latest.String()
+                }
+            case transcoder.StateComplete:
+                fileStateProto.State = pb.TranscodeState_DONE
+            case transcoder.StateError:
+                fileStateProto.State = pb.TranscodeState_FAILED
+                fileStateProto.ErrorMessage = fileState.Err.Error()
+            default:
+                panic(fileState.St)
+            }
+        }
+        switch s.St {
+        case transcoder.StateNotStarted:
+            reply.State = pb.TranscodeState_NOT_STARTED
+        case transcoder.StateInProgress:
+            reply.State = pb.TranscodeState_IN_PROGRESS
+        case transcoder.StateComplete:
+            reply.State = pb.TranscodeState_DONE
+        case transcoder.StateError:
+            reply.State = pb.TranscodeState_FAILED
+            reply.ErrorMessage = s.Err.Error()
+        }
+    }
+    return reply, tcs.tc.CheckShow(req.Name, readState)
 }

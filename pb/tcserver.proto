@@ -79,6 +79,9 @@ message CheckAsyncShowTranscodeReply {
         string progress = 4;
     }
     repeated File file = 1;
+    // State & error of anything not related to individual files.
+    TranscodeState state = 2;
+    string error_message = 3;
 }
 
 service TCServer {
