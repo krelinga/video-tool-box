@@ -141,6 +141,7 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
             inPath: fromPath,
             outPath: toPath,
             profile: ss.profile,
+            St: StateNotStarted,
             onDone: func() {
                 wg.Done()
             },
