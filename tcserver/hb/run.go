@@ -57,6 +57,7 @@ func Run(inPath, outPath, profile string, prog func(*Progress)) error {
     cmd.Stdin = os.Stdin
     cmd.Stdout = hbPipeWriter
     cmd.Stderr = stdErrFile
+    log.Printf("Running Handbrake: %s", cmd)
     err = cmd.Run()
 
     // Wait for all progress to be processed before we exit.  This also makes
