@@ -147,7 +147,7 @@ func (ss *ShowState) transcode(fileQueue chan<- *SingleFileState) error {
             },
             mu: &ss.mu,
         }
-        fileStates = append(ss.FileStates, sfs)
+        fileStates = append(fileStates, sfs)
         // It's fine if we end up blocking here, although it should be rare if
         // the single-file queue is sized correctly.
         fileQueue <- sfs
