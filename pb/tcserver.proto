@@ -2,15 +2,6 @@ syntax = "proto3";
 
 option go_package = "github.com/krelinga/video-tool-box/pb";
 
-message HelloWorldRequest {
-    string in = 1;
-}
-
-message HelloWorldReply {
-    string out = 1;
-    int64 file_size = 2;
-}
-
 message StartAsyncTranscodeRequest {
     // Must be unique among all running transcodes on the server.
     string name = 1;
@@ -77,8 +68,6 @@ message CheckAsyncShowTranscodeReply {
 }
 
 service TCServer {
-    rpc HelloWorld(HelloWorldRequest) returns (HelloWorldReply) {}
-
     rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
 
