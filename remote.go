@@ -21,13 +21,6 @@ func subcmdCfgRemote() *cli.Command {
             cmdCfgStartShow(),
             cmdCfgCheckShow(),
         },
-        Flags: []cli.Flag{
-            &cli.StringFlag{
-                Name: "target",
-                Usage: "rpc target to talk to.",
-                Required: true,
-            },
-        },
     }
 }
 
@@ -46,6 +39,27 @@ func cmdCfgStart() *cli.Command {
     }
 }
 
+func dialTcServer(c *cli.Context) (pb.TCServerClient, func(), error) {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return nil, nil, errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return nil, nil, err
+    }
+    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
+    conn, err := grpc.DialContext(c.Context, cfg.TcServerTarget, creds)
+    if  err != nil {
+        return nil, nil, fmt.Errorf("when dialing %w", err)
+    }
+    cleanup := func() {
+        conn.Close()
+    }
+    client := pb.NewTCServerClient(conn)
+    return client, cleanup, nil
+}
+
 func cmdAsyncTranscodeStart(c *cli.Context) error {
     args := c.Args().Slice()
     if len(args) != 3 {
@@ -59,12 +73,11 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
     inPath := args[1]
     outPath := args[2]
 
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing: %w", err)
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
     }
-    defer conn.Close()
-    client := pb.NewTCServerClient(conn)
+    defer cleanup()
 
     req := &pb.StartAsyncTranscodeRequest{
         Name: name,
@@ -97,16 +110,13 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing: %w", err)
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
     }
-    defer conn.Close()
-
-    client := pb.NewTCServerClient(conn)
+    defer cleanup()
 
     reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
-
     if err != nil {
         return err
     }
@@ -146,12 +156,11 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     inDirPath := args[1]
     outParentDirPath := args[2]
 
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing: %w", err)
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
     }
-    defer conn.Close()
-    client := pb.NewTCServerClient(conn)
+    defer cleanup()
 
     req := &pb.StartAsyncShowTranscodeRequest{
         Name: name,
@@ -184,16 +193,13 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing: %w", err)
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
     }
-    defer conn.Close()
-
-    client := pb.NewTCServerClient(conn)
+    defer cleanup()
 
     reply, err := client.CheckAsyncShowTranscode(c.Context, &pb.CheckAsyncShowTranscodeRequest{Name: name})
-
     if err != nil {
         return err
     }
