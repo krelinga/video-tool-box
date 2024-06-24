@@ -19,6 +19,7 @@ services:
       # per-file = 6 workers.
       VTB_TCSERVER_FILE_WORKERS: 6
       VTB_TCSERVER_SHOW_WORKERS: 2
+      VTB_TCSERVER_SPREAD_WORKERS: 2
     restart: unless-stopped
 
 volumes:

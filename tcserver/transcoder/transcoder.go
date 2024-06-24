@@ -40,6 +40,10 @@ func (sfs *SingleFileState) InPath() string {
     return sfs.inPath
 }
 
+func (sfs *SingleFileState) Profile() string {
+    return sfs.profile
+}
+
 // Transcodes sfs.inPath into sfs.outPath according to sfs.profile.
 //
 // Blocks until transcoding is finished, returning any error.
@@ -192,6 +196,88 @@ func transcodeShowWorker(in <-chan *ShowState, fileQueue chan<- *SingleFileState
     }
 }
 
+type SpreadState struct {
+    // Read-only after struct is created.
+    inPath string
+    outParentDirPath string
+    profiles []string
+
+    // Read/written concurrently.
+    FileStates []*SingleFileState
+    St State
+    Err error
+
+    mu sync.Mutex
+}
+
+func (ss *SpreadState) InPath() string {
+    return ss.inPath
+}
+
+// Creates one transcode for each profile in the SpreadState.
+func (ss *SpreadState) transcode(fileQueue chan<- *SingleFileState) error {
+    for _, p := range ss.profiles {
+        outDir := filepath.Join(ss.outParentDirPath, p)
+        if _, err := os.Stat(outDir); errors.Is(err, os.ErrNotExist) {
+            // Nothing to do here, this is the expected state.
+        } else if err == nil {
+            return AlreadyExistsErr
+        } else {
+            return err
+        }
+    }
+
+    // Create and run one transcode for each profile.
+    wg := sync.WaitGroup{}
+    wg.Add(len(ss.profiles))
+    fileStates := make([]*SingleFileState, 0, len(ss.profiles))
+    for _, p := range ss.profiles {
+        outPath := filepath.Join(ss.outParentDirPath, p, filepath.Base(ss.inPath))
+        sfs := &SingleFileState{
+            inPath: ss.inPath,
+            outPath: outPath,
+            profile: p,
+            St: StateNotStarted,
+            onDone: func() {
+                wg.Done()
+            },
+            mu: &ss.mu,
+        }
+        fileStates = append(fileStates, sfs)
+        fileQueue <- sfs
+    }
+    func() {
+        ss.mu.Lock()
+        defer ss.mu.Unlock()
+        ss.FileStates = fileStates
+    }()
+
+    wg.Wait()
+
+    return nil
+}
+
+func transcodeSpreadWorker(in <-chan *SpreadState, fileQueue chan<- *SingleFileState) {
+    for work := range in {
+        func() {
+            work.mu.Lock()
+            defer work.mu.Unlock()
+            work.St = StateInProgress
+        }()
+        err := work.transcode(fileQueue)
+        func() {
+            work.mu.Lock()
+            defer work.mu.Unlock()
+            if err != nil {
+                work.Err = err
+                work.St = StateError
+            } else {
+                work.St = StateComplete
+            }
+        }()
+    }
+}
+
 var (
     StoppedErr = errors.New("Transcoder has been stopped")
     AlreadyExistsErr = errors.New("Transcode already exists for this name")
@@ -208,6 +294,8 @@ type Transcoder struct {
     MaxQueuedFiles int
     ShowWorkers int
     MaxQueuedShows int
+    SpreadWorkers int
+    MaxQueuedSpreads int
 
     // State management.
     started bool
@@ -217,9 +305,11 @@ type Transcoder struct {
     // processing queues.
     fileQueue chan *SingleFileState
     showQueue chan *ShowState
+    spreadQueue chan *SpreadState
 
     files map[string]*SingleFileState
     shows map[string]*ShowState
+    spreads map[string]*SpreadState
     mu sync.Mutex
 }
 
@@ -238,7 +328,8 @@ func (t *Transcoder) Start() error {
     }
     filesCfgValid := t.FileWorkers >= 1 && t.MaxQueuedFiles >= 1
     showsCfgValid := t.ShowWorkers >= 1 && t.MaxQueuedShows >= 1
-    if !(filesCfgValid && showsCfgValid) {
+    spreadsCfgValid := t.SpreadWorkers >= 1 && t.MaxQueuedSpreads >= 1
+    if !(filesCfgValid && showsCfgValid && spreadsCfgValid) {
         return InvalidConfigErr
     }
     t.fileQueue = make(chan *SingleFileState, t.MaxQueuedFiles)
@@ -249,13 +340,19 @@ func (t *Transcoder) Start() error {
     for i := 0; i < t.ShowWorkers; i++ {
         go transcodeShowWorker(t.showQueue, t.fileQueue)
     }
+    t.spreadQueue = make(chan *SpreadState, t.MaxQueuedSpreads)
+    for i := 0; i < t.SpreadWorkers; i++ {
+        go transcodeSpreadWorker(t.spreadQueue, t.fileQueue)
+    }
     go func() {
         <- t.stop
         close(t.fileQueue)
         close(t.showQueue)
+        close(t.spreadQueue)
     }()
     t.files = make(map[string]*SingleFileState)
     t.shows = make(map[string]*ShowState)
+    t.spreads = make(map[string]*SpreadState)
     t.started = true
     return nil
 }
@@ -347,6 +444,46 @@ func (t *Transcoder) CheckShow(name string, fn func(*ShowState)) error {
     t.mu.Lock()
     defer t.mu.Unlock()
     state, found := t.shows[name]
+    if !found {
+        return NotExistErr
+    }
+    state.mu.Lock()
+    defer state.mu.Unlock()
+    fn(state)
+    return nil
+}
+
+func (t *Transcoder) StartSpread(name, inPath, outParentDirPath string, profiles []string) error {
+    t.mu.Lock()
+    defer t.mu.Unlock()
+    if !t.started {
+        return NotStartedErr
+    }
+    state, found := t.spreads[name]
+    if found && (state.St == StateInProgress || state.St == StateNotStarted) {
+        return AlreadyExistsErr
+    }
+    state = &SpreadState{
+        inPath: inPath,
+        outParentDirPath: outParentDirPath,
+        profiles: profiles,
+        St: StateNotStarted,
+    }
+    select {
+    case <- t.stop:
+        return StoppedErr
+    case t.spreadQueue <- state:
+        t.spreads[name] = state
+        return nil
+    default:
+        return FullErr
+    }
+}
+
+func (t *Transcoder) CheckSpread(name string, fn func(*SpreadState)) error {
+    t.mu.Lock()
+    defer t.mu.Unlock()
+    state, found := t.spreads[name]
     if !found {
         return NotExistErr
     }

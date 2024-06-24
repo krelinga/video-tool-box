@@ -21,6 +21,8 @@ func subcmdCfgRemote() *cli.Command {
             cmdCfgCheck(),
             cmdCfgStartShow(),
             cmdCfgCheckShow(),
+            cmdCfgStartSpread(),
+            cmdCfgCheckSpread(),
         },
     }
 }
@@ -234,6 +236,112 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
             return f.Progress
         }
         fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, f.State, progOrError())
+    }
+
+    return tw.Flush()
+}
+
+func cmdCfgStartSpread() *cli.Command {
+    return &cli.Command{
+        Name: "startspread",
+        Usage: "start an async transcode of a file with multiple profiles on the server.",
+        Flags: []cli.Flag{
+            &cli.StringSliceFlag{
+                Name: "profile",
+                Usage: "Profile to use for transcoding.",
+                Required: true,
+            },
+        },
+        Action: cmdAsyncTranscodeStartSpread,
+    }
+}
+
+func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 3 {
+        return errors.New("Expected a name and two file paths")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+    inPath, err := filepath.Abs(args[1])
+    if err != nil {
+        return err
+    }
+    outParentDirPath, err := filepath.Abs(args[2])
+    if err != nil {
+        return err
+    }
+
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
+    }
+    defer cleanup()
+
+    req := &pb.StartAsyncSpreadTranscodeRequest{
+        Name: name,
+        InPath: inPath,
+        OutParentDirPath: outParentDirPath,
+        ProfileList: &pb.StartAsyncSpreadTranscodeRequest_ProfileList{
+            Profile: c.StringSlice("profile"),
+        },
+    }
+
+    _, err = client.StartAsyncSpreadTranscode(c.Context, req)
+
+    return err
+}
+
+func cmdCfgCheckSpread() *cli.Command {
+    return &cli.Command{
+        Name: "checkspread",
+        Usage: "check on an async spread transcode on the server.",
+        Action: cmdAsyncTranscodeCheckSpread,
+    }
+}
+
+func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected a name")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
+    }
+    defer cleanup()
+
+    reply, err := client.CheckAsyncSpreadTranscode(c.Context, &pb.CheckAsyncSpreadTranscodeRequest{Name: name})
+    if err != nil {
+        return err
+    }
+
+    fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
+    if len(reply.ErrorMessage) > 0 {
+        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+    }
+    fmt.Fprintf(c.App.Writer, "Profiles:\n")
+    fmt.Fprintf(c.App.Writer, "=========\n")
+    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
+    fmt.Fprintln(tw, "index\tprofile\tstate\tprogress/error")
+    fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
+    for i, f := range reply.Profile {
+        progOrError := func() string {
+            if len(f.ErrorMessage) > 0 {
+                return f.ErrorMessage
+            }
+            return f.Progress
+        }
+        fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Profile, f.State, progOrError())
     }
 
     return tw.Flush()

@@ -2,6 +2,7 @@ package main
 
 import (
     "context"
+    "errors"
     "fmt"
     "strings"
 
@@ -120,4 +121,56 @@ func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckA
         }
     }
     return reply, tcs.tc.CheckShow(req.Name, readState)
+}
+
+func (tcs *tcServer) StartAsyncSpreadTranscode(ctx context.Context, req *pb.StartAsyncSpreadTranscodeRequest) (*pb.StartAsyncSpreadTranscodeReply, error) {
+    fmt.Printf("StartAsyncSpreadTranscode: %v\n", req)
+    var profiles []string
+    if req.ProfileList != nil {
+        profiles = req.ProfileList.Profile
+    } else {
+        return nil, errors.New("No profile info specified")
+    }
+    err := tcs.tc.StartSpread(req.Name, req.InPath, req.OutParentDirPath, profiles)
+    return &pb.StartAsyncSpreadTranscodeReply{}, err
+}
+
+func (tcs *tcServer) CheckAsyncSpreadTranscode(ctx context.Context, req *pb.CheckAsyncSpreadTranscodeRequest) (*pb.CheckAsyncSpreadTranscodeReply, error) {
+    fmt.Printf("CheckAsyncSpreadTranscode: %v\n", req)
+    reply := &pb.CheckAsyncSpreadTranscodeReply{}
+    readState := func(s *transcoder.SpreadState) {
+        for _, profileState := range s.FileStates {
+            profileStateProto := &pb.CheckAsyncSpreadTranscodeReply_Profile{}
+            reply.Profile = append(reply.Profile, profileStateProto)
+            profileStateProto.Profile = profileState.Profile()
+            switch profileState.St {
+            case transcoder.StateNotStarted:
+                profileStateProto.State = pb.TranscodeState_NOT_STARTED
+            case transcoder.StateInProgress:
+                profileStateProto.State = pb.TranscodeState_IN_PROGRESS
+                if profileState.Latest != nil {
+                    profileStateProto.Progress = profileState.Latest.String()
+                }
+            case transcoder.StateComplete:
+                profileStateProto.State = pb.TranscodeState_DONE
+            case transcoder.StateError:
+                profileStateProto.State = pb.TranscodeState_FAILED
+                profileStateProto.ErrorMessage = profileState.Err.Error()
+            default:
+                panic(profileState.St)
+            }
+        }
+        switch s.St {
+        case transcoder.StateNotStarted:
+            reply.State = pb.TranscodeState_NOT_STARTED
+        case transcoder.StateInProgress:
+            reply.State = pb.TranscodeState_IN_PROGRESS
+        case transcoder.StateComplete:
+            reply.State = pb.TranscodeState_DONE
+        case transcoder.StateError:
+            reply.State = pb.TranscodeState_FAILED
+            reply.ErrorMessage = s.Err.Error()
+        }
+    }
+    return reply, tcs.tc.CheckSpread(req.Name, readState)
 }

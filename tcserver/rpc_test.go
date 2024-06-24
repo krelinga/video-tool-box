@@ -40,6 +40,8 @@ func TestOutputPathExists(t *testing.T) {
         MaxQueuedFiles: 10000,
         ShowWorkers: 1,
         MaxQueuedShows: 1,
+        SpreadWorkers: 1,
+        MaxQueuedSpreads: 1,
     }
     if err := tran.Start(); err != nil {
         t.Fatal(err)

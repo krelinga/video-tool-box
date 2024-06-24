@@ -39,6 +39,7 @@ func mainOrError() error {
         return err
     }
     grpcServer := grpc.NewServer()
+
     tran := transcoder.Transcoder{}
     tran.FileWorkers, err = getEnvVarInt("VTB_TCSERVER_FILE_WORKERS")
     if err != nil {
@@ -56,6 +57,15 @@ func mainOrError() error {
     if err != nil {
         return err
     }
+    tran.SpreadWorkers, err = getEnvVarInt("VTB_TCSERVER_SPREAD_WORKERS")
+    if err != nil {
+        return err
+    }
+    tran.MaxQueuedSpreads, err = getEnvVarInt("VTB_TCSERVER_MAX_QUEUED_SPREADS")
+    if err != nil {
+        return err
+    }
+
     if err := tran.Start(); err != nil {
         return err
     }
