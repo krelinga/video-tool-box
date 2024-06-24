@@ -67,10 +67,47 @@ message CheckAsyncShowTranscodeReply {
     string error_message = 3;
 }
 
+message StartAsyncSpreadTranscodeRequest {
+    string name = 1;
+
+    string in_path = 2;
+    string out_parent_dir_path = 3;
+
+    // TODO: expand how these can be specified in the future.
+    message ProfileList {
+        repeated string profile = 1;
+    }
+    ProfileList profile_list = 4;
+}
+
+message StartAsyncSpreadTranscodeReply {
+}
+
+message CheckAsyncSpreadTranscodeRequest {
+    // Must match the name given in StartAsyncSpreadTranscodeRequest.
+    string name = 1;
+}
+
+message CheckAsyncSpreadTranscodeReply {
+    message Profile {
+        string profile = 1;
+        TranscodeState state = 2;
+        string error_message = 3;
+        // Only set if state is STATE_IN_PROGRESS
+        string progress = 4;
+    }
+    repeated Profile profile = 1;
+    TranscodeState state = 2;
+    string error_message = 3;
+}
+
 service TCServer {
     rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
 
     rpc StartAsyncShowTranscode(StartAsyncShowTranscodeRequest) returns (StartAsyncShowTranscodeReply) {}
     rpc CheckAsyncShowTranscode(CheckAsyncShowTranscodeRequest) returns (CheckAsyncShowTranscodeReply) {}
+
+    rpc StartAsyncSpreadTranscode(StartAsyncSpreadTranscodeRequest) returns (StartAsyncShowTranscodeReply) {}
+    rpc CheckAsyncSpreadTranscode(CheckAsyncSpreadTranscodeRequest) returns (CheckAsyncSpreadTranscodeReply) {}
 }
