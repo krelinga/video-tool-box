@@ -3,6 +3,7 @@ package main
 import (
     "fmt"
     "errors"
+    "path/filepath"
     "text/tabwriter"
 
     cli "github.com/urfave/cli/v2"
@@ -70,8 +71,14 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
     if len(name) == 0 {
         return errors.New("name must be non-empty")
     }
-    inPath := args[1]
-    outPath := args[2]
+    inPath, err := filepath.Abs(args[1])
+    if err != nil {
+        return err
+    }
+    outPath, err := filepath.Abs(args[2])
+    if err != nil {
+        return err
+    }
 
     client, cleanup, err := dialTcServer(c)
     if err != nil {
@@ -153,8 +160,14 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     if len(name) == 0 {
         return errors.New("name must be non-empty")
     }
-    inDirPath := args[1]
-    outParentDirPath := args[2]
+    inDirPath, err := filepath.Abs(args[1])
+    if err != nil {
+        return err
+    }
+    outParentDirPath, err := filepath.Abs(args[2])
+    if err != nil {
+        return err
+    }
 
     client, cleanup, err := dialTcServer(c)
     if err != nil {
