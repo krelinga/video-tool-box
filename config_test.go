@@ -54,6 +54,7 @@ func TestConfigString(t *testing.T) {
     t.Run("empty", func(t *testing.T) {
         t.Parallel()
         expected := `MkvUtilServerTarget: <empty>
+TcServerTarget: <empty>
 `
         c := &config{}
         actual := c.String()
@@ -64,6 +65,7 @@ func TestConfigString(t *testing.T) {
     t.Run("set", func(t *testing.T) {
         t.Parallel()
         expected := `MkvUtilServerTarget: "taters"
+TcServerTarget: <empty>
 `
         c := &config{
             MkvUtilServerTarget: "taters",
