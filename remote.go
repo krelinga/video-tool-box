@@ -3,8 +3,11 @@ package main
 import (
     "fmt"
     "errors"
+    "io"
+    "os/exec"
     "path/filepath"
     "text/tabwriter"
+    "time"
 
     cli "github.com/urfave/cli/v2"
     "github.com/krelinga/video-tool-box/pb"
@@ -295,10 +298,24 @@ func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
     return err
 }
 
+var watchFlag = &cli.BoolFlag{
+    Name: "watch",
+    Usage: "check for progress in a loop.",
+}
+
+func clearScreen(out io.Writer) error {
+    cmd := exec.Command("clear")
+    cmd.Stdout = out
+    return cmd.Run()
+}
+
 func cmdCfgCheckSpread() *cli.Command {
     return &cli.Command{
         Name: "checkspread",
         Usage: "check on an async spread transcode on the server.",
+        Flags: []cli.Flag{
+            watchFlag,
+        },
         Action: cmdAsyncTranscodeCheckSpread,
     }
 }
@@ -320,29 +337,43 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
     }
     defer cleanup()
 
-    reply, err := client.CheckAsyncSpreadTranscode(c.Context, &pb.CheckAsyncSpreadTranscodeRequest{Name: name})
-    if err != nil {
-        return err
-    }
-
-    fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
-    if len(reply.ErrorMessage) > 0 {
-        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
-    }
-    fmt.Fprintf(c.App.Writer, "Profiles:\n")
-    fmt.Fprintf(c.App.Writer, "=========\n")
-    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
-    fmt.Fprintln(tw, "index\tprofile\tstate\tprogress/error")
-    fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
-    for i, f := range reply.Profile {
-        progOrError := func() string {
-            if len(f.ErrorMessage) > 0 {
-                return f.ErrorMessage
-            }
-            return f.Progress
+    for {
+        reply, err := client.CheckAsyncSpreadTranscode(c.Context, &pb.CheckAsyncSpreadTranscodeRequest{Name: name})
+        if err != nil {
+            return err
         }
-        fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Profile, f.State, progOrError())
+        if c.Bool("watch") {
+            if err := clearScreen(c.App.Writer); err != nil {
+                return err
+            }
+        }
+        fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
+        if len(reply.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        }
+        fmt.Fprintf(c.App.Writer, "Profiles:\n")
+        fmt.Fprintf(c.App.Writer, "=========\n")
+        tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
+        fmt.Fprintln(tw, "index\tprofile\tstate\tprogress/error")
+        fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
+        for i, f := range reply.Profile {
+            progOrError := func() string {
+                if len(f.ErrorMessage) > 0 {
+                    return f.ErrorMessage
+                }
+                return f.Progress
+            }
+            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Profile, f.State, progOrError())
+        }
+        if err := tw.Flush(); err != nil {
+            return err
+        }
+
+        if !c.Bool("watch") {
+            break
+        }
+        time.Sleep(time.Second * 5)
     }
 
-    return tw.Flush()
+    return nil
 }
