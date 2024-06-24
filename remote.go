@@ -16,7 +16,6 @@ func subcmdCfgRemote() *cli.Command {
         Name: "remote",
         Usage: "Remote operations on video files.",
         Subcommands: []*cli.Command{
-            cmdCfgHello(),
             cmdCfgStart(),
             cmdCfgCheck(),
             cmdCfgStartShow(),
@@ -30,36 +29,6 @@ func subcmdCfgRemote() *cli.Command {
             },
         },
     }
-}
-
-func cmdCfgHello() *cli.Command {
-    return &cli.Command{
-        Name: "hello",
-        Usage: "hello world to remote transcoding server.",
-        Action: cmdHello,
-    }
-}
-
-func cmdHello(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a single file path")
-    }
-    inPath := args[0]
-    conn, err := grpc.DialContext(c.Context, c.String("target"), grpc.WithTransportCredentials(insecure.NewCredentials()))
-    if  err != nil {
-        return fmt.Errorf("when dialing %w", err)
-    }
-    defer conn.Close()
-
-    client := pb.NewTCServerClient(conn)
-
-    resp, err := client.HelloWorld(c.Context, &pb.HelloWorldRequest{In: inPath})
-    if err != nil {
-        return fmt.Errorf("from RPC: %w", err)
-    }
-    fmt.Println(resp)
-    return nil
 }
 
 func cmdCfgStart() *cli.Command {
