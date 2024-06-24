@@ -18,6 +18,10 @@ func cmdCfgConfig() *cli.Command {
                 Name: "MkvUtilServerTarget",
                 Usage: "set RPC target for Mkv Util Server.",
             },
+            &cli.StringFlag{
+                Name: "TcServerTarget",
+                Usage: "set RPC target for Transcode Server.",
+            },
         },
     }
 }
@@ -36,6 +40,10 @@ func cmdConfig(c *cli.Context) error {
     if t := c.String("MkvUtilServerTarget"); len(t) > 0 {
         needWrite = true
         cfg.MkvUtilServerTarget = t
+    }
+    if t := c.String("TcServerTarget"); len(t) > 0 {
+        needWrite = true
+        cfg.TcServerTarget = t
     }
     if needWrite {
         if err := writeConfig(cfg, tp.ConfigPath()); err != nil {

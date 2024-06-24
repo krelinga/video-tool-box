@@ -9,6 +9,7 @@ import (
 
 type config struct {
     MkvUtilServerTarget string
+    TcServerTarget string
 }
 
 func (c *config) String() string {
@@ -21,6 +22,7 @@ func (c *config) String() string {
 
     b := &strings.Builder{}
     fmt.Fprintf(b, "MkvUtilServerTarget: %s\n", q(c.MkvUtilServerTarget))
+    fmt.Fprintf(b, "TcServerTarget: %s\n", q(c.TcServerTarget))
     return b.String()
 }
 
