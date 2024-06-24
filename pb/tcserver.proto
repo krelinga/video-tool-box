@@ -11,14 +11,6 @@ message HelloWorldReply {
     int64 file_size = 2;
 }
 
-message TranscodeOneFileRequest {
-    string in_path = 1;
-    string out_path = 2;
-}
-
-message TranscodeOneFileReply {
-}
-
 message StartAsyncTranscodeRequest {
     // Must be unique among all running transcodes on the server.
     string name = 1;
