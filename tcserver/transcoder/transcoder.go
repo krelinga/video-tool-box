@@ -504,28 +504,38 @@ const (
 type Operation struct {
     Name string
     Typ Type
+    St State
 }
 
 func (t *Transcoder) List() []*Operation {
     t.mu.Lock()
     defer t.mu.Unlock()
     out := make([]*Operation, 0, len(t.files) + len(t.shows) + len(t.spreads))
-    for name, _ := range t.files {
+    for name, op := range t.files {
+        op.mu.Lock()
+        defer op.mu.Unlock()
         out = append(out, &Operation{
             Name: name,
             Typ: TypeSingleFile,
+            St: op.St,
         })
     }
-    for name, _ := range t.shows {
+    for name, op := range t.shows {
+        op.mu.Lock()
+        defer op.mu.Unlock()
         out = append(out, &Operation{
             Name: name,
             Typ: TypeShow,
+            St: op.St,
         })
     }
-    for name, _ := range t.spreads {
+    for name, op := range t.spreads {
+        op.mu.Lock()
+        defer op.mu.Unlock()
         out = append(out, &Operation{
             Name: name,
             Typ: TypeSpread,
+            St: op.St,
         })
     }
     return out

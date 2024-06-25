@@ -430,10 +430,10 @@ func cmdRemoteList(c *cli.Context) error {
         return err
     }
     tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
-    fmt.Fprintln(tw, "name\ttype")
-    fmt.Fprintln(tw, "----\t----")
+    fmt.Fprintln(tw, "name\ttype\tstate")
+    fmt.Fprintln(tw, "----\t----\t-----")
     for _, op := range reply.Op {
-        fmt.Fprintf(tw, "%s\t%s\n", op.Name, op.Type)
+        fmt.Fprintf(tw, "%s\t%s\t%s\n", op.Name, op.Type, op.State)
     }
     return tw.Flush()
 }

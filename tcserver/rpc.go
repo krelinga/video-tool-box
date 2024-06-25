@@ -192,6 +192,20 @@ func (tcs *tcServer) ListAsyncTranscodes(ctx context.Context, req *pb.ListAsyncT
                     panic(op.Typ)
                 }
             }(),
+            State: func() pb.TranscodeState {
+                switch op.St {
+                case transcoder.StateNotStarted:
+                    return pb.TranscodeState_NOT_STARTED
+                case transcoder.StateInProgress:
+                    return pb.TranscodeState_IN_PROGRESS
+                case transcoder.StateComplete:
+                    return pb.TranscodeState_DONE
+                case transcoder.StateError:
+                    return pb.TranscodeState_FAILED
+                default:
+                    panic(op.St)
+                }
+            }(),
         }
         out.Op = append(out.Op, opProto)
     }

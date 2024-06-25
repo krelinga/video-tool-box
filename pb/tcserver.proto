@@ -114,6 +114,7 @@ message ListAsyncTranscodesReply {
         }
         string name = 1;
         Type type = 2;
+        TranscodeState state = 3;
     }
     repeated Op op = 1;
 }
