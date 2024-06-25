@@ -107,6 +107,9 @@ func cmdCfgCheck() *cli.Command {
     return &cli.Command{
         Name: "check",
         Usage: "check on an async transcode on the server.",
+        Flags: []cli.Flag{
+            watchFlag,
+        },
         Action: cmdAsyncTranscodeCheck,
     }
 }
@@ -128,14 +131,25 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
     }
     defer cleanup()
 
-    reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
-    if err != nil {
-        return err
-    }
+    for {
+        if c.Bool("watch") {
+            if err := clearScreen(c.App.Writer); err != nil {
+                return err
+            }
+        }
+        reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
+        if err != nil {
+            return err
+        }
 
-    fmt.Fprintln(c.App.Writer, reply)
-    if len(reply.ErrorMessage) > 0 {
-        fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        fmt.Fprintln(c.App.Writer, reply)
+        if len(reply.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        }
+        if !c.Bool("watch") {
+            break
+        }
+        time.Sleep(time.Second * 5)
     }
     return nil
 }
