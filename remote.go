@@ -26,6 +26,7 @@ func subcmdCfgRemote() *cli.Command {
             cmdCfgCheckShow(),
             cmdCfgStartSpread(),
             cmdCfgCheckSpread(),
+            cmdCfgRemoteList(),
         },
     }
 }
@@ -408,4 +409,31 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
     }
 
     return nil
+}
+
+func cmdCfgRemoteList() *cli.Command {
+    return &cli.Command{
+        Name: "list",
+        Usage: "List async transcode operations of all types",
+        Action: cmdRemoteList,
+    }
+}
+
+func cmdRemoteList(c *cli.Context) error {
+    client, cleanup, err := dialTcServer(c)
+    if err != nil {
+        return err
+    }
+    defer cleanup()
+    reply, err := client.ListAsyncTranscodes(c.Context, &pb.ListAsyncTranscodesRequest{})
+    if err != nil {
+        return err
+    }
+    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
+    fmt.Fprintln(tw, "name\ttype")
+    fmt.Fprintln(tw, "----\t----")
+    for _, op := range reply.Op {
+        fmt.Fprintf(tw, "%s\t%s\n", op.Name, op.Type)
+    }
+    return tw.Flush()
 }

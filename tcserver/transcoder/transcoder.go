@@ -492,3 +492,41 @@ func (t *Transcoder) CheckSpread(name string, fn func(*SpreadState)) error {
     fn(state)
     return nil
 }
+
+type Type int
+const (
+    TypeUnknown Type = iota
+    TypeSingleFile
+    TypeShow
+    TypeSpread
+)
+
+type Operation struct {
+    Name string
+    Typ Type
+}
+
+func (t *Transcoder) List() []*Operation {
+    t.mu.Lock()
+    defer t.mu.Unlock()
+    out := make([]*Operation, 0, len(t.files) + len(t.shows) + len(t.spreads))
+    for name, _ := range t.files {
+        out = append(out, &Operation{
+            Name: name,
+            Typ: TypeSingleFile,
+        })
+    }
+    for name, _ := range t.shows {
+        out = append(out, &Operation{
+            Name: name,
+            Typ: TypeShow,
+        })
+    }
+    for name, _ := range t.spreads {
+        out = append(out, &Operation{
+            Name: name,
+            Typ: TypeSpread,
+        })
+    }
+    return out
+}

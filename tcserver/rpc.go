@@ -174,3 +174,26 @@ func (tcs *tcServer) CheckAsyncSpreadTranscode(ctx context.Context, req *pb.Chec
     }
     return reply, tcs.tc.CheckSpread(req.Name, readState)
 }
+
+func (tcs *tcServer) ListAsyncTranscodes(ctx context.Context, req *pb.ListAsyncTranscodesRequest) (*pb.ListAsyncTranscodesReply, error) {
+    out := &pb.ListAsyncTranscodesReply {}
+    for _, op := range tcs.tc.List() {
+        opProto := &pb.ListAsyncTranscodesReply_Op{
+            Name: op.Name,
+            Type: func() pb.ListAsyncTranscodesReply_Op_Type {
+                switch op.Typ {
+                case transcoder.TypeSingleFile:
+                    return pb.ListAsyncTranscodesReply_Op_SINGLE_FILE
+                case transcoder.TypeShow:
+                    return pb.ListAsyncTranscodesReply_Op_SHOW
+                case transcoder.TypeSpread:
+                    return pb.ListAsyncTranscodesReply_Op_SPREAD
+                default:
+                    panic(op.Typ)
+                }
+            }(),
+        }
+        out.Op = append(out.Op, opProto)
+    }
+    return out, nil
+}

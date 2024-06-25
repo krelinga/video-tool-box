@@ -101,6 +101,23 @@ message CheckAsyncSpreadTranscodeReply {
     string error_message = 3;
 }
 
+message ListAsyncTranscodesRequest {
+}
+
+message ListAsyncTranscodesReply {
+    message Op {
+        enum Type {
+            UNKNOWN = 0;
+            SINGLE_FILE = 1;
+            SHOW = 2;
+            SPREAD = 3;
+        }
+        string name = 1;
+        Type type = 2;
+    }
+    repeated Op op = 1;
+}
+
 service TCServer {
     rpc StartAsyncTranscode(StartAsyncTranscodeRequest) returns (StartAsyncTranscodeReply) {}
     rpc CheckAsyncTranscode(CheckAsyncTranscodeRequest) returns (CheckAsyncTranscodeReply) {}
@@ -110,4 +127,6 @@ service TCServer {
 
     rpc StartAsyncSpreadTranscode(StartAsyncSpreadTranscodeRequest) returns (StartAsyncSpreadTranscodeReply) {}
     rpc CheckAsyncSpreadTranscode(CheckAsyncSpreadTranscodeRequest) returns (CheckAsyncSpreadTranscodeReply) {}
+
+    rpc ListAsyncTranscodes(ListAsyncTranscodesRequest) returns (ListAsyncTranscodesReply) {}
 }
