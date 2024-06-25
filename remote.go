@@ -30,6 +30,18 @@ func subcmdCfgRemote() *cli.Command {
     }
 }
 
+var watchFlag = &cli.BoolFlag{
+    Name: "watch",
+    Usage: "check for progress in a loop.",
+}
+
+func clearScreen(out io.Writer) error {
+    cmd := exec.Command("clear")
+    cmd.Stdout = out
+    return cmd.Run()
+}
+
+
 func cmdCfgStart() *cli.Command {
     return &cli.Command{
         Name: "start",
@@ -327,17 +339,6 @@ func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
     _, err = client.StartAsyncSpreadTranscode(c.Context, req)
 
     return err
-}
-
-var watchFlag = &cli.BoolFlag{
-    Name: "watch",
-    Usage: "check for progress in a loop.",
-}
-
-func clearScreen(out io.Writer) error {
-    cmd := exec.Command("clear")
-    cmd.Stdout = out
-    return cmd.Run()
 }
 
 func cmdCfgCheckSpread() *cli.Command {
