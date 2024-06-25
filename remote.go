@@ -196,6 +196,9 @@ func cmdCfgCheckShow() *cli.Command {
     return &cli.Command{
         Name: "checkshow",
         Usage: "check on an async show transcode on the server.",
+        Flags: []cli.Flag{
+            watchFlag,
+        },
         Action: cmdAsyncTranscodeCheckShow,
     }
 }
@@ -217,31 +220,45 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
     }
     defer cleanup()
 
-    reply, err := client.CheckAsyncShowTranscode(c.Context, &pb.CheckAsyncShowTranscodeRequest{Name: name})
-    if err != nil {
-        return err
-    }
-
-    fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.State)
-    if len(reply.ErrorMessage) > 0 {
-        fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.ErrorMessage)
-    }
-    fmt.Fprintf(c.App.Writer, "Episodes:\n")
-    fmt.Fprintf(c.App.Writer, "=========\n")
-    tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
-    fmt.Fprintln(tw, "index\tepisode\tstate\tprogress/error")
-    fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
-    for i, f := range reply.File {
-        progOrError := func() string {
-            if len(f.ErrorMessage) > 0 {
-                return f.ErrorMessage
+    for {
+        if c.Bool("watch") {
+            if err := clearScreen(c.App.Writer); err != nil {
+                return err
             }
-            return f.Progress
         }
-        fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, f.State, progOrError())
+        reply, err := client.CheckAsyncShowTranscode(c.Context, &pb.CheckAsyncShowTranscodeRequest{Name: name})
+        if err != nil {
+            return err
+        }
+
+        fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.State)
+        if len(reply.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.ErrorMessage)
+        }
+        fmt.Fprintf(c.App.Writer, "Episodes:\n")
+        fmt.Fprintf(c.App.Writer, "=========\n")
+        tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
+        fmt.Fprintln(tw, "index\tepisode\tstate\tprogress/error")
+        fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
+        for i, f := range reply.File {
+            progOrError := func() string {
+                if len(f.ErrorMessage) > 0 {
+                    return f.ErrorMessage
+                }
+                return f.Progress
+            }
+            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, f.State, progOrError())
+        }
+        if err := tw.Flush(); err != nil {
+            return err
+        }
+        if !c.Bool("watch") {
+            break
+        }
+        time.Sleep(time.Second * 5)
     }
 
-    return tw.Flush()
+    return nil
 }
 
 func cmdCfgStartSpread() *cli.Command {
