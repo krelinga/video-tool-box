@@ -10,7 +10,6 @@ RUN go mod download
 # TODO: it would be nice to have a better way to recursively copy _all_
 # the source files to their correct directories...
 COPY *.go ./
-COPY pb/*.go ./pb/
 COPY tcserver/*.go ./tcserver/
 COPY tcserver/hb/*.go ./tcserver/hb/
 COPY tcserver/transcoder/*.go ./tcserver/transcoder/

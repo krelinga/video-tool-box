@@ -6,9 +6,10 @@ import (
     "net"
     "strconv"
 
-    "github.com/krelinga/video-tool-box/pb"
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
     "google.golang.org/grpc"
+
+    pbgrpc "buf.build/gen/go/krelinga/proto/grpc/go/krelinga/video/tcserver/v1/tcserverv1grpc"
 )
 
 func getPort() (int, error) {
@@ -70,7 +71,7 @@ func mainOrError() error {
         return err
     }
     defer tran.Stop()
-    pb.RegisterTCServerServer(grpcServer, newTcServer(profile, &tran))
+    pbgrpc.RegisterTCServiceServer(grpcServer, newTcServer(profile, &tran))
     grpcServer.Serve(lis)  // Runs as long as the server is alive.
 
     return nil

@@ -8,8 +8,9 @@ import (
     "time"
     "testing"
 
-    "github.com/krelinga/video-tool-box/pb"
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
+
+    pb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/tcserver/v1"
 )
 
 func TestOutputPathExists(t *testing.T) {
@@ -68,13 +69,13 @@ func TestOutputPathExists(t *testing.T) {
         if err != nil {
             t.Fatal(err)
         }
-        isInProgress := checkReply.State == pb.TranscodeState_IN_PROGRESS
-        isNotStarted := checkReply.State == pb.TranscodeState_NOT_STARTED
+        isInProgress := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
+        isNotStarted := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
         if isInProgress || isNotStarted {
             retry = true
             return
         }
-        failed := checkReply.State == pb.TranscodeState_FAILED
+        failed := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_FAILED
         correctError := strings.Contains(checkReply.ErrorMessage, "already exists")
         if failed && correctError {
             // This is our expected case.

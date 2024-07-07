@@ -10,9 +10,11 @@ import (
     "time"
 
     cli "github.com/urfave/cli/v2"
-    "github.com/krelinga/video-tool-box/pb"
     "google.golang.org/grpc"
     "google.golang.org/grpc/credentials/insecure"
+
+    pb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/tcserver/v1"
+    pbgrpc "buf.build/gen/go/krelinga/proto/grpc/go/krelinga/video/tcserver/v1/tcserverv1grpc"
 )
 
 func subcmdCfgRemote() *cli.Command {
@@ -58,7 +60,7 @@ func cmdCfgStart() *cli.Command {
     }
 }
 
-func dialTcServer(c *cli.Context) (pb.TCServerClient, func(), error) {
+func dialTcServer(c *cli.Context) (pbgrpc.TCServiceClient, func(), error) {
     tp, ok := toolPathsFromContext(c.Context)
     if !ok {
         return nil, nil, errors.New("toolPaths not present in context")
@@ -75,7 +77,7 @@ func dialTcServer(c *cli.Context) (pb.TCServerClient, func(), error) {
     cleanup := func() {
         conn.Close()
     }
-    client := pb.NewTCServerClient(conn)
+    client := pbgrpc.NewTCServiceClient(conn)
     return client, cleanup, nil
 }
 

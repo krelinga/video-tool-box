@@ -5,7 +5,6 @@ FROM krelinga/video-tool-box-base:buildx-latest AS build-stage
 WORKDIR /app
 
 COPY go.mod go.sum ./
-COPY pb/*.go ./pb/
 RUN go mod download
 
 COPY *.go ./
