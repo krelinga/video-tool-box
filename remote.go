@@ -1,20 +1,20 @@
 package main
 
 import (
-    "fmt"
     "errors"
+    "fmt"
     "io"
+    "net/http"
     "os/exec"
     "path/filepath"
     "text/tabwriter"
     "time"
 
+    "connectrpc.com/connect"
     cli "github.com/urfave/cli/v2"
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
 
     pb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/tcserver/v1"
-    pbgrpc "buf.build/gen/go/krelinga/proto/grpc/go/krelinga/video/tcserver/v1/tcserverv1grpc"
+    pbconnect "buf.build/gen/go/krelinga/proto/connectrpc/go/krelinga/video/tcserver/v1/tcserverv1connect"
 )
 
 func subcmdCfgRemote() *cli.Command {
@@ -60,25 +60,16 @@ func cmdCfgStart() *cli.Command {
     }
 }
 
-func dialTcServer(c *cli.Context) (pbgrpc.TCServiceClient, func(), error) {
+func dialTcServer(c *cli.Context) (pbconnect.TCServiceClient, error) {
     tp, ok := toolPathsFromContext(c.Context)
     if !ok {
-        return nil, nil, errors.New("toolPaths not present in context")
+        return nil, errors.New("toolPaths not present in context")
     }
     cfg, err := readConfig(tp.ConfigPath())
     if err != nil {
-        return nil, nil, err
+        return nil, err
     }
-    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, cfg.TcServerTarget, creds)
-    if  err != nil {
-        return nil, nil, fmt.Errorf("when dialing %w", err)
-    }
-    cleanup := func() {
-        conn.Close()
-    }
-    client := pbgrpc.NewTCServiceClient(conn)
-    return client, cleanup, nil
+    return pbconnect.NewTCServiceClient(http.DefaultClient, cfg.TcServerTarget), nil
 }
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
@@ -100,18 +91,17 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
         return err
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
-    req := &pb.StartAsyncTranscodeRequest{
+    req := connect.NewRequest(&pb.StartAsyncTranscodeRequest{
         Name: name,
         InPath: inPath,
         OutPath: outPath,
         Profile: c.String("profile"),
-    }
+    })
 
     _, err = client.StartAsyncTranscode(c.Context, req)
 
@@ -140,11 +130,10 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
     for {
         if c.Bool("watch") {
@@ -152,14 +141,15 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
                 return err
             }
         }
-        reply, err := client.CheckAsyncTranscode(c.Context, &pb.CheckAsyncTranscodeRequest{Name: name})
+        request := connect.NewRequest(&pb.CheckAsyncTranscodeRequest{Name: name})
+        reply, err := client.CheckAsyncTranscode(c.Context, request)
         if err != nil {
             return err
         }
 
-        fmt.Fprintln(c.App.Writer, reply)
-        if len(reply.ErrorMessage) > 0 {
-            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        fmt.Fprintln(c.App.Writer, reply.Msg)
+        if len(reply.Msg.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.Msg.ErrorMessage)
         }
         if !c.Bool("watch") {
             break
@@ -203,18 +193,17 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
         return err
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
-    req := &pb.StartAsyncShowTranscodeRequest{
+    req := connect.NewRequest(&pb.StartAsyncShowTranscodeRequest{
         Name: name,
         InDirPath: inDirPath,
         OutParentDirPath: outParentDirPath,
         Profile: c.String("profile"),
-    }
+    })
 
     _, err = client.StartAsyncShowTranscode(c.Context, req)
 
@@ -243,11 +232,10 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
     for {
         if c.Bool("watch") {
@@ -255,21 +243,22 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
                 return err
             }
         }
-        reply, err := client.CheckAsyncShowTranscode(c.Context, &pb.CheckAsyncShowTranscodeRequest{Name: name})
+        request := connect.NewRequest(&pb.CheckAsyncShowTranscodeRequest{Name: name})
+        reply, err := client.CheckAsyncShowTranscode(c.Context, request)
         if err != nil {
             return err
         }
 
-        fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.State)
-        if len(reply.ErrorMessage) > 0 {
-            fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.ErrorMessage)
+        fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.Msg.State)
+        if len(reply.Msg.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.Msg.ErrorMessage)
         }
         fmt.Fprintf(c.App.Writer, "Episodes:\n")
         fmt.Fprintf(c.App.Writer, "=========\n")
         tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
         fmt.Fprintln(tw, "index\tepisode\tstate\tprogress/error")
         fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
-        for i, f := range reply.File {
+        for i, f := range reply.Msg.File {
             progOrError := func() string {
                 if len(f.ErrorMessage) > 0 {
                     return f.ErrorMessage
@@ -324,20 +313,19 @@ func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
         return err
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
-    req := &pb.StartAsyncSpreadTranscodeRequest{
+    req := connect.NewRequest(&pb.StartAsyncSpreadTranscodeRequest{
         Name: name,
         InPath: inPath,
         OutParentDirPath: outParentDirPath,
         ProfileList: &pb.StartAsyncSpreadTranscodeRequest_ProfileList{
             Profile: c.StringSlice("profile"),
         },
-    }
+    })
 
     _, err = client.StartAsyncSpreadTranscode(c.Context, req)
 
@@ -366,14 +354,14 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
     for {
-        reply, err := client.CheckAsyncSpreadTranscode(c.Context, &pb.CheckAsyncSpreadTranscodeRequest{Name: name})
+        request := connect.NewRequest(&pb.CheckAsyncSpreadTranscodeRequest{Name: name})
+        reply, err := client.CheckAsyncSpreadTranscode(c.Context, request)
         if err != nil {
             return err
         }
@@ -382,16 +370,16 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
                 return err
             }
         }
-        fmt.Fprintf(c.App.Writer, "State: %s\n", reply.State)
-        if len(reply.ErrorMessage) > 0 {
-            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.ErrorMessage)
+        fmt.Fprintf(c.App.Writer, "State: %s\n", reply.Msg.State)
+        if len(reply.Msg.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.Msg.ErrorMessage)
         }
         fmt.Fprintf(c.App.Writer, "Profiles:\n")
         fmt.Fprintf(c.App.Writer, "=========\n")
         tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
         fmt.Fprintln(tw, "index\tprofile\tstate\tprogress/error")
         fmt.Fprintln(tw, "-----\t-------\t-----\t--------------")
-        for i, f := range reply.Profile {
+        for i, f := range reply.Msg.Profile {
             progOrError := func() string {
                 if len(f.ErrorMessage) > 0 {
                     return f.ErrorMessage
@@ -422,19 +410,19 @@ func cmdCfgRemoteList() *cli.Command {
 }
 
 func cmdRemoteList(c *cli.Context) error {
-    client, cleanup, err := dialTcServer(c)
+    client, err := dialTcServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
-    reply, err := client.ListAsyncTranscodes(c.Context, &pb.ListAsyncTranscodesRequest{})
+    request := connect.NewRequest(&pb.ListAsyncTranscodesRequest{})
+    reply, err := client.ListAsyncTranscodes(c.Context, request)
     if err != nil {
         return err
     }
     tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 3, byte(' '), 0)
     fmt.Fprintln(tw, "name\ttype\tstate")
     fmt.Fprintln(tw, "----\t----\t-----")
-    for _, op := range reply.Op {
+    for _, op := range reply.Msg.Op {
         fmt.Fprintf(tw, "%s\t%s\t%s\n", op.Name, op.Type, op.State)
     }
     return tw.Flush()

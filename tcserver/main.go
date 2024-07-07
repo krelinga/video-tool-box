@@ -3,13 +3,14 @@ package main
 import (
     "fmt"
     "log"
-    "net"
+    "net/http"
     "strconv"
 
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
-    "google.golang.org/grpc"
+    "golang.org/x/net/http2"
+    "golang.org/x/net/http2/h2c"
 
-    pbgrpc "buf.build/gen/go/krelinga/proto/grpc/go/krelinga/video/tcserver/v1/tcserverv1grpc"
+    pbconnect "buf.build/gen/go/krelinga/proto/connectrpc/go/krelinga/video/tcserver/v1/tcserverv1connect"
 )
 
 func getPort() (int, error) {
@@ -27,21 +28,9 @@ func getPort() (int, error) {
 
 func mainOrError() error {
     fmt.Println("hello world!")
-    port, err := getPort()
-    if err != nil {
-        return err
-    }
-    profile, err := getEnvVar("VTB_TCSERVER_PROFILE")
-    if err != nil {
-        return err
-    }
-    lis, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
-    if err != nil {
-        return err
-    }
-    grpcServer := grpc.NewServer()
 
     tran := transcoder.Transcoder{}
+    var err error
     tran.FileWorkers, err = getEnvVarInt("VTB_TCSERVER_FILE_WORKERS")
     if err != nil {
         return err
@@ -67,12 +56,25 @@ func mainOrError() error {
         return err
     }
 
-    if err := tran.Start(); err != nil {
+    if err = tran.Start(); err != nil {
         return err
     }
     defer tran.Stop()
-    pbgrpc.RegisterTCServiceServer(grpcServer, newTcServer(profile, &tran))
-    grpcServer.Serve(lis)  // Runs as long as the server is alive.
+
+    profile, err := getEnvVar("VTB_TCSERVER_PROFILE")
+    if err != nil {
+        return err
+    }
+    port, err := getPort()
+    if err != nil {
+        return err
+    }
+
+    mux := http.NewServeMux()
+    path, handler := pbconnect.NewTCServiceHandler(newTcServer(profile, &tran))
+    mux.Handle(path, handler)
+    // Runs as long as the server is alive.
+    http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", port), h2c.NewHandler(mux, &http2.Server{}))
 
     return nil
 }

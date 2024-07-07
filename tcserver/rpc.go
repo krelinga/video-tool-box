@@ -6,15 +6,13 @@ import (
     "fmt"
     "strings"
 
+    "connectrpc.com/connect"
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
 
     pb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/tcserver/v1"
-    pbgrpc "buf.build/gen/go/krelinga/proto/grpc/go/krelinga/video/tcserver/v1/tcserverv1grpc"
 )
 
 type tcServer struct {
-    pbgrpc.UnimplementedTCServiceServer
-
     defaultProfile  string
     tc* transcoder.Transcoder
 }
@@ -26,54 +24,54 @@ func newTcServer(defaultProfile string, tc *transcoder.Transcoder) *tcServer {
     }
 }
 
-func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *pb.StartAsyncTranscodeRequest) (*pb.StartAsyncTranscodeResponse, error) {
+func (tcs *tcServer) StartAsyncTranscode(ctx context.Context, req *connect.Request[pb.StartAsyncTranscodeRequest]) (*connect.Response[pb.StartAsyncTranscodeResponse], error) {
     fmt.Printf("StartAsyncTranscode: %v\n", req)
     profile := func() string {
-        if len(req.Profile) > 0 {
-            return req.Profile
+        if len(req.Msg.Profile) > 0 {
+            return req.Msg.Profile
         }
         return tcs.defaultProfile
     }()
     fmt.Printf("using profile %s\n", profile)
-    err := tcs.tc.StartFile(req.Name, req.InPath, req.OutPath, profile)
-    return &pb.StartAsyncTranscodeResponse{}, err
+    err := tcs.tc.StartFile(req.Msg.Name, req.Msg.InPath, req.Msg.OutPath, profile)
+    return connect.NewResponse(&pb.StartAsyncTranscodeResponse{}), err
 }
 
-func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *pb.CheckAsyncTranscodeRequest) (*pb.CheckAsyncTranscodeResponse, error) {
+func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *connect.Request[pb.CheckAsyncTranscodeRequest]) (*connect.Response[pb.CheckAsyncTranscodeResponse], error) {
     fmt.Printf("CheckAsyncTranscode: %v\n", req)
-    reply := &pb.CheckAsyncTranscodeResponse{}
+    reply := connect.NewResponse(&pb.CheckAsyncTranscodeResponse{})
     readState := func(s *transcoder.SingleFileState) {
         switch s.St {
         case transcoder.StateNotStarted:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
         case transcoder.StateInProgress:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
             if s.Latest != nil {
-                reply.Progress = s.Latest.String()
+                reply.Msg.Progress = s.Latest.String()
             }
         case transcoder.StateComplete:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_DONE
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_DONE
         case transcoder.StateError:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
-            reply.ErrorMessage = s.Err.Error()
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
+            reply.Msg.ErrorMessage = s.Err.Error()
         default:
             panic(s.St)
         }
     }
-    return reply, tcs.tc.CheckFile(req.Name, readState)
+    return reply, tcs.tc.CheckFile(req.Msg.Name, readState)
 }
 
-func (tcs *tcServer) StartAsyncShowTranscode(ctx context.Context, req *pb.StartAsyncShowTranscodeRequest) (*pb.StartAsyncShowTranscodeResponse, error) {
+func (tcs *tcServer) StartAsyncShowTranscode(ctx context.Context, req *connect.Request[pb.StartAsyncShowTranscodeRequest]) (*connect.Response[pb.StartAsyncShowTranscodeResponse], error) {
     fmt.Printf("StartAsyncShowTranscode: %v\n", req)
     profile := func() string {
-        if len(req.Profile) > 0 {
-            return req.Profile
+        if len(req.Msg.Profile) > 0 {
+            return req.Msg.Profile
         }
         return tcs.defaultProfile
     }()
     fmt.Printf("using profile %s\n", profile)
-    err := tcs.tc.StartShow(req.Name, req.InDirPath, req.OutParentDirPath, profile)
-    return &pb.StartAsyncShowTranscodeResponse{}, err
+    err := tcs.tc.StartShow(req.Msg.Name, req.Msg.InDirPath, req.Msg.OutParentDirPath, profile)
+    return connect.NewResponse(&pb.StartAsyncShowTranscodeResponse{}), err
 }
 
 func cleanEpisode(episodePath, showDir string) string {
@@ -85,13 +83,13 @@ func cleanEpisode(episodePath, showDir string) string {
     return clean
 }
 
-func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckAsyncShowTranscodeRequest) (*pb.CheckAsyncShowTranscodeResponse, error) {
+func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *connect.Request[pb.CheckAsyncShowTranscodeRequest]) (*connect.Response[pb.CheckAsyncShowTranscodeResponse], error) {
     fmt.Printf("CheckAsyncShowTranscode: %v\n", req)
-    reply := &pb.CheckAsyncShowTranscodeResponse{}
+    reply := connect.NewResponse(&pb.CheckAsyncShowTranscodeResponse{})
     readState := func(s *transcoder.ShowState) {
         for _, fileState := range s.FileStates {
             fileStateProto := &pb.CheckAsyncShowTranscodeResponse_File{}
-            reply.File = append(reply.File, fileStateProto)
+            reply.Msg.File = append(reply.Msg.File, fileStateProto)
             fileStateProto.Episode = cleanEpisode(fileState.InPath(), s.InDirPath())
             switch fileState.St {
             case transcoder.StateNotStarted:
@@ -112,38 +110,38 @@ func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *pb.CheckA
         }
         switch s.St {
         case transcoder.StateNotStarted:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
         case transcoder.StateInProgress:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
         case transcoder.StateComplete:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_DONE
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_DONE
         case transcoder.StateError:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
-            reply.ErrorMessage = s.Err.Error()
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
+            reply.Msg.ErrorMessage = s.Err.Error()
         }
     }
-    return reply, tcs.tc.CheckShow(req.Name, readState)
+    return reply, tcs.tc.CheckShow(req.Msg.Name, readState)
 }
 
-func (tcs *tcServer) StartAsyncSpreadTranscode(ctx context.Context, req *pb.StartAsyncSpreadTranscodeRequest) (*pb.StartAsyncSpreadTranscodeResponse, error) {
+func (tcs *tcServer) StartAsyncSpreadTranscode(ctx context.Context, req *connect.Request[pb.StartAsyncSpreadTranscodeRequest]) (*connect.Response[pb.StartAsyncSpreadTranscodeResponse], error) {
     fmt.Printf("StartAsyncSpreadTranscode: %v\n", req)
     var profiles []string
-    if req.ProfileList != nil {
-        profiles = req.ProfileList.Profile
+    if req.Msg.ProfileList != nil {
+        profiles = req.Msg.ProfileList.Profile
     } else {
         return nil, errors.New("No profile info specified")
     }
-    err := tcs.tc.StartSpread(req.Name, req.InPath, req.OutParentDirPath, profiles)
-    return &pb.StartAsyncSpreadTranscodeResponse{}, err
+    err := tcs.tc.StartSpread(req.Msg.Name, req.Msg.InPath, req.Msg.OutParentDirPath, profiles)
+    return connect.NewResponse(&pb.StartAsyncSpreadTranscodeResponse{}), err
 }
 
-func (tcs *tcServer) CheckAsyncSpreadTranscode(ctx context.Context, req *pb.CheckAsyncSpreadTranscodeRequest) (*pb.CheckAsyncSpreadTranscodeResponse, error) {
+func (tcs *tcServer) CheckAsyncSpreadTranscode(ctx context.Context, req *connect.Request[pb.CheckAsyncSpreadTranscodeRequest]) (*connect.Response[pb.CheckAsyncSpreadTranscodeResponse], error) {
     fmt.Printf("CheckAsyncSpreadTranscode: %v\n", req)
-    reply := &pb.CheckAsyncSpreadTranscodeResponse{}
+    reply := connect.NewResponse(&pb.CheckAsyncSpreadTranscodeResponse{})
     readState := func(s *transcoder.SpreadState) {
         for _, profileState := range s.FileStates {
             profileStateProto := &pb.CheckAsyncSpreadTranscodeResponse_Profile{}
-            reply.Profile = append(reply.Profile, profileStateProto)
+            reply.Msg.Profile = append(reply.Msg.Profile, profileStateProto)
             profileStateProto.Profile = profileState.Profile()
             switch profileState.St {
             case transcoder.StateNotStarted:
@@ -164,21 +162,21 @@ func (tcs *tcServer) CheckAsyncSpreadTranscode(ctx context.Context, req *pb.Chec
         }
         switch s.St {
         case transcoder.StateNotStarted:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
         case transcoder.StateInProgress:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
         case transcoder.StateComplete:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_DONE
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_DONE
         case transcoder.StateError:
-            reply.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
-            reply.ErrorMessage = s.Err.Error()
+            reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_FAILED
+            reply.Msg.ErrorMessage = s.Err.Error()
         }
     }
-    return reply, tcs.tc.CheckSpread(req.Name, readState)
+    return reply, tcs.tc.CheckSpread(req.Msg.Name, readState)
 }
 
-func (tcs *tcServer) ListAsyncTranscodes(ctx context.Context, req *pb.ListAsyncTranscodesRequest) (*pb.ListAsyncTranscodesResponse, error) {
-    out := &pb.ListAsyncTranscodesResponse{}
+func (tcs *tcServer) ListAsyncTranscodes(ctx context.Context, req *connect.Request[pb.ListAsyncTranscodesRequest]) (*connect.Response[pb.ListAsyncTranscodesResponse], error) {
+    out := connect.NewResponse(&pb.ListAsyncTranscodesResponse{})
     for _, op := range tcs.tc.List() {
         opProto := &pb.ListAsyncTranscodesResponse_Op{
             Name: op.Name,
@@ -209,7 +207,7 @@ func (tcs *tcServer) ListAsyncTranscodes(ctx context.Context, req *pb.ListAsyncT
                 }
             }(),
         }
-        out.Op = append(out.Op, opProto)
+        out.Msg.Op = append(out.Msg.Op, opProto)
     }
     return out, nil
 }

@@ -8,6 +8,7 @@ import (
     "time"
     "testing"
 
+    "connectrpc.com/connect"
     "github.com/krelinga/video-tool-box/tcserver/transcoder"
 
     pb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/tcserver/v1"
@@ -51,32 +52,32 @@ func TestOutputPathExists(t *testing.T) {
     tcServer := newTcServer(defaultProfile, &tran)
 
     const name = "test"
-    startReq := &pb.StartAsyncTranscodeRequest{
+    startReq := connect.NewRequest(&pb.StartAsyncTranscodeRequest{
         Name: name,
         InPath: inPath,
         OutPath: outPath,
-    }
+    })
     _, err = tcServer.StartAsyncTranscode(context.Background(), startReq)
     if err != nil {
         t.Fatal(err)
     }
 
     checkForError := func() (retry bool) {
-        checkReq := &pb.CheckAsyncTranscodeRequest{
+        checkReq := connect.NewRequest(&pb.CheckAsyncTranscodeRequest{
             Name: name,
-        }
+        })
         checkReply, err := tcServer.CheckAsyncTranscode(context.Background(), checkReq)
         if err != nil {
             t.Fatal(err)
         }
-        isInProgress := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
-        isNotStarted := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
+        isInProgress := checkReply.Msg.State == pb.TranscodeState_TRANSCODE_STATE_IN_PROGRESS
+        isNotStarted := checkReply.Msg.State == pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
         if isInProgress || isNotStarted {
             retry = true
             return
         }
-        failed := checkReply.State == pb.TranscodeState_TRANSCODE_STATE_FAILED
-        correctError := strings.Contains(checkReply.ErrorMessage, "already exists")
+        failed := checkReply.Msg.State == pb.TranscodeState_TRANSCODE_STATE_FAILED
+        correctError := strings.Contains(checkReply.Msg.ErrorMessage, "already exists")
         if failed && correctError {
             // This is our expected case.
             retry = false
