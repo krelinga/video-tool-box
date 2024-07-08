@@ -3,15 +3,17 @@ package main
 import (
     "errors"
     "fmt"
+    "net/http"
     "path/filepath"
     "regexp"
     "strconv"
     "text/tabwriter"
 
-    "google.golang.org/grpc"
-    "google.golang.org/grpc/credentials/insecure"
+    "connectrpc.com/connect"
     cli "github.com/urfave/cli/v2"
-    muspb "github.com/krelinga/mkv-util-server/pb"
+
+    muspb "buf.build/gen/go/krelinga/proto/protocolbuffers/go/krelinga/video/mkv_util_server/v1"
+    muspbconnect "buf.build/gen/go/krelinga/proto/connectrpc/go/krelinga/video/mkv_util_server/v1/mkv_util_serverv1connect"
 )
 
 func subcmdCfgMkv() *cli.Command {
@@ -28,25 +30,16 @@ func subcmdCfgMkv() *cli.Command {
 }
 
 // Returns the client, a function to call to clean up the client, and any error.
-func dialMkvUtilsServer(c *cli.Context) (muspb.MkvUtilClient, func(), error) {
+func dialMkvUtilsServer(c *cli.Context) (muspbconnect.MkvUtilServiceClient, error) {
     tp, ok := toolPathsFromContext(c.Context)
     if !ok {
-        return nil, nil, errors.New("toolPaths not present in context")
+        return nil, errors.New("toolPaths not present in context")
     }
     cfg, err := readConfig(tp.ConfigPath())
     if err != nil {
-        return nil, nil, err
+        return nil, err
     }
-    creds := grpc.WithTransportCredentials(insecure.NewCredentials())
-    conn, err := grpc.DialContext(c.Context, cfg.MkvUtilServerTarget, creds)
-    if  err != nil {
-        return nil, nil, fmt.Errorf("when dialing %w", err)
-    }
-    cleanup := func() {
-        conn.Close()
-    }
-    client := muspb.NewMkvUtilClient(conn)
-    return client, cleanup, nil
+    return muspbconnect.NewMkvUtilServiceClient(http.DefaultClient, cfg.MkvUtilServerTarget), nil
 }
 
 func cmdCfgMkvInfo() *cli.Command {
@@ -68,19 +61,18 @@ func cmdMkvInfo(c *cli.Context) error {
     if err != nil {
         return fmt.Errorf("Could not determine absolute path name: %w", err)
     }
-    client, cleanup, err := dialMkvUtilsServer(c)
+    client, err := dialMkvUtilsServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
-    resp, err := client.GetInfo(c.Context, &muspb.GetInfoRequest{
+    resp, err := client.GetInfo(c.Context, connect.NewRequest(&muspb.GetInfoRequest{
         InPath: path,
-    })
+    }))
     if err != nil {
         return err
     }
 
-    _, err = fmt.Fprintf(c.App.Writer, "%s\n", resp)
+    _, err = fmt.Fprintf(c.App.Writer, "%s\n", resp.Msg)
     return err
 }
 
@@ -146,15 +138,14 @@ func cmdMkvSplit(c *cli.Context) error {
         }
         outs = append(outs, c)
     }
-    req := &muspb.SplitRequest{
+    req := connect.NewRequest(&muspb.SplitRequest{
         InPath: in,
         ByChapters: outs,
-    }
-    client, cleanup, err := dialMkvUtilsServer(c)
+    })
+    client, err := dialMkvUtilsServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
     _, err = client.Split(c.Context, req)
     return err
 }
@@ -178,15 +169,14 @@ func cmdMkvChapters(c *cli.Context) error {
     if err != nil {
         return fmt.Errorf("Could not get absolute path: %w", err)
     }
-    req := &muspb.GetChaptersRequest{
+    req := connect.NewRequest(&muspb.GetChaptersRequest{
         InPath: in,
-        Format: muspb.ChaptersFormat_CF_SIMPLE,
-    }
-    client, cleanup, err := dialMkvUtilsServer(c)
+        Format: muspb.ChaptersFormat_CHAPTERS_FORMAT_SIMPLE,
+    })
+    client, err := dialMkvUtilsServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
     resp, err := client.GetChapters(c.Context, req)
     if err != nil {
         return err
@@ -201,7 +191,7 @@ func cmdMkvChapters(c *cli.Context) error {
     if err != nil {
         return err
     }
-    for _, c := range resp.Chapters.Simple.Chapters {
+    for _, c := range resp.Msg.Chapters.Simple.Chapters {
         _, err := fmt.Fprintf(tw, "%d\t%s\t%s\n", c.Number, c.Name, c.Offset.AsDuration())
         if err != nil {
             return err
@@ -233,25 +223,24 @@ func cmdCfgMkvConcat() *cli.Command {
 }
 
 func cmdMkvConcat(c *cli.Context) error {
-    req := &muspb.ConcatRequest{}
+    req := connect.NewRequest(&muspb.ConcatRequest{})
     for _, in := range c.StringSlice("in") {
         fullPath, err := filepath.Abs(in)
         if err != nil {
             return fmt.Errorf("Could not get absolute path: %w", err)
         }
-        req.InputPaths = append(req.InputPaths, fullPath)
+        req.Msg.InputPaths = append(req.Msg.InputPaths, fullPath)
     }
     fullPath, err := filepath.Abs(c.String("out"))
     if err != nil {
         return fmt.Errorf("Could not get absolute path: %w", err)
     }
-    req.OutputPath = fullPath
+    req.Msg.OutputPath = fullPath
 
-    client, cleanup, err := dialMkvUtilsServer(c)
+    client, err := dialMkvUtilsServer(c)
     if err != nil {
         return err
     }
-    defer cleanup()
 
     _, err = client.Concat(c.Context, req)
     return err
