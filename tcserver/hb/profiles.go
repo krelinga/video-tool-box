@@ -445,6 +445,32 @@ var profiles = map[string]flags{
         "--all-subtitles",
         "--subtitle-burned=none",
     },
+
+    // "Production" settings.
+    "sd_live_action": {
+        "-Z", "Matroska/H.265 MKV 480p30",
+        "-q", "20.0",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
+    "sd_animation": {
+        "-Z", "Matroska/H.265 MKV 480p30",
+        "-q", "18.0",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
+    "hd": {
+        "-Z", "Matroska/H.265 MKV 1080p30",
+        "-q", "24.0",
+        "--all-audio",
+        "--non-anamorphic",
+        "--all-subtitles",
+        "--subtitle-burned=none",
+    },
 }
 
 var (
