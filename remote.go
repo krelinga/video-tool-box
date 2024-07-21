@@ -174,6 +174,11 @@ func cmdCfgStartShow() *cli.Command {
                 Value: "",  // Use the default from config.
                 Usage: "Directory to store transcoded shows in.",
             },
+            &cli.StringFlag{
+                Name: "name",
+                Value: "", // Defaults to the input file basename.
+                Usage: "Name to use on transcoding server.",
+            },
         },
         Action: cmdAsyncTranscodeStartShow,
     }
@@ -181,18 +186,21 @@ func cmdCfgStartShow() *cli.Command {
 
 func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 2 {
-        return errors.New("Expected a name and two file paths")
+    if len(args) != 1 {
+        return errors.New("Expected file path to transcode")
     }
-
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
-    inDirPath, err := filepath.Abs(args[1])
+    inDirPath, err := filepath.Abs(args[0])
     if err != nil {
         return err
     }
+
+    name := func() string {
+        if f := c.String("name"); len(f) > 0 {
+            return f
+        }
+        return filepath.Base(inDirPath)
+    }()
+    fmt.Println(name)
 
     client, cfg, err := remoteInit(c)
     if err != nil {
