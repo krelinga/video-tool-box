@@ -169,6 +169,11 @@ func cmdCfgStartShow() *cli.Command {
                 Value: "",  // Use the server-side default.
                 Usage: "Profile to use for transcoding.",
             },
+            &cli.StringFlag{
+                Name: "out_show_dir",
+                Value: "",  // Use the default from config.
+                Usage: "Directory to store transcoded shows in.",
+            },
         },
         Action: cmdAsyncTranscodeStartShow,
     }
@@ -176,7 +181,7 @@ func cmdCfgStartShow() *cli.Command {
 
 func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 3 {
+    if len(args) != 2 {
         return errors.New("Expected a name and two file paths")
     }
 
@@ -188,12 +193,20 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     if err != nil {
         return err
     }
-    outParentDirPath, err := filepath.Abs(args[2])
+
+    client, cfg, err := remoteInit(c)
     if err != nil {
         return err
     }
 
-    client, _, err := remoteInit(c)
+    rawOutDir := func() string {
+        if f := c.String("out_show_dir"); len(f) > 0 {
+            return f
+        } else {
+            return cfg.DefaultShowTranscodeOutDir
+        }
+    }()
+    outDir, err := filepath.Abs(rawOutDir)
     if err != nil {
         return err
     }
@@ -201,7 +214,7 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     req := connect.NewRequest(&pb.StartAsyncShowTranscodeRequest{
         Name: name,
         InDirPath: inDirPath,
-        OutParentDirPath: outParentDirPath,
+        OutParentDirPath: outDir,
         Profile: c.String("profile"),
     })
 
