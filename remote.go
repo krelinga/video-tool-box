@@ -39,6 +39,13 @@ var watchFlag = &cli.BoolFlag{
     Usage: "check for progress in a loop.",
 }
 
+var profileFlag = &cli.StringFlag{
+    Name: "profile",
+    Value: "",  // Use the server-side default.
+    Usage: "Profile to use for transcoding.",
+    Required: true,
+}
+
 func clearScreen(out io.Writer) error {
     cmd := exec.Command("clear")
     cmd.Stdout = out
@@ -55,11 +62,7 @@ func cmdCfgStart() *cli.Command {
         Name: "start",
         Usage: "start an async transcode on the server.",
         Flags: []cli.Flag{
-            &cli.StringFlag{
-                Name: "profile",
-                Value: "",  // Use the server-side default.
-                Usage: "Profile to use for transcoding.",
-            },
+            profileFlag,
         },
         Action: cmdAsyncTranscodeStart,
     }
@@ -169,11 +172,7 @@ func cmdCfgStartShow() *cli.Command {
         Name: "startshow",
         Usage: "start an async transcode of a show on the server.",
         Flags: []cli.Flag{
-            &cli.StringFlag{
-                Name: "profile",
-                Value: "",  // Use the server-side default.
-                Usage: "Profile to use for transcoding.",
-            },
+            profileFlag,
             &cli.StringFlag{
                 Name: "out_show_dir",
                 Value: "",  // Use the default from config.
@@ -310,11 +309,7 @@ func cmdCfgStartSpread() *cli.Command {
         Name: "startspread",
         Usage: "start an async transcode of a file with multiple profiles on the server.",
         Flags: []cli.Flag{
-            &cli.StringSliceFlag{
-                Name: "profile",
-                Usage: "Profile to use for transcoding.",
-                Required: true,
-            },
+            profileFlag,
         },
         Action: cmdAsyncTranscodeStartSpread,
     }
