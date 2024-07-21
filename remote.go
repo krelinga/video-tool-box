@@ -60,16 +60,16 @@ func cmdCfgStart() *cli.Command {
     }
 }
 
-func remoteInit(c *cli.Context) (pbconnect.TCServiceClient, error) {
+func remoteInit(c *cli.Context) (pbconnect.TCServiceClient, *config, error) {
     tp, ok := toolPathsFromContext(c.Context)
     if !ok {
-        return nil, errors.New("toolPaths not present in context")
+        return nil, nil, errors.New("toolPaths not present in context")
     }
     cfg, err := readConfig(tp.ConfigPath())
     if err != nil {
-        return nil, err
+        return nil, nil, err
     }
-    return pbconnect.NewTCServiceClient(http.DefaultClient, cfg.TcServerTarget), nil
+    return pbconnect.NewTCServiceClient(http.DefaultClient, cfg.TcServerTarget), cfg, nil
 }
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
@@ -91,7 +91,7 @@ func cmdAsyncTranscodeStart(c *cli.Context) error {
         return err
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -130,7 +130,7 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -193,7 +193,7 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
         return err
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -232,7 +232,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -313,7 +313,7 @@ func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
         return err
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -354,7 +354,7 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
         return errors.New("name must be non-empty")
     }
 
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
@@ -410,7 +410,7 @@ func cmdCfgRemoteList() *cli.Command {
 }
 
 func cmdRemoteList(c *cli.Context) error {
-    client, err := remoteInit(c)
+    client, _, err := remoteInit(c)
     if err != nil {
         return err
     }
