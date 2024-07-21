@@ -7,6 +7,7 @@ import (
     "net/http"
     "os/exec"
     "path/filepath"
+    "strings"
     "text/tabwriter"
     "time"
 
@@ -44,6 +45,10 @@ func clearScreen(out io.Writer) error {
     return cmd.Run()
 }
 
+func formatTranscodeState(s pb.TranscodeState) string {
+    str := s.String()
+    return strings.TrimPrefix(str, "TRANSCODE_STATE_")
+}
 
 func cmdCfgStart() *cli.Command {
     return &cli.Command{
@@ -286,7 +291,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
                 }
                 return f.Progress
             }
-            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, f.State, progOrError())
+            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Episode, formatTranscodeState(f.State), progOrError())
         }
         if err := tw.Flush(); err != nil {
             return err
@@ -407,7 +412,7 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
                 }
                 return f.Progress
             }
-            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Profile, f.State, progOrError())
+            fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", i, f.Profile, formatTranscodeState(f.State), progOrError())
         }
         if err := tw.Flush(); err != nil {
             return err
