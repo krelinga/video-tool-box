@@ -9,6 +9,7 @@ import (
     "path/filepath"
 
     cli "github.com/urfave/cli/v2"
+    humanize "github.com/dustin/go-humanize"
 )
 
 func cmdCfgPush() *cli.Command {
@@ -17,6 +18,28 @@ func cmdCfgPush() *cli.Command {
         Usage: "push files from Tiny Media Manager directory to NAS.",
         Action: cmdPush,
     }
+}
+
+func dirBytes(path string) (int64, error) {
+    total := int64(0)
+    walkFn := func(path string, d fs.DirEntry, err error) error {
+        if err != nil {
+            return err
+        }
+        if d.IsDir() {
+            return nil
+        }
+        info, err := d.Info()
+        if err != nil {
+            return err
+        }
+        total += info.Size()
+        return nil
+    }
+    if err := fs.WalkDir(os.DirFS(path), ".", walkFn); err != nil {
+        return 0, err
+    }
+    return total, nil
 }
 
 func cmdPush(c *cli.Context) error {
@@ -30,6 +53,11 @@ func cmdPush(c *cli.Context) error {
     }
 
     projectDir, err := tp.TmmProjectDir(ts)
+    if err != nil {
+        return err
+    }
+
+    projectDirSize, err := dirBytes(projectDir)
     if err != nil {
         return err
     }
@@ -53,7 +81,7 @@ func cmdPush(c *cli.Context) error {
     outSuperPath := filepath.Join(tp.NasMountDir(), nasSubDir)
     outPath := filepath.Join(outSuperPath, title)
 
-    fmt.Fprintf(c.App.Writer, "Will copy %s to %s.\nConfirm (y/N)? ", projectDir, outPath)
+    fmt.Fprintf(c.App.Writer, "Will copy %s from %s to %s.\nConfirm (y/N)? ", humanize.IBytes(uint64(projectDirSize)), projectDir, outPath)
     var confirm string
     fmt.Fscanf(c.App.Reader, "%s", &confirm)
     if confirm != "y" {
