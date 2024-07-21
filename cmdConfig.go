@@ -22,6 +22,10 @@ func cmdCfgConfig() *cli.Command {
                 Name: "TcServerTarget",
                 Usage: "set RPC target for Transcode Server.",
             },
+            &cli.StringFlag{
+                Name: "DefaultShowTranscodeOutDir",
+                Usage: "set default show transcode output dir.",
+            },
         },
     }
 }
@@ -44,6 +48,10 @@ func cmdConfig(c *cli.Context) error {
     if t := c.String("TcServerTarget"); len(t) > 0 {
         needWrite = true
         cfg.TcServerTarget = t
+    }
+    if t := c.String("DefaultShowTranscodeOutDir"); len(t) > 0 {
+        needWrite = true
+        cfg.DefaultShowTranscodeOutDir = t
     }
     if needWrite {
         if err := writeConfig(cfg, tp.ConfigPath()); err != nil {

@@ -10,6 +10,7 @@ import (
 type config struct {
     MkvUtilServerTarget string
     TcServerTarget string
+    DefaultShowTranscodeOutDir string
 }
 
 func (c *config) String() string {
@@ -23,6 +24,7 @@ func (c *config) String() string {
     b := &strings.Builder{}
     fmt.Fprintf(b, "MkvUtilServerTarget: %s\n", q(c.MkvUtilServerTarget))
     fmt.Fprintf(b, "TcServerTarget: %s\n", q(c.TcServerTarget))
+    fmt.Fprintf(b, "DefaultShowTranscodeOutDir: %s\n", q(c.DefaultShowTranscodeOutDir))
     return b.String()
 }
 

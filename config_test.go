@@ -55,6 +55,7 @@ func TestConfigString(t *testing.T) {
         t.Parallel()
         expected := `MkvUtilServerTarget: <empty>
 TcServerTarget: <empty>
+DefaultShowTranscodeOutDir: <empty>
 `
         c := &config{}
         actual := c.String()
@@ -66,6 +67,7 @@ TcServerTarget: <empty>
         t.Parallel()
         expected := `MkvUtilServerTarget: "taters"
 TcServerTarget: <empty>
+DefaultShowTranscodeOutDir: <empty>
 `
         c := &config{
             MkvUtilServerTarget: "taters",
