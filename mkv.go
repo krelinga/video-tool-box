@@ -183,16 +183,16 @@ func cmdMkvChapters(c *cli.Context) error {
     }
 
     tw := tabwriter.NewWriter(c.App.Writer, 0, 4, 2, byte(' '), 0)
-    _, err = fmt.Fprintf(tw, "Number\tTitle\tOffset\n")
+    _, err = fmt.Fprintf(tw, "Number\tTitle\tOffset\tDuration\n")
     if err != nil {
         return err
     }
-    _, err = fmt.Fprintf(tw, "======\t=====\t======\n")
+    _, err = fmt.Fprintf(tw, "======\t=====\t======\t========\n")
     if err != nil {
         return err
     }
     for _, c := range resp.Msg.Chapters.Simple.Chapters {
-        _, err := fmt.Fprintf(tw, "%d\t%s\t%s\n", c.Number, c.Name, c.Offset.AsDuration())
+        _, err := fmt.Fprintf(tw, "%d\t%s\t%s\t%s\n", c.Number, c.Name, c.Offset.AsDuration(), c.Duration.AsDuration())
         if err != nil {
             return err
         }
