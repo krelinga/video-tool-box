@@ -276,6 +276,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         }
 
         fmt.Fprintf(c.App.Writer, "Non-Episode State: %s\n", reply.Msg.State)
+        fmt.Fprintf(c.App.Writer, "Profile: %s\n", reply.Msg.Profile)
         if len(reply.Msg.ErrorMessage) > 0 {
             fmt.Fprintf(c.App.Writer, "Non-Episode Error Message: %s\n", reply.Msg.ErrorMessage)
         }
