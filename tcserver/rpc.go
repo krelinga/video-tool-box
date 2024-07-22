@@ -41,6 +41,7 @@ func (tcs *tcServer) CheckAsyncTranscode(ctx context.Context, req *connect.Reque
     fmt.Printf("CheckAsyncTranscode: %v\n", req)
     reply := connect.NewResponse(&pb.CheckAsyncTranscodeResponse{})
     readState := func(s *transcoder.SingleFileState) {
+        reply.Msg.Profile = s.Profile()
         switch s.St {
         case transcoder.StateNotStarted:
             reply.Msg.State = pb.TranscodeState_TRANSCODE_STATE_NOT_STARTED
@@ -87,6 +88,7 @@ func (tcs *tcServer) CheckAsyncShowTranscode(ctx context.Context, req *connect.R
     fmt.Printf("CheckAsyncShowTranscode: %v\n", req)
     reply := connect.NewResponse(&pb.CheckAsyncShowTranscodeResponse{})
     readState := func(s *transcoder.ShowState) {
+        reply.Msg.Profile = s.Profile()
         for _, fileState := range s.FileStates {
             fileStateProto := &pb.CheckAsyncShowTranscodeResponse_File{}
             reply.Msg.File = append(reply.Msg.File, fileStateProto)

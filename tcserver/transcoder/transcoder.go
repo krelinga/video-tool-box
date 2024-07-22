@@ -104,6 +104,10 @@ func (ss *ShowState) InDirPath() string {
     return ss.inDirPath
 }
 
+func (ss *ShowState) Profile() string {
+    return ss.profile
+}
+
 // Discovers all the .mkv files under ss.inDirPath, and transcodes them.
 //
 // A corresponding output directory is created under ss.outParentDirPath to
