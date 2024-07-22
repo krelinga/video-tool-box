@@ -3,8 +3,8 @@ module github.com/krelinga/video-tool-box
 go 1.21.5
 
 require (
-	buf.build/gen/go/krelinga/proto/connectrpc/go v1.16.2-20240722193044-be7793236f15.1
-	buf.build/gen/go/krelinga/proto/protocolbuffers/go v1.34.2-20240722193044-be7793236f15.2
+	buf.build/gen/go/krelinga/proto/connectrpc/go v1.16.2-20240722200501-e4a8f516a168.1
+	buf.build/gen/go/krelinga/proto/protocolbuffers/go v1.34.2-20240722200501-e4a8f516a168.2
 	connectrpc.com/connect v1.16.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-cmp v0.6.0
