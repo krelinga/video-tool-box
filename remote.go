@@ -144,15 +144,15 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
     }
 
     for {
-        if c.Bool("watch") {
-            if err := clearScreen(c.App.Writer); err != nil {
-                return err
-            }
-        }
         request := connect.NewRequest(&pb.CheckAsyncTranscodeRequest{Name: name})
         reply, err := client.CheckAsyncTranscode(c.Context, request)
         if err != nil {
             return err
+        }
+        if c.Bool("watch") {
+            if err := clearScreen(c.App.Writer); err != nil {
+                return err
+            }
         }
 
         fmt.Fprintln(c.App.Writer, reply.Msg)
