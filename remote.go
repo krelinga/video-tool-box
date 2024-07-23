@@ -30,6 +30,8 @@ func subcmdCfgRemote() *cli.Command {
             cmdCfgStartSpread(),
             cmdCfgCheckSpread(),
             cmdCfgRemoteList(),
+            cmdCfgStartMovie(),
+            cmdCfgCheckMovie(),
         },
     }
 }
@@ -449,4 +451,131 @@ func cmdRemoteList(c *cli.Context) error {
         fmt.Fprintf(tw, "%s\t%s\t%s\n", op.Name, op.Type, op.State)
     }
     return tw.Flush()
+}
+
+func cmdCfgStartMovie() *cli.Command {
+    return &cli.Command{
+        Name: "startmovie",
+        Usage: "start an async transcode of a movie on the server.",
+        Flags: []cli.Flag{
+            profileFlag,
+            &cli.StringFlag{
+                Name: "out_movie_dir",
+                Value: "",  // Use the default from config.
+                Usage: "Directory to store transcoded movies in.",
+            },
+            &cli.StringFlag{
+                Name: "name",
+                Value: "", // Defaults to the input file basename.
+                Usage: "Name to use on transcoding server.",
+            },
+        },
+        Action: cmdAsyncTranscodeStartMovie,
+    }
+}
+
+func cmdAsyncTranscodeStartMovie(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected file path to transcode")
+    }
+    inDirPath, err := filepath.Abs(args[0])
+    if err != nil {
+        return err
+    }
+    in := filepath.Join(inDirPath, filepath.Base(inDirPath) + ".mkv")
+
+    name := func() string {
+        if f := c.String("name"); len(f) > 0 {
+            return f
+        }
+        return filepath.Base(inDirPath)
+    }()
+    fmt.Println(name)
+
+    client, cfg, err := remoteInit(c)
+    if err != nil {
+        return err
+    }
+
+    rawOutDir := func() string {
+        if f := c.String("out_movie_dir"); len(f) > 0 {
+            return f
+        } else {
+            return cfg.DefaultMovieTranscodeOutDir
+        }
+    }()
+    outDir, err := filepath.Abs(rawOutDir)
+    if err != nil {
+        return err
+    }
+    out := filepath.Join(outDir, filepath.Base(inDirPath), filepath.Base(inDirPath) + ".mkv")
+
+    req := connect.NewRequest(&pb.StartAsyncTranscodeRequest{
+        Name: name,
+        InPath: in,
+        OutPath: out,
+        Profile: c.String("profile"),
+    })
+
+    _, err = client.StartAsyncTranscode(c.Context, req)
+
+    return err
+}
+
+func cmdCfgCheckMovie() *cli.Command {
+    return &cli.Command{
+        Name: "checkmovie",
+        Usage: "check on an async movie transcode on the server.",
+        Flags: []cli.Flag{
+            watchFlag,
+        },
+        Action: cmdAsyncTranscodeCheckMovie,
+    }
+}
+
+func cmdAsyncTranscodeCheckMovie(c *cli.Context) error {
+    args := c.Args().Slice()
+    if len(args) != 1 {
+        return errors.New("Expected a name")
+    }
+
+    name := args[0]
+    if len(name) == 0 {
+        return errors.New("name must be non-empty")
+    }
+
+    client, _, err := remoteInit(c)
+    if err != nil {
+        return err
+    }
+
+    for {
+        request := connect.NewRequest(&pb.CheckAsyncTranscodeRequest{Name: name})
+        reply, err := client.CheckAsyncTranscode(c.Context, request)
+        if err != nil {
+            return err
+        }
+
+        if c.Bool("watch") {
+            if err := clearScreen(c.App.Writer); err != nil {
+                return err
+            }
+        }
+
+        fmt.Fprintf(c.App.Writer, "State: %s\n", reply.Msg.State)
+        fmt.Fprintf(c.App.Writer, "Profile: %s\n", reply.Msg.Profile)
+        if len(reply.Msg.ErrorMessage) > 0 {
+            fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.Msg.ErrorMessage)
+        }
+        if len(reply.Msg.Progress) > 0 {
+            fmt.Fprintf(c.App.Writer, "Progress: %s\n", reply.Msg.Progress)
+        }
+        if !c.Bool("watch") {
+            break
+        }
+        time.Sleep(time.Second * 5)
+    }
+
+    return nil
 }
