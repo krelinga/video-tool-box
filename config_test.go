@@ -56,6 +56,7 @@ func TestConfigString(t *testing.T) {
         expected := `MkvUtilServerTarget: <empty>
 TcServerTarget: <empty>
 DefaultShowTranscodeOutDir: <empty>
+DefaultMovieTranscodeOutDir: <empty>
 `
         c := &config{}
         actual := c.String()
@@ -68,6 +69,7 @@ DefaultShowTranscodeOutDir: <empty>
         expected := `MkvUtilServerTarget: "taters"
 TcServerTarget: <empty>
 DefaultShowTranscodeOutDir: <empty>
+DefaultMovieTranscodeOutDir: <empty>
 `
         c := &config{
             MkvUtilServerTarget: "taters",
