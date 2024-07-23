@@ -563,6 +563,7 @@ func cmdAsyncTranscodeCheckMovie(c *cli.Context) error {
             }
         }
 
+        fmt.Fprintf(c.App.Writer, "Name: %s\n", name)
         fmt.Fprintf(c.App.Writer, "State: %s\n", reply.Msg.State)
         fmt.Fprintf(c.App.Writer, "Profile: %s\n", reply.Msg.Profile)
         if len(reply.Msg.ErrorMessage) > 0 {
