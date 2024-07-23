@@ -26,6 +26,10 @@ func cmdCfgConfig() *cli.Command {
                 Name: "DefaultShowTranscodeOutDir",
                 Usage: "set default show transcode output dir.",
             },
+            &cli.StringFlag{
+                Name: "DefaultMovieTranscodeOutDir",
+                Usage: "set default show transcode output dir.",
+            },
         },
     }
 }
@@ -52,6 +56,10 @@ func cmdConfig(c *cli.Context) error {
     if t := c.String("DefaultShowTranscodeOutDir"); len(t) > 0 {
         needWrite = true
         cfg.DefaultShowTranscodeOutDir = t
+    }
+    if t := c.String("DefaultMovieTranscodeOutDir"); len(t) > 0 {
+        needWrite = true
+        cfg.DefaultMovieTranscodeOutDir = t
     }
     if needWrite {
         if err := writeConfig(cfg, tp.ConfigPath()); err != nil {
