@@ -43,10 +43,22 @@ var watchFlag = &cli.BoolFlag{
 
 var profileFlag = &cli.StringFlag{
     Name: "profile",
-    Value: "",  // Use the server-side default.
+    Value: "",
     Usage: "Profile to use for transcoding.",
     Required: true,
 }
+
+var nameFlag = &cli.StringFlag{
+    Name: "name",
+    Value: "",
+    Usage: "Name to use on the transcoding server.",
+}
+
+var requiredNameFlag = func() *cli.StringFlag {
+    var f = *nameFlag
+    f.Required = true
+    return &f
+}()
 
 func clearScreen(out io.Writer) error {
     cmd := exec.Command("clear")
@@ -65,6 +77,7 @@ func cmdCfgStart() *cli.Command {
         Usage: "start an async transcode on the server.",
         Flags: []cli.Flag{
             profileFlag,
+            nameFlag,
         },
         Action: cmdAsyncTranscodeStart,
     }
@@ -84,22 +97,25 @@ func remoteInit(c *cli.Context) (pbconnect.TCServiceClient, *config, error) {
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 3 {
+    if len(args) != 2 {
         return errors.New("Expected a name and two file paths")
     }
 
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
-    inPath, err := filepath.Abs(args[1])
+    inPath, err := filepath.Abs(args[0])
     if err != nil {
         return err
     }
-    outPath, err := filepath.Abs(args[2])
+    outPath, err := filepath.Abs(args[1])
     if err != nil {
         return err
     }
+
+    name := func() string {
+        if f := c.String("name"); len(f) > 0 {
+            return f
+        }
+        return filepath.Base(inPath)
+    }()
 
     client, _, err := remoteInit(c)
     if err != nil {
@@ -124,21 +140,15 @@ func cmdCfgCheck() *cli.Command {
         Usage: "check on an async transcode on the server.",
         Flags: []cli.Flag{
             watchFlag,
+            requiredNameFlag,
         },
         Action: cmdAsyncTranscodeCheck,
     }
 }
 
 func cmdAsyncTranscodeCheck(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name")
-    }
-
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
+    name := c.String("name")
+    watch := c.Bool("watch")
 
     client, _, err := remoteInit(c)
     if err != nil {
@@ -151,7 +161,7 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         if err != nil {
             return err
         }
-        if c.Bool("watch") {
+        if watch {
             if err := clearScreen(c.App.Writer); err != nil {
                 return err
             }
@@ -161,7 +171,7 @@ func cmdAsyncTranscodeCheck(c *cli.Context) error {
         if len(reply.Msg.ErrorMessage) > 0 {
             fmt.Fprintf(c.App.Writer, "Error Message: %s\n", reply.Msg.ErrorMessage)
         }
-        if !c.Bool("watch") {
+        if !watch {
             break
         }
         time.Sleep(time.Second * 5)
