@@ -69,6 +69,20 @@ func requiredInFlag(usage string) *cli.StringFlag {
     return f
 }
 
+func outFlag(usage string) *cli.StringFlag {
+    f := &cli.StringFlag{
+        Name: "out",
+        Usage: usage,
+    }
+    return f
+}
+
+func requiredOutFlag(usage string) *cli.StringFlag {
+    f := outFlag(usage)
+    f.Required = true
+    return f
+}
+
 func clearScreen(out io.Writer) error {
     cmd := exec.Command("clear")
     cmd.Stdout = out
@@ -88,6 +102,7 @@ func cmdCfgStart() *cli.Command {
             requiredProfileFlag,
             nameFlag,
             requiredInFlag("Path ending in .mkv to read"),
+            requiredOutFlag("Path ending in .mkv to write"),
         },
         Action: cmdAsyncTranscodeStart,
     }
@@ -106,16 +121,11 @@ func remoteInit(c *cli.Context) (pbconnect.TCServiceClient, *config, error) {
 }
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name and two file paths")
-    }
-
     inPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
-    outPath, err := filepath.Abs(args[1])
+    outPath, err := filepath.Abs(c.String("out"))
     if err != nil {
         return err
     }
@@ -195,13 +205,9 @@ func cmdCfgStartShow() *cli.Command {
         Usage: "start an async transcode of a show on the server.",
         Flags: []cli.Flag{
             requiredProfileFlag,
-            &cli.StringFlag{
-                Name: "out_show_dir",
-                Value: "",  // Use the default from config.
-                Usage: "Directory to store transcoded shows in.",
-            },
             requiredInFlag("Directory containing the show to read."),
             nameFlag,
+            outFlag("If set, overrides the output directory for all shows"),
         },
         Action: cmdAsyncTranscodeStartShow,
     }
@@ -227,7 +233,7 @@ func cmdAsyncTranscodeStartShow(c *cli.Context) error {
     }
 
     rawOutDir := func() string {
-        if f := c.String("out_show_dir"); len(f) > 0 {
+        if f := c.String("out"); len(f) > 0 {
             return f
         } else {
             return cfg.DefaultShowTranscodeOutDir
@@ -323,23 +329,19 @@ func cmdCfgStartSpread() *cli.Command {
             requiredProfileFlag,
             requiredNameFlag,
             requiredInFlag("A path ending in .mkv to read."),
+            requiredOutFlag("A directory that will be created to store spread output."),
         },
         Action: cmdAsyncTranscodeStartSpread,
     }
 }
 
 func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name and two file paths")
-    }
-
     name := c.String("name")
     inPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
-    outParentDirPath, err := filepath.Abs(args[0])
+    outParentDirPath, err := filepath.Abs(c.String("out"))
     if err != nil {
         return err
     }
@@ -459,13 +461,9 @@ func cmdCfgStartMovie() *cli.Command {
         Usage: "start an async transcode of a movie on the server.",
         Flags: []cli.Flag{
             requiredProfileFlag,
-            &cli.StringFlag{
-                Name: "out_movie_dir",
-                Value: "",  // Use the default from config.
-                Usage: "Directory to store transcoded movies in.",
-            },
             nameFlag,
             requiredInFlag("Directory containing the movie to be read."),
+            outFlag("If set, overrides the default output directory for all movies."),
         },
         Action: cmdAsyncTranscodeStartMovie,
     }
@@ -492,7 +490,7 @@ func cmdAsyncTranscodeStartMovie(c *cli.Context) error {
     }
 
     rawOutDir := func() string {
-        if f := c.String("out_movie_dir"); len(f) > 0 {
+        if f := c.String("out"); len(f) > 0 {
             return f
         } else {
             return cfg.DefaultMovieTranscodeOutDir
