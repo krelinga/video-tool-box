@@ -190,11 +190,7 @@ func cmdCfgStartShow() *cli.Command {
                 Value: "",  // Use the default from config.
                 Usage: "Directory to store transcoded shows in.",
             },
-            &cli.StringFlag{
-                Name: "name",
-                Value: "", // Defaults to the input file basename.
-                Usage: "Name to use on transcoding server.",
-            },
+            nameFlag,
         },
         Action: cmdAsyncTranscodeStartShow,
     }
@@ -253,21 +249,15 @@ func cmdCfgCheckShow() *cli.Command {
         Usage: "check on an async show transcode on the server.",
         Flags: []cli.Flag{
             watchFlag,
+            requiredNameFlag,
         },
         Action: cmdAsyncTranscodeCheckShow,
     }
 }
 
 func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name")
-    }
-
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
+    name := c.String("name")
+    watch := c.Bool("watch")
 
     client, _, err := remoteInit(c)
     if err != nil {
@@ -281,7 +271,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
             return err
         }
 
-        if c.Bool("watch") {
+        if watch {
             if err := clearScreen(c.App.Writer); err != nil {
                 return err
             }
@@ -309,7 +299,7 @@ func cmdAsyncTranscodeCheckShow(c *cli.Context) error {
         if err := tw.Flush(); err != nil {
             return err
         }
-        if !c.Bool("watch") {
+        if watch {
             break
         }
         time.Sleep(time.Second * 5)
