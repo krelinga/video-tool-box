@@ -41,7 +41,7 @@ var watchFlag = &cli.BoolFlag{
     Usage: "check for progress in a loop.",
 }
 
-var profileFlag = &cli.StringFlag{
+var requiredProfileFlag = &cli.StringFlag{
     Name: "profile",
     Value: "",
     Usage: "Profile to use for transcoding.",
@@ -76,7 +76,7 @@ func cmdCfgStart() *cli.Command {
         Name: "start",
         Usage: "start an async transcode on the server.",
         Flags: []cli.Flag{
-            profileFlag,
+            requiredProfileFlag,
             nameFlag,
         },
         Action: cmdAsyncTranscodeStart,
@@ -184,7 +184,7 @@ func cmdCfgStartShow() *cli.Command {
         Name: "startshow",
         Usage: "start an async transcode of a show on the server.",
         Flags: []cli.Flag{
-            profileFlag,
+            requiredProfileFlag,
             &cli.StringFlag{
                 Name: "out_show_dir",
                 Value: "",  // Use the default from config.
@@ -313,7 +313,7 @@ func cmdCfgStartSpread() *cli.Command {
         Name: "startspread",
         Usage: "start an async transcode of a file with multiple profiles on the server.",
         Flags: []cli.Flag{
-            profileFlag,
+            requiredProfileFlag,
             requiredNameFlag,
         },
         Action: cmdAsyncTranscodeStartSpread,
@@ -450,7 +450,7 @@ func cmdCfgStartMovie() *cli.Command {
         Name: "startmovie",
         Usage: "start an async transcode of a movie on the server.",
         Flags: []cli.Flag{
-            profileFlag,
+            requiredProfileFlag,
             &cli.StringFlag{
                 Name: "out_movie_dir",
                 Value: "",  // Use the default from config.
