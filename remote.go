@@ -60,6 +60,15 @@ var requiredNameFlag = func() *cli.StringFlag {
     return &f
 }()
 
+func requiredInFlag(usage string) *cli.StringFlag {
+    f := &cli.StringFlag{
+        Name: "in",
+        Required: true,
+        Usage: usage,
+    }
+    return f
+}
+
 func clearScreen(out io.Writer) error {
     cmd := exec.Command("clear")
     cmd.Stdout = out
@@ -78,6 +87,7 @@ func cmdCfgStart() *cli.Command {
         Flags: []cli.Flag{
             requiredProfileFlag,
             nameFlag,
+            requiredInFlag("Path ending in .mkv to read"),
         },
         Action: cmdAsyncTranscodeStart,
     }
@@ -97,11 +107,11 @@ func remoteInit(c *cli.Context) (pbconnect.TCServiceClient, *config, error) {
 
 func cmdAsyncTranscodeStart(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 2 {
+    if len(args) != 1 {
         return errors.New("Expected a name and two file paths")
     }
 
-    inPath, err := filepath.Abs(args[0])
+    inPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
@@ -190,6 +200,7 @@ func cmdCfgStartShow() *cli.Command {
                 Value: "",  // Use the default from config.
                 Usage: "Directory to store transcoded shows in.",
             },
+            requiredInFlag("Directory containing the show to read."),
             nameFlag,
         },
         Action: cmdAsyncTranscodeStartShow,
@@ -197,11 +208,7 @@ func cmdCfgStartShow() *cli.Command {
 }
 
 func cmdAsyncTranscodeStartShow(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected file path to transcode")
-    }
-    inDirPath, err := filepath.Abs(args[0])
+    inDirPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
@@ -315,6 +322,7 @@ func cmdCfgStartSpread() *cli.Command {
         Flags: []cli.Flag{
             requiredProfileFlag,
             requiredNameFlag,
+            requiredInFlag("A path ending in .mkv to read."),
         },
         Action: cmdAsyncTranscodeStartSpread,
     }
@@ -322,16 +330,16 @@ func cmdCfgStartSpread() *cli.Command {
 
 func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 2 {
+    if len(args) != 1 {
         return errors.New("Expected a name and two file paths")
     }
 
     name := c.String("name")
-    inPath, err := filepath.Abs(args[0])
+    inPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
-    outParentDirPath, err := filepath.Abs(args[1])
+    outParentDirPath, err := filepath.Abs(args[0])
     if err != nil {
         return err
     }
@@ -457,17 +465,14 @@ func cmdCfgStartMovie() *cli.Command {
                 Usage: "Directory to store transcoded movies in.",
             },
             nameFlag,
+            requiredInFlag("Directory containing the movie to be read."),
         },
         Action: cmdAsyncTranscodeStartMovie,
     }
 }
 
 func cmdAsyncTranscodeStartMovie(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected file path to transcode")
-    }
-    inDirPath, err := filepath.Abs(args[0])
+    inDirPath, err := filepath.Abs(c.String("in"))
     if err != nil {
         return err
     }
