@@ -104,6 +104,7 @@ func cmdCfgStart() *cli.Command {
             requiredInFlag("Path ending in .mkv to read"),
             requiredOutFlag("Path ending in .mkv to write"),
         },
+        ArgsUsage: "--in /path/to/in.mkv --out /path/to/out.mkv --profile hd",
         Action: cmdAsyncTranscodeStart,
     }
 }
@@ -162,6 +163,7 @@ func cmdCfgCheck() *cli.Command {
             watchFlag,
             requiredNameFlag,
         },
+        ArgsUsage: "--name thename",
         Action: cmdAsyncTranscodeCheck,
     }
 }
@@ -209,6 +211,7 @@ func cmdCfgStartShow() *cli.Command {
             nameFlag,
             outFlag("If set, overrides the output directory for all shows"),
         },
+        ArgsUsage: "--in /path/to/showdir/ --profile hd",
         Action: cmdAsyncTranscodeStartShow,
     }
 }
@@ -264,6 +267,7 @@ func cmdCfgCheckShow() *cli.Command {
             watchFlag,
             requiredNameFlag,
         },
+        ArgsUsage: "--name somename",
         Action: cmdAsyncTranscodeCheckShow,
     }
 }
@@ -326,11 +330,19 @@ func cmdCfgStartSpread() *cli.Command {
         Name: "startspread",
         Usage: "start an async transcode of a file with multiple profiles on the server.",
         Flags: []cli.Flag{
+            // Not using the standard requiredProfileFlag here because this
+            // command can accept more than one profile at a time.
+            &cli.StringSliceFlag{
+                Name: "profile",
+                Usage: "One or more profiles to use in the spread",
+                Required: true,
+            },
             requiredProfileFlag,
             requiredNameFlag,
             requiredInFlag("A path ending in .mkv to read."),
             requiredOutFlag("A directory that will be created to store spread output."),
         },
+        ArgsUsage: "--name somename --in /path/to/in.mkv --out /path/to/out/ --profile hd --profile sd_live_action",
         Action: cmdAsyncTranscodeStartSpread,
     }
 }
@@ -373,6 +385,7 @@ func cmdCfgCheckSpread() *cli.Command {
             watchFlag,
             requiredNameFlag,
         },
+        ArgsUsage: "--name somename",
         Action: cmdAsyncTranscodeCheckSpread,
     }
 }
@@ -465,6 +478,7 @@ func cmdCfgStartMovie() *cli.Command {
             requiredInFlag("Directory containing the movie to be read."),
             outFlag("If set, overrides the default output directory for all movies."),
         },
+        ArgsUsage: "--in /path/to/moviedir/ --profile hd",
         Action: cmdAsyncTranscodeStartMovie,
     }
 }
@@ -522,6 +536,7 @@ func cmdCfgCheckMovie() *cli.Command {
             watchFlag,
             requiredNameFlag,
         },
+        ArgsUsage: "--name somename",
         Action: cmdAsyncTranscodeCheckMovie,
     }
 }
