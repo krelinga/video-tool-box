@@ -314,6 +314,7 @@ func cmdCfgStartSpread() *cli.Command {
         Usage: "start an async transcode of a file with multiple profiles on the server.",
         Flags: []cli.Flag{
             profileFlag,
+            requiredNameFlag,
         },
         Action: cmdAsyncTranscodeStartSpread,
     }
@@ -321,19 +322,16 @@ func cmdCfgStartSpread() *cli.Command {
 
 func cmdAsyncTranscodeStartSpread(c *cli.Context) error {
     args := c.Args().Slice()
-    if len(args) != 3 {
+    if len(args) != 2 {
         return errors.New("Expected a name and two file paths")
     }
 
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
-    inPath, err := filepath.Abs(args[1])
+    name := c.String("name")
+    inPath, err := filepath.Abs(args[0])
     if err != nil {
         return err
     }
-    outParentDirPath, err := filepath.Abs(args[2])
+    outParentDirPath, err := filepath.Abs(args[1])
     if err != nil {
         return err
     }
@@ -363,21 +361,15 @@ func cmdCfgCheckSpread() *cli.Command {
         Usage: "check on an async spread transcode on the server.",
         Flags: []cli.Flag{
             watchFlag,
+            requiredNameFlag,
         },
         Action: cmdAsyncTranscodeCheckSpread,
     }
 }
 
 func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name")
-    }
-
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
+    name := c.String("name")
+    watch := c.Bool("watch")
 
     client, _, err := remoteInit(c)
     if err != nil {
@@ -390,7 +382,7 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
         if err != nil {
             return err
         }
-        if c.Bool("watch") {
+        if watch {
             if err := clearScreen(c.App.Writer); err != nil {
                 return err
             }
@@ -417,7 +409,7 @@ func cmdAsyncTranscodeCheckSpread(c *cli.Context) error {
             return err
         }
 
-        if !c.Bool("watch") {
+        if !watch {
             break
         }
         time.Sleep(time.Second * 5)
