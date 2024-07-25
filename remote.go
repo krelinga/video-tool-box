@@ -456,11 +456,7 @@ func cmdCfgStartMovie() *cli.Command {
                 Value: "",  // Use the default from config.
                 Usage: "Directory to store transcoded movies in.",
             },
-            &cli.StringFlag{
-                Name: "name",
-                Value: "", // Defaults to the input file basename.
-                Usage: "Name to use on transcoding server.",
-            },
+            nameFlag,
         },
         Action: cmdAsyncTranscodeStartMovie,
     }
@@ -521,21 +517,15 @@ func cmdCfgCheckMovie() *cli.Command {
         Usage: "check on an async movie transcode on the server.",
         Flags: []cli.Flag{
             watchFlag,
+            requiredNameFlag,
         },
         Action: cmdAsyncTranscodeCheckMovie,
     }
 }
 
 func cmdAsyncTranscodeCheckMovie(c *cli.Context) error {
-    args := c.Args().Slice()
-    if len(args) != 1 {
-        return errors.New("Expected a name")
-    }
-
-    name := args[0]
-    if len(name) == 0 {
-        return errors.New("name must be non-empty")
-    }
+    name := c.String("name")
+    watch := c.Bool("watch")
 
     client, _, err := remoteInit(c)
     if err != nil {
@@ -549,7 +539,7 @@ func cmdAsyncTranscodeCheckMovie(c *cli.Context) error {
             return err
         }
 
-        if c.Bool("watch") {
+        if watch {
             if err := clearScreen(c.App.Writer); err != nil {
                 return err
             }
@@ -564,7 +554,7 @@ func cmdAsyncTranscodeCheckMovie(c *cli.Context) error {
         if len(reply.Msg.Progress) > 0 {
             fmt.Fprintf(c.App.Writer, "Progress: %s\n", reply.Msg.Progress)
         }
-        if !c.Bool("watch") {
+        if !watch {
             break
         }
         time.Sleep(time.Second * 5)
