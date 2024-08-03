@@ -12,6 +12,7 @@ type config struct {
     TcServerTarget string
     DefaultShowTranscodeOutDir string
     DefaultMovieTranscodeOutDir string
+    RipCacheDir string
 }
 
 func (c *config) String() string {
@@ -27,6 +28,7 @@ func (c *config) String() string {
     fmt.Fprintf(b, "TcServerTarget: %s\n", q(c.TcServerTarget))
     fmt.Fprintf(b, "DefaultShowTranscodeOutDir: %s\n", q(c.DefaultShowTranscodeOutDir))
     fmt.Fprintf(b, "DefaultMovieTranscodeOutDir: %s\n", q(c.DefaultMovieTranscodeOutDir))
+    fmt.Fprintf(b, "RipCacheDir: %s\n", q(c.RipCacheDir))
     return b.String()
 }
 
