@@ -58,6 +58,7 @@ TcServerTarget: <empty>
 DefaultShowTranscodeOutDir: <empty>
 DefaultMovieTranscodeOutDir: <empty>
 RipCacheServerDir: <empty>
+RipCacheLocalDir: <empty>
 `
         c := &config{}
         actual := c.String()
@@ -72,6 +73,7 @@ TcServerTarget: <empty>
 DefaultShowTranscodeOutDir: <empty>
 DefaultMovieTranscodeOutDir: <empty>
 RipCacheServerDir: <empty>
+RipCacheLocalDir: <empty>
 `
         c := &config{
             MkvUtilServerTarget: "taters",

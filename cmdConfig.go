@@ -34,6 +34,10 @@ func cmdCfgConfig() *cli.Command {
                 Name: "RipCacheServerDir",
                 Usage: "set server-side rip cache dir.",
             },
+            &cli.StringFlag{
+                Name: "RipCacheLocalDir",
+                Usage: "set client-side rip cache dir.",
+            },
         },
     }
 }
@@ -68,6 +72,10 @@ func cmdConfig(c *cli.Context) error {
     if t := c.String("RipCacheServerDir"); len(t) > 0 {
         needWrite = true
         cfg.RipCacheServerDir = t
+    }
+    if t := c.String("RipCacheLocalDir"); len(t) > 0 {
+        needWrite = true
+        cfg.RipCacheLocalDir = t
     }
     if needWrite {
         if err := writeConfig(cfg, tp.ConfigPath()); err != nil {
