@@ -2,6 +2,8 @@ package main
 
 import (
     "errors"
+    "fmt"
+    "os"
     "os/exec"
     "path/filepath"
 
@@ -72,5 +74,34 @@ func cmdCfgClear() *cli.Command {
 }
 
 func cmdClear(c *cli.Context) error {
+    cfg, err := cacheInit(c)
+    if err != nil {
+        return err
+    }
+
+    subdirs, err := filepath.Glob(filepath.Join(cfg.RipCacheServerDir, "*"))
+    if err != nil {
+        return err
+    }
+
+    fmt.Fprintln(c.App.Writer, "Will delete the following:")
+    for _, sd := range subdirs {
+        fmt.Fprintf(c.App.Writer, "- %s\n", sd)
+    }
+    fmt.Fprintf(c.App.Writer, "Confirm (y/N)? ")
+    var confirm string
+    fmt.Fscanf(c.App.Reader, "%s", &confirm)
+    if confirm != "y" {
+        return nil
+    }
+
+    fmt.Fprintf(c.App.Writer, "Deleting... ")
+    for _, sd := range subdirs {
+        if err := os.RemoveAll(sd); err != nil {
+            return err
+        }
+    }
+    fmt.Fprintf(c.App.Writer, "Done\n")
+
     return nil
 }
