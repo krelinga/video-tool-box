@@ -30,6 +30,10 @@ func cmdCfgConfig() *cli.Command {
                 Name: "DefaultMovieTranscodeOutDir",
                 Usage: "set default show transcode output dir.",
             },
+            &cli.StringFlag{
+                Name: "RipCacheDir",
+                Usage: "set server-side rip cache dir.",
+            },
         },
     }
 }
@@ -60,6 +64,10 @@ func cmdConfig(c *cli.Context) error {
     if t := c.String("DefaultMovieTranscodeOutDir"); len(t) > 0 {
         needWrite = true
         cfg.DefaultMovieTranscodeOutDir = t
+    }
+    if t := c.String("RipCacheDir"); len(t) > 0 {
+        needWrite = true
+        cfg.RipCacheDir = t
     }
     if needWrite {
         if err := writeConfig(cfg, tp.ConfigPath()); err != nil {
