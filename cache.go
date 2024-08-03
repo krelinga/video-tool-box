@@ -1,6 +1,10 @@
 package main
 
 import (
+    "errors"
+    "os/exec"
+    "path/filepath"
+
     cli "github.com/urfave/cli/v2"
 )
 
@@ -15,6 +19,18 @@ func subcmdCfgCache() *cli.Command {
     }
 }
 
+func cacheInit(c *cli.Context) (*config, error) {
+    tp, ok := toolPathsFromContext(c.Context)
+    if !ok {
+        return nil, errors.New("toolPaths not present in context")
+    }
+    cfg, err := readConfig(tp.ConfigPath())
+    if err != nil {
+        return nil, err
+    }
+    return cfg, nil
+}
+
 func cmdCfgSync() *cli.Command {
     return &cli.Command{
         Name: "sync",
@@ -24,7 +40,27 @@ func cmdCfgSync() *cli.Command {
 }
 
 func cmdSync(c *cli.Context) error {
-    return nil
+    cfg, err := cacheInit(c)
+    if err != nil {
+        return err
+    }
+
+    subdirs, err := filepath.Glob(filepath.Join(cfg.RipCacheServerDir, "*"))
+    if err != nil {
+        return err
+    }
+    args := []string{
+        "-ah",
+        "--progress",
+        "-r",
+    }
+    args = append(args, subdirs...)
+    args = append(args, cfg.RipCacheLocalDir)
+    cmd := exec.Command("/usr/bin/rsync", args...)
+    cmd.Stdin = c.App.Reader
+    cmd.Stdout = c.App.Writer
+    cmd.Stderr = c.App.ErrWriter
+    return cmd.Run()
 }
 
 func cmdCfgClear() *cli.Command {
