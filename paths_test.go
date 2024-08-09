@@ -118,21 +118,21 @@ func TestTmmProjectDir(t *testing.T) {
 
     type testCase struct {
         Name string
-        Ts *toolState
+        Project *projectState
         Err bool
         Path string
     }
     testCases := []testCase{
         {
             Name: "empty name",
-            Ts: &toolState{
+            Project: &projectState{
                 Pt: ptMovie,
             },
             Err: true,
         },
         {
             Name: "undefined project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptUndef,
             },
@@ -140,7 +140,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "movie project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptMovie,
             },
@@ -148,7 +148,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "tv show project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptShow,
             },
@@ -156,7 +156,7 @@ func TestTmmProjectDir(t *testing.T) {
         },
         {
             Name: "Override Set",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 TmmDirOverride: "/foo/bar",
             },
@@ -167,7 +167,7 @@ func TestTmmProjectDir(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.Name, func(t *testing.T) {
             t.Parallel()
-            path, err := tp.TmmProjectDir(tc.Ts)
+            path, err := tp.TmmProjectDir(tc.Project)
             if tc.Err && err == nil {
                 t.Error("expected error but got none")
             }
@@ -192,21 +192,21 @@ func TestTmmProjectExtrasDir(t *testing.T) {
 
     type testCase struct {
         Name string
-        Ts *toolState
+        Project *projectState
         Err bool
         Path string
     }
     testCases := []testCase{
         {
             Name: "empty name",
-            Ts: &toolState{
+            Project: &projectState{
                 Pt: ptMovie,
             },
             Err: true,
         },
         {
             Name: "undefined project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptUndef,
             },
@@ -214,7 +214,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "movie project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptMovie,
             },
@@ -222,7 +222,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "tv show project type",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 Pt: ptShow,
             },
@@ -230,7 +230,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
         },
         {
             Name: "Override Set",
-            Ts: &toolState{
+            Project: &projectState{
                 Name: "some name",
                 TmmDirOverride: "/foo/bar",
             },
@@ -241,7 +241,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.Name, func(t *testing.T) {
             t.Parallel()
-            path, err := tp.TmmProjectExtrasDir(tc.Ts)
+            path, err := tp.TmmProjectExtrasDir(tc.Project)
             if tc.Err && err == nil {
                 t.Error("expected error but got none")
             }

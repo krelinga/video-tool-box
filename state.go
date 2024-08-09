@@ -22,11 +22,54 @@ func (pt projectType) String() string {
     panic("unexpected projectType value")
 }
 
-type toolState struct {
+type projectStage int
+
+const (
+    psUndef = iota
+    psWorking
+    psReadyForPush
+    psPushed
+)
+
+func (ps projectStage) String() string {
+    switch ps {
+    case psUndef: return "psUndef"
+    case psWorking: return "psWorking"
+    case psReadyForPush: return "psReadyForPush"
+    case psPushed: return "psPushed"
+    }
+    panic("unexpected projectStage value")
+}
+
+type projectState struct {
+    Name string
+    Stage projectStage
     Pt      projectType
-    Name    string
     // Set if TMM has forced an override to the otherwise-computed project name.
     TmmDirOverride  string
+}
+
+type toolState struct {
+    Projects []*projectState
+}
+
+func (ts *toolState) FindByName(name string) (*projectState, bool) {
+    for _, ps := range ts.Projects {
+        if ps.Name == name {
+            return ps, true
+        }
+    }
+    return nil, false
+}
+
+func (ts *toolState) FindByStage(s projectStage) []*projectState {
+    found := []*projectState{}
+    for _, p := range ts.Projects {
+        if p.Stage == s {
+            found = append(found, p)
+        }
+    }
+    return found
 }
 
 func readToolState(path string) (ts *toolState, err error) {

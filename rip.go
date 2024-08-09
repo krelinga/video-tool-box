@@ -15,8 +15,9 @@ func subcmdCfgRip() *cli.Command {
             cmdCfgFinish(),
             cmdCfgDir(),
             cmdCfgTmm(),
-            cmdCfgMeta(),
             cmdCfgPush(),
+            cmdCfgStage(),
+            cmdCfgRipLs(),
         },
     }
 }

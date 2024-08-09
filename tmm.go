@@ -15,6 +15,13 @@ func cmdCfgTmm() *cli.Command {
     return &cli.Command{
         Name: "tmm",
         Usage: "run Tiny Media Manager",
+        Flags: []cli.Flag{
+            &cli.StringFlag{
+                Name: "name",
+                Usage: "The name of the project to open TMM for.",
+                Required: true,
+            },
+        },
         Action: cmdTmm,
     }
 }
@@ -59,8 +66,18 @@ func cmdTmm(c *cli.Context) error {
         return err
     }
 
+    name := c.String("name")
+    project, found := ts.FindByName(name)
+    if !found {
+        return fmt.Errorf("No project named %s", name)
+    }
+
+    if project.Stage != psWorking {
+        return fmt.Errorf("Project %s is not in the working stage: %s", name, project.Stage)
+    }
+
     flagFile := fmt.Sprintf(".%d", rand.Int31())
-    projectDir, err := tp.TmmProjectDir(ts)
+    projectDir, err := tp.TmmProjectDir(project)
     if err != nil {
         return err
     }
@@ -74,7 +91,7 @@ func cmdTmm(c *cli.Context) error {
     }
 
     var base string
-    switch ts.Pt {
+    switch project.Pt {
     case ptUndef:
         return errors.New("Undefined project state")
     case ptMovie:
@@ -82,14 +99,14 @@ func cmdTmm(c *cli.Context) error {
     case ptShow:
         base = tp.TmmShowsDir()
     default:
-        return fmt.Errorf("Unexpected project state: %v", ts.Pt)
+        return fmt.Errorf("Unexpected project state: %v", project.Pt)
     }
     newFlagPath, err := findFlagFile(base, flagFile)
     if err != nil {
         return err
     }
 
-    ts.TmmDirOverride = filepath.Dir(newFlagPath)
+    project.TmmDirOverride = filepath.Dir(newFlagPath)
     if err := writeToolState(ts, tp.StatePath()); err != nil {
         return err
     }

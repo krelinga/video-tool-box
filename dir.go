@@ -2,7 +2,6 @@ package main
 
 import (
     "bufio"
-    "errors"
     "fmt"
     "math/big"
     "os"
@@ -70,8 +69,18 @@ func cmdCfgDir() *cli.Command {
     return &cli.Command{
         Name: "dir",
         Usage: "process .mkv files in a directory one at a time",
-        ArgsUsage: "<dir, or pwd by default>",  // Makes help text a bit nicer
         Description: "Requires an existing project.",
+        Flags: []cli.Flag {
+            &cli.StringFlag{
+                Name: "name",
+                Usage: "Name of the project to add files to.",
+                Required: true,
+            },
+            &cli.StringFlag{
+                Name: "dir",
+                Usage: "The directory to process.  PWD by default.",
+            },
+        },
         Action: cmdDir,
     }
 }
@@ -81,20 +90,18 @@ func cmdDir(c *cli.Context) error {
     if err != nil {
         return err
     }
-    if ts.Pt == ptUndef {
-        return errors.New("no active project")
+
+    name := c.String("name")
+    project, found := ts.FindByName(name)
+    if !found {
+        return fmt.Errorf("No project named %s", name)
     }
 
     rootDir, err := func() (string, error) {
-        args := c.Args().Slice()
-        switch len(args) {
-        case 0:
-            return tp.CurrentDir(), nil
-        case 1:
-            return filepath.Abs(args[0])
-        default:
-            return "", errors.New("only zero or one arguments supported.")
+        if f := c.String("dir"); len(f) > 0 {
+            return filepath.Abs(f)
         }
+        return tp.CurrentDir(), nil
     }()
     if err != nil {
         return err
@@ -139,7 +146,7 @@ func cmdDir(c *cli.Context) error {
                 fmt.Fprintln(c.App.Writer, "opened in VLC")
                 // Repeat inputLoop
             case "t":
-                destDir, err := tp.TmmProjectDir(ts)
+                destDir, err := tp.TmmProjectDir(project)
                 if err != nil { return err }
                 if err := createDestDirAndMove(path, destDir); err != nil {
                     return err
@@ -147,7 +154,7 @@ func cmdDir(c *cli.Context) error {
                 fmt.Fprintln(c.App.Writer, "moved to TMM content dir")
                 break inputLoop
             case "x":
-                destDir, err := tp.TmmProjectExtrasDir(ts)
+                destDir, err := tp.TmmProjectExtrasDir(project)
                 if err != nil { return err }
                 if err := createDestDirAndMove(path, destDir); err != nil {
                     return err

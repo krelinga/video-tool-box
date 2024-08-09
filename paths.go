@@ -53,24 +53,24 @@ func (tp *toolPaths) StatePath() string {
     return filepath.Join(tp.HomeDir(), ".vtb_state")
 }
 
-func (tp *toolPaths) TmmProjectDir(ts *toolState) (string, error) {
-    if len(ts.Name) == 0 {
+func (tp *toolPaths) TmmProjectDir(ps *projectState) (string, error) {
+    if len(ps.Name) == 0 {
         return "", errors.New("Empty Name field in toolState")
     }
-    if len(ts.TmmDirOverride) > 0 {
-        return ts.TmmDirOverride, nil
+    if len(ps.TmmDirOverride) > 0 {
+        return ps.TmmDirOverride, nil
     }
-    switch ts.Pt {
+    switch ps.Pt {
     case ptMovie:
-        return filepath.Join(tp.TmmMoviesDir(), ts.Name), nil
+        return filepath.Join(tp.TmmMoviesDir(), ps.Name), nil
     case ptShow:
-        return filepath.Join(tp.TmmShowsDir(), ts.Name), nil
+        return filepath.Join(tp.TmmShowsDir(), ps.Name), nil
     }
-    return "", errors.New("Unexpected value of ts.Pt")
+    return "", errors.New("Unexpected value of ps.Pt")
 }
 
-func (tp *toolPaths) TmmProjectExtrasDir(ts *toolState) (string, error) {
-    projectDir, err := tp.TmmProjectDir(ts)
+func (tp *toolPaths) TmmProjectExtrasDir(ps *projectState) (string, error) {
+    projectDir, err := tp.TmmProjectDir(ps)
     if err != nil { return "", err }
     return filepath.Join(projectDir, ".extras"), nil
 }

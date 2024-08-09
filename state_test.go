@@ -4,6 +4,8 @@ import (
     "os"
     "path/filepath"
     "testing"
+
+    "github.com/google/go-cmp/cmp"
 )
 
 func setUpTempDir(t *testing.T) string {
@@ -32,11 +34,8 @@ func TestReadNonExistingStateFile(t *testing.T) {
     if err != nil {
         t.Error(err)
     }
-    if ts.Pt != ptUndef {
-        t.Error(ts.Pt)
-    }
-    if ts.Name != "" {
-        t.Error(ts.Name)
+    if len(ts.Projects) != 0 {
+        t.Error(ts.Projects)
     }
 }
 
@@ -63,8 +62,12 @@ func TestStateFileWrites(t *testing.T) {
 
     tsPath := filepath.Join(tempDir, "state")
     ts1 := &toolState{
-        Pt: ptMovie,
-        Name: "movie",
+        Projects: []*projectState{
+            {
+                Pt: ptMovie,
+                Name: "movie",
+            },
+        },
     }
     if err := writeToolState(ts1, tsPath); err != nil {
         t.Errorf("error writing to non-existing state file: %s", err)
@@ -74,19 +77,23 @@ func TestStateFileWrites(t *testing.T) {
     if err != nil {
         t.Errorf("error reading toolState: %s", err)
     }
-    if *ts1 != *ts1Read {
-        t.Errorf("%v != %v", *ts1, *ts1Read)
+    if !cmp.Equal(ts1, ts1Read) {
+        t.Error(cmp.Diff(ts1, ts1Read))
     }
 
     ts2 := &toolState{
-        Pt: ptShow,
-        Name: "show",
+        Projects: []*projectState{
+            {
+                Pt: ptShow,
+                Name: "show",
+            },
+        },
     }
     if err := writeToolState(ts2, tsPath); err != nil {
         t.Errorf("error overwriting existing state file: %s", err)
     }
     ts2Read, err := readToolState(tsPath)
-    if *ts2 != *ts2Read {
-        t.Errorf("%v != %v", *ts1, *ts1Read)
+    if !cmp.Equal(ts2, ts2Read) {
+        t.Error(cmp.Diff(ts2, ts2Read))
     }
 }

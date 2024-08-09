@@ -118,53 +118,18 @@ func TestRipSequence(t *testing.T) {
         }
         return true
     }
-    testMetaUnconfigured := func() {
-        t.Helper()
-        defer ta.Reset()
-        if !runNoError("rip", "meta") {
-            return
-        }
-        initMetaOut := ta.Stdout().String()
-        noProjectConfigured := "no project configured"
-        if !strings.Contains(initMetaOut, noProjectConfigured) {
-            t.Errorf("Unexpected 'meta' output for no configured project: %s", initMetaOut)
-        }
-    }
-    testMetaConfigured := func() {
-        defer ta.Reset()
-        if !runNoError("rip", "meta") {
-            return
-        }
-        afterNewMetaOut := ta.Stdout().String()
-        if !strings.Contains(afterNewMetaOut, "Test Movie") {
-            t.Errorf("Unexpected 'meta' output for configured project: %s", afterNewMetaOut)
-        }
-        expectedTmmDir := filepath.Join(ta.Paths().TmmMoviesDir(), "Test Movie")
-        stat, err := os.Stat(expectedTmmDir)
-        if err != nil {
-            t.Errorf("Could not stat expected TMM dir %s: %s", expectedTmmDir, err)
-            return
-        }
-        if !stat.IsDir() {
-            t.Errorf("Expected %s to be a directory: %v", expectedTmmDir, stat)
-        }
-    }
-
-    testMetaUnconfigured()
 
     // Project names don't have to be quoted on the shell, so we pass
     // "Test" and "Movie" as two separate strings here.
-    if !runNoError("rip", "new", "movie", "Test", "Movie") {
+    if !runNoError("rip", "new", "--type", "movie", "--name", "Test Movie") {
         return
     }
     ta.Reset()
 
-    testMetaConfigured()
-
     if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
         t.Fatalf("error writing to test stdin: %s", err)
     }
-    if !runNoError("rip", "dir") {
+    if !runNoError("rip", "dir", "--name", "Test Movie") {
         return
     }
     if leftover := ta.Stdin().Len(); leftover > 0 {
@@ -219,12 +184,13 @@ func TestRipSequence(t *testing.T) {
     }
     ta.Reset()
 
-    testMetaConfigured()
+    // This isn't exactly right, but we can't simulate push in this harness.
+    if !runNoError("rip", "stage", "--name", "Test Movie", "--pushed") {
+        return
+    }
 
     if !runNoError("rip", "finish", "-y") {
         return
     }
     ta.Reset()
-
-    testMetaUnconfigured()
 }

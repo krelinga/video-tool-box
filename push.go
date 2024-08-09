@@ -43,80 +43,133 @@ func dirBytes(path string) (int64, error) {
 }
 
 func cmdPush(c *cli.Context) error {
-    tp, ok := toolPathsFromContext(c.Context)
-    if !ok {
-        return errors.New("toolPaths not present in context")
-    }
-    ts, err := readToolState(tp.StatePath())
+    tp, ts, save, err := ripCmdInit(c)
     if err != nil {
         return err
     }
 
-    projectDir, err := tp.TmmProjectDir(ts)
-    if err != nil {
-        return err
+    projects := ts.FindByStage(psReadyForPush)
+    if len(projects) == 0 {
+        return errors.New("No projects ready for push.")
     }
 
-    projectDirSize, err := dirBytes(projectDir)
-    if err != nil {
-        return err
-    }
-
-    nasSubDir, err := func() (string, error) {
-        switch ts.Pt {
-        case ptUndef:
-            return "", errors.New("Not in a rip project.")
-        case ptMovie:
-            return "Movies", nil
-        case ptShow:
-            return "Shows", nil
-        default:
-            return "", fmt.Errorf("Unexpected ProjectType value %v", ts.Pt)
+    dirs := make([]string, 0, len(projects))
+    outSuperDirs := make([]string, 0, len(projects))
+    dirSizes := make([]int64, 0, len(projects))
+    outDirs := make([]string, 0, len(projects))
+    totalSize := int64(0)
+    for _, p := range projects {
+        d, err := tp.TmmProjectDir(p)
+        if err != nil {
+            return err
         }
-    }()
-    if err != nil {
-        return err
-    }
-    title := filepath.Base(projectDir)
-    outSuperPath := filepath.Join(tp.NasMountDir(), nasSubDir)
-    outPath := filepath.Join(outSuperPath, title)
+        dirs = append(dirs, d)
+        size, err := dirBytes(d)
+        if err != nil {
+            return err
+        }
+        totalSize += size
+        dirSizes = append(dirSizes, size)
 
-    fmt.Fprintf(c.App.Writer, "Will copy %s from %s to %s.\nConfirm (y/N)? ", humanize.IBytes(uint64(projectDirSize)), projectDir, outPath)
+        nasSubDir, err := func() (string, error) {
+            switch p.Pt {
+            case ptUndef:
+                return "", errors.New("Not in a rip project.")
+            case ptMovie:
+                return "Movies", nil
+            case ptShow:
+                return "Shows", nil
+            default:
+                return "", fmt.Errorf("Unexpected ProjectType value %v", p.Pt)
+            }
+        }()
+        if err != nil {
+            return err
+        }
+        title := filepath.Base(d)
+        outSuperDir := filepath.Join(tp.NasMountDir(), nasSubDir)
+        outSuperDirs = append(outSuperDirs, outSuperDir)
+        outDir := filepath.Join(outSuperDir, title)
+        outDirs = append(outDirs, outDir)
+    }
+
+    fmt.Fprintf(c.App.Writer, "Will publish %d projects to NAS as follows:\n", len(dirs))
+    for i, dir := range dirs {
+        outDir := outDirs[i]
+        humanSize := humanize.IBytes(uint64(dirSizes[i]))
+        fmt.Fprintf(c.App.Writer, "- %s from %s to %s\n", humanSize, dir, outDir)
+    }
+
+    humanTotalSize := humanize.IBytes(uint64(totalSize))
+    fmt.Fprintf(c.App.Writer, "Total of %s.  Confirm (y/N)? ", humanTotalSize)
     var confirm string
     fmt.Fscanf(c.App.Reader, "%s", &confirm)
     if confirm != "y" {
         return nil
     }
 
-    // Use rsync to copy the files.
-    args := []string{
-        "-ah",
-        "--progress",
-        "-r",
-        projectDir,
-        outSuperPath,
-    }
-    cmd := exec.Command("/usr/bin/rsync", args...)
-    cmd.Stdin = c.App.Reader
-    cmd.Stdout = c.App.Writer
-    cmd.Stderr = c.App.ErrWriter
-
-    if err := cmd.Run(); err != nil {
-        return err
-    }
-
-    // Now rename the .extras dir (if it exists)
-    extrasPath := filepath.Join(outPath, ".extras")
-    _, err = os.Stat(extrasPath)
-    if err != nil {
-        if errors.Is(err, fs.ErrNotExist) {
-            fmt.Fprintln(c.App.Writer, "No extras dir.")
-            return nil
-        } else {
-            return err
+    // Only record the first error from here on out.
+    updateError := func(in error) (ok bool) {
+        ok = in == nil
+        if err != nil {
+            return
         }
+        err = in
+        return
     }
-    newExtrasPath := filepath.Join(outPath, "extras")
-    fmt.Fprintln(c.App.Writer, "Renaming extras dir.")
-    return os.Rename(extrasPath, newExtrasPath)
+
+    needSave := false
+    for i, dir := range(dirs) {
+        project := projects[i]
+        outSuperDir := outSuperDirs[i]
+        outDir := outDirs[i]
+
+        fmt.Fprintf(c.App.Writer, "\n[%d/%d] Copying from %s...\n", i + 1, len(dirs), dir)
+
+        // Use rsync to copy the files.
+        args := []string{
+            "-ah",
+            "--progress",
+            "-r",
+            dir,
+            outSuperDir,
+        }
+        cmd := exec.Command("/usr/bin/rsync", args...)
+        cmd.Stdin = c.App.Reader
+        cmd.Stdout = c.App.Writer
+        cmd.Stderr = c.App.ErrWriter
+        if !updateError(cmd.Run()) {
+            continue
+        }
+
+        // Now rename the .extras dir (if it exists)
+        extrasPath := filepath.Join(outDir, ".extras")
+        var hasExtrasDir bool
+        if _, statErr := os.Stat(extrasPath); statErr == nil {
+            hasExtrasDir = true
+        } else if !errors.Is(statErr, fs.ErrNotExist) {
+            updateError(statErr)
+            continue
+        }
+        if hasExtrasDir {
+            newExtrasPath := filepath.Join(outDir, "extras")
+            fmt.Fprintf(c.App.Writer, "Renaming extras dir... ")
+            if !updateError(os.Rename(extrasPath, newExtrasPath)) {
+                continue
+            }
+            fmt.Fprintf(c.App.Writer, "done.\n")
+        } else {
+            fmt.Fprintln(c.App.Writer, "No extras dir.")
+        }
+
+        // finally, update the stage in the project struct (if we got here)
+        project.Stage = psPushed
+        needSave = true
+    }
+
+    if needSave {
+        updateError(save())
+    }
+
+    return err
 }
