@@ -16,6 +16,12 @@ func cmdCfgPush() *cli.Command {
     return &cli.Command{
         Name: "push",
         Usage: "push files from Tiny Media Manager directory to NAS.",
+        Flags: []cli.Flag{
+            &cli.StringSliceFlag{
+                Name: "name",
+                Usage: "If set, only named projects will be pushed.",
+            },
+        },
         Action: cmdPush,
     }
 }
@@ -51,6 +57,21 @@ func cmdPush(c *cli.Context) error {
     projects := ts.FindByStage(psReadyForPush)
     if len(projects) == 0 {
         return errors.New("No projects ready for push.")
+    }
+    if nameList := c.StringSlice("name"); len(nameList) > 0 {
+        type empty struct {}
+        nameSet := make(map[string]empty)
+        for _, n := range nameList {
+            nameSet[n] = empty{}
+        }
+
+        newProjects := make([]*projectState, 0, len(projects))
+        for _, p := range projects {
+            if _, found := nameSet[p.Name]; found {
+                newProjects = append(newProjects, p)
+            }
+        }
+        projects = newProjects
     }
 
     dirs := make([]string, 0, len(projects))
