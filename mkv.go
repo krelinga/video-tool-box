@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore urfave, connectrpc, muspbconnect, muspp, serverv1, protocolbuffers, muspb, subcmd
+
 import (
 	"errors"
 	"fmt"

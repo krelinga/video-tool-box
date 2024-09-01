@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore urfave
+
 import (
 	"bufio"
 	"fmt"
@@ -114,7 +116,9 @@ func cmdDir(c *cli.Context) error {
 
 	scanner := bufio.NewScanner(c.App.Reader)
 	prompt := func() (string, error) {
+		// spell-checker:disable
 		fmt.Fprintf(c.App.Writer, "(o)pen, (t)itle, e(x)tra, (s)kip, (d)elete, (q)uit: ")
+		// spell-checker:enable
 		if !scanner.Scan() {
 			return "", scanner.Err()
 		}

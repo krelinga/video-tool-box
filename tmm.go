@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore urfave
+
 import (
 	"errors"
 	"fmt"

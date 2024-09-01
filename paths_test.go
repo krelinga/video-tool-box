@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore workingdir, workdir
+
 import (
 	"os"
 	"testing"

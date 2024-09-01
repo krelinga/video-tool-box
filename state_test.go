@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore tempdir
+
 import (
 	"os"
 	"path/filepath"
