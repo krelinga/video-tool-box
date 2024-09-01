@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "install client to host",
+            "type": "shell",
+            "command": "GOOS=darwin GOARCH=arm64 go build -o /host/bin/bt .",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"  // Makes this show up in cmd+shift+b menu
+            }
+        },
+        {
+            "label": "build and push TCServer",
+            "type": "shell",
+            "command": "act --var-file .act/vars --secret-file .act/secrets -W .github/workflows/tcserver_build_push.yaml -P ubuntu-latest=catthehacker/ubuntu:act-latest",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"  // Makes this show up in cmd+shift+b menu
+            }
+        },
+        {
+            "label": "build and push base image",
+            "type": "shell",
+            "command": "act --var-file .act/vars --secret-file .act/secrets -W .github/workflows/base_build_push.yaml -P ubuntu-latest=catthehacker/ubuntu:act-latest",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build"  // Makes this show up in cmd+shift+b menu
+            }
+        }
+    ]
+}
