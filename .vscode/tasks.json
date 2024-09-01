@@ -4,7 +4,7 @@
         {
             "label": "install client to host",
             "type": "shell",
-            "command": "GOOS=darwin GOARCH=arm64 go build -o /host/bin/bt .",
+            "command": "GOOS=darwin GOARCH=arm64 go build -o /host/bin/vtb .",
             "problemMatcher": [],
             "group": {
                 "kind": "build"  // Makes this show up in cmd+shift+b menu
