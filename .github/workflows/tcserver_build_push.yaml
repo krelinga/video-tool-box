@@ -25,5 +25,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: krelinga/video-tool-box-tcserver:buildx-latest
-          # context: .
           file: tcserver.Dockerfile
