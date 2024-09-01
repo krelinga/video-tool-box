@@ -1,5 +1,7 @@
 package main
 
+// spell-checker:ignore urfave, subcmd
+
 import cli "github.com/urfave/cli/v2"
 
 func appCfg() *cli.App {
