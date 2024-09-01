@@ -86,7 +86,9 @@ func (tp *toolPaths) ConfigPath() string {
 	return filepath.Join(tp.HomeDir(), ".vtb_config.json")
 }
 
-var toolPathsContextKey string = "toolPathsContextKey"
+type toolPathsContextKeyType string
+
+var toolPathsContextKey toolPathsContextKeyType = "toolPathsContextKey"
 
 func newToolPathsContext(ctx context.Context, tp *toolPaths) context.Context {
 	return context.WithValue(ctx, toolPathsContextKey, tp)

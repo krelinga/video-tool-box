@@ -93,6 +93,9 @@ func TestStateFileWrites(t *testing.T) {
 		t.Errorf("error overwriting existing state file: %s", err)
 	}
 	ts2Read, err := readToolState(tsPath)
+	if err != nil {
+		t.Errorf("error reading toolState: %s", err)
+	}
 	if !cmp.Equal(ts2, ts2Read) {
 		t.Error(cmp.Diff(ts2, ts2Read))
 	}

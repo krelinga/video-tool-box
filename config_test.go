@@ -43,7 +43,7 @@ func TestConfig(t *testing.T) {
 			return
 		}
 		if !cmp.Equal(c, readC) {
-			t.Errorf(cmp.Diff(c, readC))
+			t.Error(cmp.Diff(c, readC))
 		}
 	})
 }
