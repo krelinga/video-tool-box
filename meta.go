@@ -37,7 +37,7 @@ func cmdNew(c *cli.Context) error {
 	}
 	name := c.String("name")
 	if _, found := ts.FindByName(name); found {
-		return fmt.Errorf("There is already a project named %s", name)
+		return fmt.Errorf("there is already a project named %s", name)
 	}
 	var t projectType
 	switch c.String("type") {
@@ -46,7 +46,7 @@ func cmdNew(c *cli.Context) error {
 	case "show":
 		t = ptShow
 	default:
-		return fmt.Errorf("Invalid value of --type")
+		return fmt.Errorf("invalid value of --type")
 	}
 	ps := &projectState{
 		Name:  name,
@@ -60,7 +60,7 @@ func cmdNew(c *cli.Context) error {
 		return err
 	}
 	if err := os.MkdirAll(projectDir, 0755); err != nil {
-		return fmt.Errorf("Could not create project dir %s: %w", projectDir, err)
+		return fmt.Errorf("could not create project dir %s: %w", projectDir, err)
 	}
 
 	return save()
@@ -89,13 +89,13 @@ func cmdFinish(c *cli.Context) error {
 	}
 	found := ts.FindByStage(psPushed)
 	if len(found) == 0 {
-		return errors.New("No projects are marked as pushed")
+		return errors.New("no projects are marked as pushed")
 	}
 	dirs := make([]string, 0, len(found))
 	for _, p := range found {
 		projectDir, err := tp.TmmProjectDir(p)
 		if err != nil {
-			return fmt.Errorf("Could not get project dir for %s", p.Name)
+			return fmt.Errorf("could not get project dir for %s", p.Name)
 		}
 		dirs = append(dirs, projectDir)
 	}

@@ -41,7 +41,7 @@ func findFlagFile(base, fileName string) (string, error) {
 
 		entries, err := os.ReadDir(c)
 		if err != nil {
-			return "", fmt.Errorf("Could not read dir %s: %w", c, err)
+			return "", fmt.Errorf("could not read dir %s: %w", c, err)
 		}
 		for _, e := range entries {
 			cPath := filepath.Join(c, e.Name())
@@ -53,7 +53,7 @@ func findFlagFile(base, fileName string) (string, error) {
 			// the file is uninteresting, do nothing.
 		}
 	}
-	return "", fmt.Errorf("Could not find a file named %s under %s", fileName, base)
+	return "", fmt.Errorf("could not find a file named %s under %s", fileName, base)
 }
 
 func cmdTmm(c *cli.Context) error {
@@ -69,11 +69,11 @@ func cmdTmm(c *cli.Context) error {
 	name := c.String("name")
 	project, found := ts.FindByName(name)
 	if !found {
-		return fmt.Errorf("No project named %s", name)
+		return fmt.Errorf("no project named %s", name)
 	}
 
 	if project.Stage != psWorking {
-		return fmt.Errorf("Project %s is not in the working stage: %s", name, project.Stage)
+		return fmt.Errorf("project %s is not in the working stage: %s", name, project.Stage)
 	}
 
 	flagFile := fmt.Sprintf(".%d", rand.Int31())
@@ -83,23 +83,23 @@ func cmdTmm(c *cli.Context) error {
 	}
 	flagPath := filepath.Join(projectDir, flagFile)
 	if err := os.WriteFile(flagPath, []byte{}, 0644); err != nil {
-		return fmt.Errorf("Could not create flag path %s: %w", flagPath, err)
+		return fmt.Errorf("could not create flag path %s: %w", flagPath, err)
 	}
 
 	if err := runTmmAndWait(); err != nil {
-		return fmt.Errorf("Could not run TMM: %w", err)
+		return fmt.Errorf("could not run TMM: %w", err)
 	}
 
 	var base string
 	switch project.Pt {
 	case ptUndef:
-		return errors.New("Undefined project state")
+		return errors.New("undefined project state")
 	case ptMovie:
 		base = tp.TmmMoviesDir()
 	case ptShow:
 		base = tp.TmmShowsDir()
 	default:
-		return fmt.Errorf("Unexpected project state: %v", project.Pt)
+		return fmt.Errorf("unexpected project state: %v", project.Pt)
 	}
 	newFlagPath, err := findFlagFile(base, flagFile)
 	if err != nil {
@@ -112,7 +112,7 @@ func cmdTmm(c *cli.Context) error {
 	}
 
 	if err := os.Remove(newFlagPath); err != nil {
-		return fmt.Errorf("Could not remove new flag path %s: %w", newFlagPath, err)
+		return fmt.Errorf("could not remove new flag path %s: %w", newFlagPath, err)
 	}
 
 	return nil

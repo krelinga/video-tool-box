@@ -94,7 +94,7 @@ func cmdDir(c *cli.Context) error {
 	name := c.String("name")
 	project, found := ts.FindByName(name)
 	if !found {
-		return fmt.Errorf("No project named %s", name)
+		return fmt.Errorf("no project named %s", name)
 	}
 
 	rootDir, err := func() (string, error) {

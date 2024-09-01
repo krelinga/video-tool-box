@@ -60,7 +60,7 @@ func (tp *toolPaths) StatePath() string {
 
 func (tp *toolPaths) TmmProjectDir(ps *projectState) (string, error) {
 	if len(ps.Name) == 0 {
-		return "", errors.New("Empty Name field in toolState")
+		return "", errors.New("empty Name field in toolState")
 	}
 	if len(ps.TmmDirOverride) > 0 {
 		return ps.TmmDirOverride, nil
@@ -71,7 +71,7 @@ func (tp *toolPaths) TmmProjectDir(ps *projectState) (string, error) {
 	case ptShow:
 		return filepath.Join(tp.TmmShowsDir(), ps.Name), nil
 	}
-	return "", errors.New("Unexpected value of ps.Pt")
+	return "", errors.New("unexpected value of ps.Pt")
 }
 
 func (tp *toolPaths) TmmProjectExtrasDir(ps *projectState) (string, error) {

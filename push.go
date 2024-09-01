@@ -56,7 +56,7 @@ func cmdPush(c *cli.Context) error {
 
 	projects := ts.FindByStage(psReadyForPush)
 	if len(projects) == 0 {
-		return errors.New("No projects ready for push.")
+		return errors.New("no projects ready for push")
 	}
 	if nameList := c.StringSlice("name"); len(nameList) > 0 {
 		type empty struct{}
@@ -95,13 +95,13 @@ func cmdPush(c *cli.Context) error {
 		nasSubDir, err := func() (string, error) {
 			switch p.Pt {
 			case ptUndef:
-				return "", errors.New("Not in a rip project.")
+				return "", errors.New("not in a rip project")
 			case ptMovie:
 				return "Movies", nil
 			case ptShow:
 				return "Shows", nil
 			default:
-				return "", fmt.Errorf("Unexpected ProjectType value %v", p.Pt)
+				return "", fmt.Errorf("unexpected ProjectType value %v", p.Pt)
 			}
 		}()
 		if err != nil {

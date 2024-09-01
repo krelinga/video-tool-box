@@ -55,11 +55,11 @@ func cmdCfgMkvInfo() *cli.Command {
 func cmdMkvInfo(c *cli.Context) error {
 	args := c.Args().Slice()
 	if len(args) != 1 {
-		return errors.New("Expected a single argument")
+		return errors.New("expected a single argument")
 	}
 	path, err := filepath.Abs(args[0])
 	if err != nil {
-		return fmt.Errorf("Could not determine absolute path name: %w", err)
+		return fmt.Errorf("could not determine absolute path name: %w", err)
 	}
 	client, err := dialMkvUtilsServer(c)
 	if err != nil {
@@ -103,19 +103,19 @@ var splitSpecRe = regexp.MustCompile(`(\d+)?-(\d+)?:(.+)`)
 func cmdMkvSplit(c *cli.Context) error {
 	in, err := filepath.Abs(c.String("in"))
 	if err != nil {
-		return fmt.Errorf("Could not get absolute path: %w", err)
+		return fmt.Errorf("could not get absolute path: %w", err)
 	}
 	outs := []*muspb.SplitRequest_ByChapters{}
 	for _, o := range c.StringSlice("out") {
 		match := splitSpecRe.FindStringSubmatch(o)
 		if match == nil {
-			return fmt.Errorf("Could not parse --out %s", o)
+			return fmt.Errorf("could not parse --out %s", o)
 		}
 		c := &muspb.SplitRequest_ByChapters{}
 		var err error
 		c.OutPath, err = filepath.Abs(match[3])
 		if err != nil {
-			return fmt.Errorf("Could not get absolute path for --out %s", o)
+			return fmt.Errorf("could not get absolute path for --out %s", o)
 		}
 		atoi := func(s string) (int32, error) {
 			i, err := strconv.Atoi(s)
@@ -127,13 +127,13 @@ func cmdMkvSplit(c *cli.Context) error {
 		if len(match[1]) > 0 {
 			c.Start, err = atoi(match[1])
 			if err != nil {
-				return fmt.Errorf("Could not parse --out %s", o)
+				return fmt.Errorf("could not parse --out %s", o)
 			}
 		}
 		if len(match[2]) > 0 {
 			c.Limit, err = atoi(match[2])
 			if err != nil {
-				return fmt.Errorf("Could not parse --out %s", o)
+				return fmt.Errorf("could not parse --out %s", o)
 			}
 		}
 		outs = append(outs, c)
@@ -163,11 +163,11 @@ func cmdCfgMkvChapters() *cli.Command {
 func cmdMkvChapters(c *cli.Context) error {
 	args := c.Args().Slice()
 	if len(args) != 1 {
-		return errors.New("Expected a single argument")
+		return errors.New("expected a single argument")
 	}
 	in, err := filepath.Abs(args[0])
 	if err != nil {
-		return fmt.Errorf("Could not get absolute path: %w", err)
+		return fmt.Errorf("could not get absolute path: %w", err)
 	}
 	req := connect.NewRequest(&muspb.GetChaptersRequest{
 		InPath: in,
@@ -227,13 +227,13 @@ func cmdMkvConcat(c *cli.Context) error {
 	for _, in := range c.StringSlice("in") {
 		fullPath, err := filepath.Abs(in)
 		if err != nil {
-			return fmt.Errorf("Could not get absolute path: %w", err)
+			return fmt.Errorf("could not get absolute path: %w", err)
 		}
 		req.Msg.InputPaths = append(req.Msg.InputPaths, fullPath)
 	}
 	fullPath, err := filepath.Abs(c.String("out"))
 	if err != nil {
-		return fmt.Errorf("Could not get absolute path: %w", err)
+		return fmt.Errorf("could not get absolute path: %w", err)
 	}
 	req.Msg.OutputPath = fullPath
 
