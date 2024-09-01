@@ -165,6 +165,7 @@ func TestTmmProjectDir(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
+		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
 			path, err := tp.TmmProjectDir(tc.Project)
@@ -239,6 +240,7 @@ func TestTmmProjectExtrasDir(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
+		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
 			path, err := tp.TmmProjectExtrasDir(tc.Project)
