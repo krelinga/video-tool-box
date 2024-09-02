@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-07-21 22:20:40 - tinyMediaManager 4.3.16-->
+<tvshow>
+  <title>Cowboy Bebop</title>
+  <originaltitle>カウボーイビバップ</originaltitle>
+  <showtitle>Cowboy Bebop</showtitle>
+  <sorttitle/>
+  <year>1998</year>
+  <ratings/>
+  <userrating>0</userrating>
+  <outline/>
+  <plot>In the year 2071 humanity has colonized the entire Solar System through the use of "Phase Difference Space Gates". A catastrophic accident occurred during the development of the Gates, damaging both the Earth and the Moon, heavily irradiating the surface, and forcing most of mankind to evacuate to other planets of the Solar System.&#13;
+&#13;
+Wherever humanity goes, so goes its criminal element, and thus the need for those who hunt criminals. The newly formed solar system police reinstated the bounty scheme of the Wild West. Cowboy Bebop is the story of the four inhabitants of the spaceship Bebop, and the living they barely make at bounty hunting.</plot>
+  <tagline/>
+  <runtime>25</runtime>
+  <thumb aspect="poster">http://assets.fanart.tv/fanart/tv/76885/tvposter/cowboy-bebop-568c35f73e3c7.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/tv/76885/tvbanner/cowboy-bebop-595eda99eaceb.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/tv/76885/hdclearart/cowboy-bebop-51b0a05e2491a.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/tv/76885/hdtvlogo/cowboy-bebop-51b09fc19c28b.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/tv/76885/tvthumb/cowboy-bebop-4e5609d5516ee.jpg</thumb>
+  <thumb aspect="keyart">http://assets.fanart.tv/fanart/tv/76885/tvposter/cowboy-bebop-637d460b45c87.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/tv/76885/hdtvlogo/cowboy-bebop-51b09fc19c28b.png</thumb>
+  <thumb aspect="characterart">http://assets.fanart.tv/fanart/tv/76885/characterart/cowboy-bebop-667998bfdae06.png</thumb>
+  <thumb aspect="poster" season="0" type="season">https://image.tmdb.org/t/p/original/lM37YEq5zwlhfW6WXNSps0pIK4Z.jpg</thumb>
+  <thumb aspect="poster" season="1" type="season">http://assets.fanart.tv/fanart/tv/76885/seasonposter/cowboy-bebop-619ca13d6740a.jpg</thumb>
+  <thumb aspect="banner" season="1" type="season">https://artworks.thetvdb.com/banners/seasonswide/76885-1.jpg</thumb>
+  <thumb aspect="thumb" season="1" type="season">http://assets.fanart.tv/fanart/tv/76885/seasonthumb/cowboy-bebop-619ca154564e5.jpg</thumb>
+  <fanart>
+    <thumb>http://assets.fanart.tv/fanart/tv/76885/showbackground/cowboy-bebop-5eb98d105ff1d.jpg</thumb>
+  </fanart>
+  <mpaa>US:TV-MA</mpaa>
+  <certification>US:TV-MA</certification>
+  <episodeguide>{"tmdb":"30991","imdb":"tt0213338","tvdb":"76885"}</episodeguide>
+  <id>76885</id>
+  <imdbid>tt0213338</imdbid>
+  <tmdbid>30991</tmdbid>
+  <uniqueid default="false" type="tmdb">30991</uniqueid>
+  <uniqueid default="false" type="imdb">tt0213338</uniqueid>
+  <uniqueid default="true" type="tvdb">76885</uniqueid>
+  <premiered>1998-04-03</premiered>
+  <status>Ended</status>
+  <watched>false</watched>
+  <playcount/>
+  <genre>Science Fiction</genre>
+  <genre>Drama</genre>
+  <genre>Comedy</genre>
+  <genre>Animation</genre>
+  <genre>Adventure</genre>
+  <genre>Action</genre>
+  <genre>Western</genre>
+  <genre>Anime</genre>
+  <studio>TV Tokyo</studio>
+  <studio>WOWOW</studio>
+  <studio>SUNRISE</studio>
+  <studio>BONES</studio>
+  <studio>Bandai Visual</studio>
+  <country/>
+  <actor>
+    <name>Kouichi Yamadera</name>
+    <role>Spike Spiegel</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/7916957/62110430.jpg</thumb>
+    <profile>https://thetvdb.com/people/7916957-kouichi-yamadera</profile>
+    <tvdbid>7916957</tvdbid>
+  </actor>
+  <actor>
+    <name>Unshou Ishizuka</name>
+    <role>Jet Black</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/7878699/61206663.jpg</thumb>
+    <profile>https://thetvdb.com/people/7878699-unshou-ishizuka</profile>
+    <tvdbid>7878699</tvdbid>
+  </actor>
+  <actor>
+    <name>Megumi Hayashibara</name>
+    <role>Faye Valentine</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/282368/61206666.jpg</thumb>
+    <profile>https://thetvdb.com/people/282368-megumi-hayashibara</profile>
+    <tvdbid>282368</tvdbid>
+  </actor>
+  <actor>
+    <name>Aoi Tada</name>
+    <role>Edward Wong Hau Pepelu Tivrusky IV</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/418405/61206662.jpg</thumb>
+    <profile>https://thetvdb.com/people/418405-aoi-tada</profile>
+    <tvdbid>418405</tvdbid>
+  </actor>
+  <actor>
+    <name>Norio Wakamoto</name>
+    <role>Vicious</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/362925/62111227.jpg</thumb>
+    <profile>https://thetvdb.com/people/362925-norio-wakamoto</profile>
+    <tvdbid>362925</tvdbid>
+  </actor>
+  <actor>
+    <name>Gara Takashima</name>
+    <role>Julia</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/282385/62111273.jpg</thumb>
+    <profile>https://thetvdb.com/people/282385-gara-takashima</profile>
+    <tvdbid>282385</tvdbid>
+  </actor>
+  <actor>
+    <name>Tsutomu Taruki</name>
+    <role>Punch</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/7999189/61206672.jpg</thumb>
+    <profile>https://thetvdb.com/people/7999189-tsutomu-taruki</profile>
+    <tvdbid>7999189</tvdbid>
+  </actor>
+  <actor>
+    <name>Miki Nagasawa</name>
+    <role>Judy</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/280734/62110437.jpg</thumb>
+    <profile>https://thetvdb.com/people/280734-miki-nagasawa</profile>
+    <tvdbid>280734</tvdbid>
+  </actor>
+  <actor>
+    <name>Miyuki Ichijou</name>
+    <role>Anastasia</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/312197/62111305.jpg</thumb>
+    <profile>https://thetvdb.com/people/312197-miyuki-ichijou</profile>
+    <tvdbid>312197</tvdbid>
+  </actor>
+  <actor>
+    <name>Hikaru Midorikawa</name>
+    <role>Lin</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/303114/62111356.jpg</thumb>
+    <profile>https://thetvdb.com/people/303114-hikaru-midorikawa</profile>
+    <tvdbid>303114</tvdbid>
+  </actor>
+  <actor>
+    <name>Nobuyuki Hiyama</name>
+    <role>Shin</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/280704/62111343.jpg</thumb>
+    <profile>https://thetvdb.com/people/280704-nobuyuki-hiyama</profile>
+    <tvdbid>280704</tvdbid>
+  </actor>
+  <actor>
+    <name>Takehiro Koyama</name>
+    <role>Laughing Bull</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/343724/62111383.jpg</thumb>
+    <profile>https://thetvdb.com/people/343724-takehiro-koyama</profile>
+    <tvdbid>343724</tvdbid>
+  </actor>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=RI08P5SaJNU</trailer>
+  <dateadded>2024-07-21 22:20:30</dateadded>
+  <!--tinyMediaManager meta data-->
+  <user_note/>
+</tvshow>

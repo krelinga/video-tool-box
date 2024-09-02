@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-07-21 13:18:11 - tinyMediaManager 4.3.16-->
+<tvshow>
+  <title>The Terror</title>
+  <originaltitle>The Terror</originaltitle>
+  <showtitle>The Terror</showtitle>
+  <sorttitle/>
+  <year>2018</year>
+  <ratings/>
+  <userrating>0</userrating>
+  <outline/>
+  <plot>A chilling anthology drama series inspired by true historical events.</plot>
+  <tagline/>
+  <runtime>44</runtime>
+  <thumb aspect="poster">http://assets.fanart.tv/fanart/tv/322191/tvposter/the-terror-5ab63d437c987.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/tv/322191/tvbanner/the-terror-5b4c8cdc4d227.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/tv/322191/hdclearart/the-terror-5b4855b9ac779.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/tv/322191/hdtvlogo/the-terror-5a32b6091a94c.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/tv/322191/tvthumb/the-terror-5d50cdde4f355.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/tv/322191/hdtvlogo/the-terror-5a32b6091a94c.png</thumb>
+  <thumb aspect="characterart">http://assets.fanart.tv/fanart/tv/322191/characterart/the-terror-5b4855c62b7cd.png</thumb>
+  <thumb aspect="poster" season="1" type="season">https://image.tmdb.org/t/p/original/uFcbGP58In6oyfm8gU1XZLyCz91.jpg</thumb>
+  <thumb aspect="poster" season="2" type="season">http://assets.fanart.tv/fanart/tv/322191/seasonposter/the-terror-5e2aeb7c0f56a.jpg</thumb>
+  <thumb aspect="banner" season="2" type="season">https://artworks.thetvdb.com/banners/seasonswide/5d52d6859c71a.jpg</thumb>
+  <fanart>
+    <thumb>http://assets.fanart.tv/fanart/tv/322191/showbackground/the-terror-5b4c8bc007bd6.jpg</thumb>
+  </fanart>
+  <mpaa>US:TV-MA</mpaa>
+  <certification>US:TV-MA</certification>
+  <episodeguide>{"tmdb":"75191","imdb":"tt2708480","tvdb":"322191"}</episodeguide>
+  <id>322191</id>
+  <imdbid>tt2708480</imdbid>
+  <tmdbid>75191</tmdbid>
+  <uniqueid default="false" type="tmdb">75191</uniqueid>
+  <uniqueid default="false" type="imdb">tt2708480</uniqueid>
+  <uniqueid default="true" type="tvdb">322191</uniqueid>
+  <premiered>2018-03-26</premiered>
+  <status>Ended</status>
+  <watched>false</watched>
+  <playcount/>
+  <genre>Horror</genre>
+  <genre>Drama</genre>
+  <genre>Adventure</genre>
+  <genre>Suspense</genre>
+  <genre>Thriller</genre>
+  <genre>History</genre>
+  <studio>AMC</studio>
+  <country/>
+  <actor>
+    <name>Jared Harris</name>
+    <role>Francis Crozier</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/406909.jpg</thumb>
+    <profile>https://thetvdb.com/people/360332-jared-harris</profile>
+    <tvdbid>360332</tvdbid>
+  </actor>
+  <actor>
+    <name>Tobias Menzies</name>
+    <role>James Fitzjames</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/406910.jpg</thumb>
+    <profile>https://thetvdb.com/people/247994-tobias-menzies</profile>
+    <tvdbid>247994</tvdbid>
+  </actor>
+  <actor>
+    <name>Ciarán Hinds</name>
+    <role>John Franklin</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/406911.jpg</thumb>
+    <profile>https://thetvdb.com/people/247861-ciaran-hinds</profile>
+    <tvdbid>247861</tvdbid>
+  </actor>
+  <actor>
+    <name>Paul Ready</name>
+    <role>Henry Goodsir</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/406912.jpg</thumb>
+    <profile>https://thetvdb.com/people/594152-paul-ready</profile>
+    <tvdbid>594152</tvdbid>
+  </actor>
+  <actor>
+    <name>Ian Hart</name>
+    <role>Thomas Blanky</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/469842.jpg</thumb>
+    <profile>https://thetvdb.com/people/476088-ian-hart</profile>
+    <tvdbid>476088</tvdbid>
+  </actor>
+  <actor>
+    <name>Nive Nielsen</name>
+    <role>Lady Silence</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/469843.jpg</thumb>
+    <profile>https://thetvdb.com/people/8106377-nive-nielsen</profile>
+    <tvdbid>8106377</tvdbid>
+  </actor>
+  <actor>
+    <name>Adam Nagaitis</name>
+    <role>Cornelius Hickey</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/469844.jpg</thumb>
+    <profile>https://thetvdb.com/people/645969-adam-nagaitis</profile>
+    <tvdbid>645969</tvdbid>
+  </actor>
+  <actor>
+    <name>Trystan Gravelle</name>
+    <role>Henry Collins</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/481102.jpg</thumb>
+    <profile>https://thetvdb.com/people/308479-trystan-gravelle</profile>
+    <tvdbid>308479</tvdbid>
+  </actor>
+  <actor>
+    <name>George Takei</name>
+    <role>Yamato-san</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/540151.jpg</thumb>
+    <profile>https://thetvdb.com/people/248136-george-takei</profile>
+    <tvdbid>248136</tvdbid>
+  </actor>
+  <actor>
+    <name>Sebastian Armesto</name>
+    <role>Charles Des Voeux</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/540152.jpg</thumb>
+    <profile>https://thetvdb.com/people/450076-sebastian-armesto</profile>
+    <tvdbid>450076</tvdbid>
+  </actor>
+  <actor>
+    <name>Alistair Petrie</name>
+    <role>Dr. Stanley</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/540153.jpg</thumb>
+    <profile>https://thetvdb.com/people/417675-alistair-petrie</profile>
+    <tvdbid>417675</tvdbid>
+  </actor>
+  <actor>
+    <name>Greta Scacchi</name>
+    <role>Lady Jane Franklin</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/540154.jpg</thumb>
+    <profile>https://thetvdb.com/people/403803-greta-scacchi</profile>
+    <tvdbid>403803</tvdbid>
+  </actor>
+  <actor>
+    <name>Charles Edwards</name>
+    <role>Dr. McDonald</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/540155.jpg</thumb>
+    <profile>https://thetvdb.com/people/397859-charles-edwards</profile>
+    <tvdbid>397859</tvdbid>
+  </actor>
+  <actor>
+    <name>Edward Ashley</name>
+    <role>William Gibson</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/549785.jpg</thumb>
+    <profile>https://thetvdb.com/people/260052-edward-ashley</profile>
+    <tvdbid>260052</tvdbid>
+  </actor>
+  <actor>
+    <name>Ronan Raftery</name>
+    <role>Lt. John Irving</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/549786.jpg</thumb>
+    <profile>https://thetvdb.com/people/544687-ronan-raftery</profile>
+    <tvdbid>544687</tvdbid>
+  </actor>
+  <actor>
+    <name>Derek Mio</name>
+    <role>Chester Nakayama</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550180.jpg</thumb>
+    <profile>https://thetvdb.com/people/346951-derek-mio</profile>
+    <tvdbid>346951</tvdbid>
+  </actor>
+  <actor>
+    <name>Shingo Usami</name>
+    <role>Henry Nakayama</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550181.jpg</thumb>
+    <profile>https://thetvdb.com/people/8106380-shingo-usami</profile>
+    <tvdbid>8106380</tvdbid>
+  </actor>
+  <actor>
+    <name>Naoko Mori</name>
+    <role>Asako Nakayama</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550182.jpg</thumb>
+    <profile>https://thetvdb.com/people/282459-naoko-mori</profile>
+    <tvdbid>282459</tvdbid>
+  </actor>
+  <actor>
+    <name>Cristina Rodlo</name>
+    <role>Luz Ojeda</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550183.jpg</thumb>
+    <profile>https://thetvdb.com/people/497940-cristina-rodlo</profile>
+    <tvdbid>497940</tvdbid>
+  </actor>
+  <actor>
+    <name>Kiki Sukezane</name>
+    <role>Yuko Tanabe</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550184.jpg</thumb>
+    <profile>https://thetvdb.com/people/462883-kiki-sukezane</profile>
+    <tvdbid>462883</tvdbid>
+  </actor>
+  <actor>
+    <name>Miki Ishikawa</name>
+    <role>Amy Yoshida</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/550185.jpg</thumb>
+    <profile>https://thetvdb.com/people/8006378-miki-ishikawa</profile>
+    <tvdbid>8006378</tvdbid>
+  </actor>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=OPos66MpHe8</trailer>
+  <dateadded>2024-07-21 13:17:41</dateadded>
+  <!--tinyMediaManager meta data-->
+  <user_note/>
+</tvshow>

@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-07-21 23:14:50 - tinyMediaManager 4.3.16-->
+<tvshow>
+  <title>Band of Brothers</title>
+  <originaltitle>Band of Brothers</originaltitle>
+  <showtitle>Band of Brothers</showtitle>
+  <sorttitle/>
+  <year>2001</year>
+  <ratings/>
+  <userrating>0</userrating>
+  <outline/>
+  <plot>The story of Easy Company, 506th Regiment of the 101st Airborne Division, U.S. Army. Based on interviews with survivors of Easy Company, as well as soldiers' journals and letters, the series chronicles the experiences of these young men who knew extraordinary bravery and extraordinary fear.</plot>
+  <tagline/>
+  <runtime>63</runtime>
+  <thumb aspect="poster">http://assets.fanart.tv/fanart/tv/74205/tvposter/band-of-brothers-5433176d56c9e.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/tv/74205/tvbanner/band-of-brothers-53ecdffa4203e.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/tv/74205/hdclearart/band-of-brothers-50e860dc73bd4.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/tv/74205/hdtvlogo/band-of-brothers-515b4843c916a.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/tv/74205/tvthumb/band-of-brothers-5933cfed4a581.jpg</thumb>
+  <thumb aspect="keyart">http://assets.fanart.tv/fanart/tv/74205/tvposter/band-of-brothers-62d484e14faf8.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/tv/74205/hdtvlogo/band-of-brothers-515b4843c916a.png</thumb>
+  <thumb aspect="characterart">http://assets.fanart.tv/fanart/tv/74205/characterart/band-of-brothers-4f8043d8a0133.png</thumb>
+  <thumb aspect="poster" season="0" type="season">https://image.tmdb.org/t/p/original/h3QMxv1JYozrFQCbPNxnP7x7F6b.jpg</thumb>
+  <thumb aspect="poster" season="1" type="season">http://assets.fanart.tv/fanart/tv/74205/seasonposter/band-of-brothers-57c52005b10c3.jpg</thumb>
+  <thumb aspect="banner" season="1" type="season">http://assets.fanart.tv/fanart/tv/74205/seasonbanner/band-of-brothers-57c4999708bb3.jpg</thumb>
+  <thumb aspect="thumb" season="0" type="season">http://assets.fanart.tv/fanart/tv/74205/seasonthumb/band-of-brothers-4ef1e6130537c.jpg</thumb>
+  <thumb aspect="thumb" season="1" type="season">http://assets.fanart.tv/fanart/tv/74205/seasonthumb/band-of-brothers-57c499688c434.jpg</thumb>
+  <fanart>
+    <thumb>http://assets.fanart.tv/fanart/tv/74205/showbackground/band-of-brothers-4fd5fd1e65a75.jpg</thumb>
+  </fanart>
+  <mpaa>US:TV-MA</mpaa>
+  <certification>US:TV-MA</certification>
+  <episodeguide>{"tmdb":"4613","tvrage":"2708","imdb":"tt0185906","tvdb":"74205"}</episodeguide>
+  <id>74205</id>
+  <imdbid>tt0185906</imdbid>
+  <tmdbid>4613</tmdbid>
+  <uniqueid default="false" type="tmdb">4613</uniqueid>
+  <uniqueid default="false" type="tvrage">2708</uniqueid>
+  <uniqueid default="false" type="imdb">tt0185906</uniqueid>
+  <uniqueid default="true" type="tvdb">74205</uniqueid>
+  <premiered>2001-09-09</premiered>
+  <status>Ended</status>
+  <watched>false</watched>
+  <playcount/>
+  <genre>Mini-Series</genre>
+  <genre>Drama</genre>
+  <genre>Adventure</genre>
+  <genre>Action</genre>
+  <genre>History</genre>
+  <genre>War</genre>
+  <studio>HBO</studio>
+  <country/>
+  <actor>
+    <name>Damian Lewis</name>
+    <role>Richard "Dick" Winters</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/327374/5f0c6c9c81cd3.jpg</thumb>
+    <profile>https://thetvdb.com/people/327374-damian-lewis</profile>
+    <tvdbid>327374</tvdbid>
+  </actor>
+  <actor>
+    <name>Ron Livingston</name>
+    <role>Lewis Nixon</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/310440/5f0c6ba5bdd1b.jpg</thumb>
+    <profile>https://thetvdb.com/people/310440-ron-livingston</profile>
+    <tvdbid>310440</tvdbid>
+  </actor>
+  <actor>
+    <name>Donnie Wahlberg</name>
+    <role>Carwood Lipton</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/255051/60272348b1ae0.jpg</thumb>
+    <profile>https://thetvdb.com/people/255051-donnie-wahlberg</profile>
+    <tvdbid>255051</tvdbid>
+  </actor>
+  <actor>
+    <name>Michael Cudlitz</name>
+    <role>Denver "Bull" Randleman</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323646.jpg</thumb>
+    <profile>https://thetvdb.com/people/252396-michael-cudlitz</profile>
+    <tvdbid>252396</tvdbid>
+  </actor>
+  <actor>
+    <name>Matthew Settle</name>
+    <role>Ronald Speirs</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/303916/5f0c6ce289898.jpg</thumb>
+    <profile>https://thetvdb.com/people/303916-matthew-settle</profile>
+    <tvdbid>303916</tvdbid>
+  </actor>
+  <actor>
+    <name>Shane Taylor</name>
+    <role>Eugene Roe</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/373730/5f0c6bf96ad09.jpg</thumb>
+    <profile>https://thetvdb.com/people/373730-shane-taylor</profile>
+    <tvdbid>373730</tvdbid>
+  </actor>
+  <actor>
+    <name>Eion Bailey</name>
+    <role>David Kenyon Webster</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323645.jpg</thumb>
+    <profile>https://thetvdb.com/people/252163-eion-bailey</profile>
+    <tvdbid>252163</tvdbid>
+  </actor>
+  <actor>
+    <name>Marc Warren</name>
+    <role>Albert Blithe</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323532.jpg</thumb>
+    <profile>https://thetvdb.com/people/261633-marc-warren</profile>
+    <tvdbid>261633</tvdbid>
+  </actor>
+  <actor>
+    <name>Neal McDonough</name>
+    <role>Lynn Compton</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/300351/5ea4509dc2bf7.jpg</thumb>
+    <profile>https://thetvdb.com/people/300351-neal-mcdonough</profile>
+    <tvdbid>300351</tvdbid>
+  </actor>
+  <actor>
+    <name>Scott Grimes</name>
+    <role>Donald Malarkey</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/274189/60272326e8629.jpg</thumb>
+    <profile>https://thetvdb.com/people/274189-scott-grimes</profile>
+    <tvdbid>274189</tvdbid>
+  </actor>
+  <actor>
+    <name>Frank John Hughes</name>
+    <role>William Guarnere</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323654.jpg</thumb>
+    <profile>https://thetvdb.com/people/273190-frank-john-hughes</profile>
+    <tvdbid>273190</tvdbid>
+  </actor>
+  <actor>
+    <name>Kirk Acevedo</name>
+    <role>Joe Toye</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/271463/5f0c6cc3a5fcb.jpg</thumb>
+    <profile>https://thetvdb.com/people/271463-kirk-acevedo</profile>
+    <tvdbid>271463</tvdbid>
+  </actor>
+  <actor>
+    <name>James Madio</name>
+    <role>Frank Perconte</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/31000.jpg</thumb>
+    <profile>https://thetvdb.com/people/257305-james-madio</profile>
+    <tvdbid>257305</tvdbid>
+  </actor>
+  <actor>
+    <name>Dale Dye</name>
+    <role>Robert Sink</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/336423/5f0c6d1301d84.jpg</thumb>
+    <profile>https://thetvdb.com/people/336423-dale-dye</profile>
+    <tvdbid>336423</tvdbid>
+  </actor>
+  <actor>
+    <name>Rick Gomez</name>
+    <role>George Luz</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/161011.jpg</thumb>
+    <profile>https://thetvdb.com/people/271114-rick-gomez</profile>
+    <tvdbid>271114</tvdbid>
+  </actor>
+  <actor>
+    <name>David Schwimmer</name>
+    <role>Herbert Sobel</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/274631/5eeadbb48962a.jpg</thumb>
+    <profile>https://thetvdb.com/people/274631-david-schwimmer</profile>
+    <tvdbid>274631</tvdbid>
+  </actor>
+  <actor>
+    <name>Richard Speight Jr.</name>
+    <role>Warren Muck</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/30987.jpg</thumb>
+    <profile>https://thetvdb.com/people/300506-richard-speight-jr</profile>
+    <tvdbid>300506</tvdbid>
+  </actor>
+  <actor>
+    <name>Douglas Spain</name>
+    <role>Antonio C. García</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323531.jpg</thumb>
+    <profile>https://thetvdb.com/people/329657-douglas-spain</profile>
+    <tvdbid>329657</tvdbid>
+  </actor>
+  <actor>
+    <name>Rick Warden</name>
+    <role>Harry Welsh</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323648.jpg</thumb>
+    <profile>https://thetvdb.com/people/362365-rick-warden</profile>
+    <tvdbid>362365</tvdbid>
+  </actor>
+  <actor>
+    <name>Dexter Fletcher</name>
+    <role>Johnny Martin</role>
+    <thumb>https://artworks.thetvdb.com/banners/person/315351/5f0c6c5ab6416.jpg</thumb>
+    <profile>https://thetvdb.com/people/315351-dexter-fletcher</profile>
+    <tvdbid>315351</tvdbid>
+  </actor>
+  <actor>
+    <name>Colin Hanks</name>
+    <role>Henry S. Jones</role>
+    <thumb>https://artworks.thetvdb.com/banners/v4/actor/310360/photo/649d5bfc26238.jpg</thumb>
+    <profile>https://thetvdb.com/people/310360-colin-hanks</profile>
+    <tvdbid>310360</tvdbid>
+  </actor>
+  <actor>
+    <name>Ross McCall</name>
+    <role>Joseph Liebgott</role>
+    <thumb>https://artworks.thetvdb.com/banners/actors/323650.jpg</thumb>
+    <profile>https://thetvdb.com/people/297319-ross-mccall</profile>
+    <tvdbid>297319</tvdbid>
+  </actor>
+  <actor>
+    <name>Rene L. Moreno</name>
+    <role>Joseph Ramirez</role>
+    <profile>https://thetvdb.com/people/270358-rene-l-moreno</profile>
+    <tvdbid>270358</tvdbid>
+  </actor>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=zDBUooZQzgA</trailer>
+  <dateadded>2024-07-21 23:14:39</dateadded>
+  <!--tinyMediaManager meta data-->
+  <user_note/>
+</tvshow>
