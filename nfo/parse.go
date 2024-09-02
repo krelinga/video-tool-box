@@ -8,7 +8,7 @@ import (
 )
 
 type nfoRoot interface {
-	nfoMovie | nfoEpisode
+	nfoMovie | nfoEpisode | nfoShow
 }
 
 func readNfoFile[rootType nfoRoot](filename string, out *rootType) error {
@@ -61,6 +61,17 @@ func Parse(filename string) (*Content, error) {
 			return nil, err
 		}
 		fileInfo = episode.FileInfo
+
+		showNfoPath, err := showNfoPath(filename)
+		if err != nil {
+			return nil, err
+		}
+		var show nfoShow
+		if err := readNfoFile(showNfoPath, &show); err != nil {
+			return nil, err
+		}
+		tags = show.Tags
+		genres = show.Genres
 	}
 
 	if fileInfo == nil {

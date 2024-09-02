@@ -75,8 +75,27 @@ func TestParse(t *testing.T) {
 		{
 			filename: "../testdata/nfo/shows/Band of Brothers (2001)/Season 1/Band of Brothers - S01E01 - Currahee.nfo",
 			expected: &Content{
+				Genres: []string{"Mini-Series", "Drama", "Adventure", "Action", "History", "War"},
 				Width:  720,
 				Height: 480,
+			},
+			errMsg: "",
+		},
+		{
+			filename: "../testdata/nfo/shows/Cowboy Bebop (1998)/Season 1/Cowboy Bebop - S01E01 - Asteroid Blues.nfo",
+			expected: &Content{
+				Genres: []string{"Science Fiction", "Drama", "Comedy", "Animation", "Adventure", "Action", "Western", "Anime"},
+				Width:  720,
+				Height: 480,
+			},
+			errMsg: "",
+		},
+		{
+			filename: "../testdata/nfo/shows/The Terror (2018)/Season 1/The Terror - S01E01 - Go for Broke.nfo",
+			expected: &Content{
+				Genres: []string{"Horror", "Drama", "Adventure", "Suspense", "Thriller", "History"},
+				Width:  1920,
+				Height: 1080,
 			},
 			errMsg: "",
 		},

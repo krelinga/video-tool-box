@@ -14,6 +14,12 @@ type nfoEpisode struct {
 	FileInfo *nfoFileInfo `xml:"fileinfo"`
 }
 
+type nfoShow struct {
+	XMLName xml.Name `xml:"tvshow"`
+	Tags    []string `xml:"tag"`
+	Genres  []string `xml:"genre"`
+}
+
 type nfoFileInfo struct {
 	StreamDetails *nfoStreamDetails `xml:"streamdetails"`
 }
