@@ -1,5 +1,7 @@
 package nfo
 
+// spell-checker:ignore tvshow.nfo
+
 import (
 	"errors"
 	"path/filepath"
