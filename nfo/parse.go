@@ -8,14 +8,14 @@ import (
 )
 
 type nfoRoot interface {
-	nfoMovie
+	nfoMovie | nfoEpisode
 }
 
-func readNfoFile[rootType nfoRoot](filename string) (*rootType, error) {
+func readNfoFile[rootType nfoRoot](filename string, out *rootType) error {
 	// Open the XML file
 	file, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer file.Close()
 
@@ -23,16 +23,15 @@ func readNfoFile[rootType nfoRoot](filename string) (*rootType, error) {
 	decoder := xml.NewDecoder(file)
 
 	// Parse the XML content
-	entry := &rootType{}
-	err = decoder.Decode(entry)
+	err = decoder.Decode(out)
 	if err != nil {
 		if err == io.EOF {
-			return nil, fmt.Errorf("no NFO data found")
+			return fmt.Errorf("no NFO data found")
 		}
-		return nil, err
+		return err
 	}
 
-	return entry, nil
+	return nil
 }
 
 type Content struct {
@@ -43,30 +42,45 @@ type Content struct {
 }
 
 func Parse(filename string) (*Content, error) {
-	movie, err := readNfoFile[nfoMovie](filename)
-	if err != nil {
-		return nil, err
+	var fileInfo *nfoFileInfo
+	var tags, genres []string
+	switch detectFileContext(filename) {
+	case Movie:
+		var movie nfoMovie
+		err := readNfoFile(filename, &movie)
+		if err != nil {
+			return nil, err
+		}
+		fileInfo = movie.FileInfo
+		tags = movie.Tags
+		genres = movie.Genres
+	case Episode:
+		var episode nfoEpisode
+		err := readNfoFile[nfoEpisode](filename, &episode)
+		if err != nil {
+			return nil, err
+		}
+		fileInfo = episode.FileInfo
 	}
 
-	if movie.FileInfo == nil {
+	if fileInfo == nil {
 		return nil, fmt.Errorf("no file info found")
 	}
-	fileInfo := movie.FileInfo
-	if fileInfo.StreamDetails == nil {
+	streamDetails := fileInfo.StreamDetails
+	if streamDetails == nil {
 		return nil, fmt.Errorf("no stream details found")
 	}
-	streamDetails := fileInfo.StreamDetails
-	if streamDetails.Video == nil {
+	video := streamDetails.Video
+	if video == nil {
 		return nil, fmt.Errorf("no video stream details found")
 	}
-	video := streamDetails.Video
 	if video.Width == 0 || video.Height == 0 {
 		return nil, fmt.Errorf("invalid video resolution")
 	}
 
 	return &Content{
-		Tags:   movie.Tags,
-		Genres: movie.Genres,
+		Tags:   tags,
+		Genres: genres,
 		Width:  video.Width,
 		Height: video.Height,
 	}, nil

@@ -9,6 +9,11 @@ type nfoMovie struct {
 	FileInfo *nfoFileInfo `xml:"fileinfo"`
 }
 
+type nfoEpisode struct {
+	XMLName  xml.Name     `xml:"episodedetails"`
+	FileInfo *nfoFileInfo `xml:"fileinfo"`
+}
+
 type nfoFileInfo struct {
 	StreamDetails *nfoStreamDetails `xml:"streamdetails"`
 }

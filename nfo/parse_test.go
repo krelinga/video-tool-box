@@ -72,6 +72,14 @@ func TestParse(t *testing.T) {
 			expected: nil,
 			errMsg:   "invalid video resolution",
 		},
+		{
+			filename: "../testdata/nfo/shows/Band of Brothers - S01E01 - Currahee.nfo",
+			expected: &Content{
+				Width:  720,
+				Height: 480,
+			},
+			errMsg: "",
+		},
 	}
 
 	for _, test := range tests {
