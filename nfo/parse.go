@@ -7,26 +7,6 @@ import (
 	"os"
 )
 
-type nfoMovie struct {
-	XMLName  xml.Name     `xml:"movie"`
-	Tags     []string     `xml:"tag"`
-	Genres   []string     `xml:"genre"`
-	FileInfo *nfoFileInfo `xml:"fileinfo"`
-}
-
-type nfoFileInfo struct {
-	StreamDetails *nfoStreamDetails `xml:"streamdetails"`
-}
-
-type nfoStreamDetails struct {
-	Video *nfoVideo `xml:"video"`
-}
-
-type nfoVideo struct {
-	Width  int `xml:"width"`
-	Height int `xml:"height"`
-}
-
 func readFromMovieFile(filename string) (*nfoMovie, error) {
 	// Open the XML file
 	file, err := os.Open(filename)
