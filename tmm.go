@@ -137,6 +137,44 @@ func guessTranscodeProfile(in *nfo.Content) string {
 	return "sd_live_action"
 }
 
+func updateTranscodeProfiles(old, new []*nfoFileInfo) error {
+	makeMap := func(files []*nfoFileInfo) map[string]*nfoFileInfo {
+		m := make(map[string]*nfoFileInfo, len(files))
+		for _, f := range files {
+			m[f.path] = f
+		}
+		return m
+	}
+	oldMap := makeMap(old)
+	updateNeeded := []*nfoFileInfo{}
+	for _, newFile := range new {
+		oldFile, found := oldMap[newFile.path]
+		if !found || oldFile.content != newFile.content {
+			updateNeeded = append(updateNeeded, newFile)
+		}
+	}
+
+	convertPath := func(nfoPath string) string {
+		return strings.TrimSuffix(nfoPath, ".nfo") + ".tcprofile"
+	}
+
+	for _, file := range updateNeeded {
+		nfoFile := file.path
+		// TODO: don't read the nfo file twice...
+		showNfo, err := nfo.Parse(nfoFile)
+		if err != nil {
+			return fmt.Errorf("could not parse NFO file %s: %w", nfoFile, err)
+		}
+		profile := guessTranscodeProfile(showNfo)
+		profileFile := convertPath(nfoFile)
+		if err := os.WriteFile(profileFile, []byte(profile+"\n"), 0644); err != nil {
+			return fmt.Errorf("could not write profile file %s: %w", profileFile, err)
+		}
+	}
+
+	return nil
+}
+
 func cmdTmm(c *cli.Context) error {
 	tp, ok := toolPathsFromContext(c.Context)
 	if !ok {
@@ -210,6 +248,10 @@ func cmdTmm(c *cli.Context) error {
 		return err
 	}
 	fmt.Fprintf(c.App.Writer, "found %d .nfo new files\n", len(newNfoFiles))
+
+	if err := updateTranscodeProfiles(previousNfoFiles, newNfoFiles); err != nil {
+		return err
+	}
 
 	return nil
 }
