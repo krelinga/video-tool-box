@@ -16,7 +16,7 @@
 		"source=/Users/krelinga/localdev/macbin,target=/host/bin,type=bind,consistency=cached",
 		"source=/Users/krelinga/Movies,target=/host/Movies,type=bind,consistency=cached",
 		"source=/nas/media,target=/nas/media,type=bind,consistency=cached"
-	]
+	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -25,7 +25,13 @@
 	// "postCreateCommand": "go version",
 
 	// Configure tool-specific properties.
-	// "customizations": {},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"streetsidesoftware.code-spell-checker"
+			]
+		}
+	}
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
