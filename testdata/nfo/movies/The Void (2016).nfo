@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2023-12-28 01:18:06 - tinyMediaManager 4.3.14-->
+<movie>
+  <title>The Void</title>
+  <originaltitle>The Void</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>2016</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>5.9</value>
+      <votes>1111</votes>
+    </rating>
+  </ratings>
+  <userrating>0.0</userrating>
+  <top250>0</top250>
+  <set/>
+  <plot>In the middle of a routine patrol, officer Daniel Carter happens upon a blood-soaked figure limping down a deserted stretch of road. He rushes the young man to a nearby rural hospital staffed by a skeleton crew, only to discover that patients and personnel are transforming into something inhuman. As the horror intensifies, Carter leads the other survivors on a hellish voyage into the subterranean depths of the hospital in a desperate bid to end the nightmare before it's too late.</plot>
+  <outline>In the middle of a routine patrol, officer Daniel Carter happens upon a blood-soaked figure limping down a deserted stretch of road. He rushes the young man to a nearby rural hospital staffed by a skeleton crew, only to discover that patients and personnel are transforming into something inhuman. As the horror intensifies, Carter leads the other survivors on a hellish voyage into the subterranean depths of the hospital in a desperate bid to end the nightmare before it's too late.</outline>
+  <tagline>There Is a Hell. This Is Worse.</tagline>
+  <runtime>90</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/c0WLRyT0AmUi41nVXBnqmJshIBn.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/movies/378018/moviebanner/the-void-5d02677b04e9c.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/movies/378018/hdmovieclearart/the-void-5d77c6a054ea7.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/movies/378018/hdmovielogo/the-void-58a816e8d670b.png</thumb>
+  <thumb aspect="discart">http://assets.fanart.tv/fanart/movies/378018/moviedisc/the-void-5c87b574a54bb.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/movies/378018/moviethumb/the-void-5a51cead03615.jpg</thumb>
+  <thumb aspect="keyart">http://assets.fanart.tv/fanart/movies/378018/movieposter/the-void-5a3f735e8cf3d.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/movies/378018/hdmovielogo/the-void-58a816e8d670b.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/oZwwwezJFlHmQGBRJDLmENXwOIt.jpg</thumb>
+  </fanart>
+  <mpaa>NR</mpaa>
+  <certification>NR</certification>
+  <id>tt4255304</id>
+  <tmdbid>378018</tmdbid>
+  <uniqueid default="false" type="tmdb">378018</uniqueid>
+  <uniqueid default="true" type="imdb">tt4255304</uniqueid>
+  <country>Canada</country>
+  <status/>
+  <code/>
+  <premiered>2016-09-22</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <genre>Mystery</genre>
+  <genre>Horror</genre>
+  <genre>Science Fiction</genre>
+  <studio>XYZ Films</studio>
+  <studio>120dB Films</studio>
+  <studio>JoBro Productions</studio>
+  <studio>Cave Painting Pictures</studio>
+  <studio>The Salt Company</studio>
+  <credits tmdbid="1037999">Jeremy Gillespie</credits>
+  <credits tmdbid="1038001">Steven Kostanski</credits>
+  <director tmdbid="1037999">Jeremy Gillespie</director>
+  <director tmdbid="1038001">Steven Kostanski</director>
+  <tag>nurse</tag>
+  <tag>mutation</tag>
+  <tag>mutant</tag>
+  <tag>morgue</tag>
+  <tag>murder</tag>
+  <tag>hospital</tag>
+  <tag>another dimension</tag>
+  <tag>doctor</tag>
+  <tag>pregnant woman</tag>
+  <tag>cosmic horror</tag>
+  <tag>ax</tag>
+  <actor>
+    <name>Aaron Poole</name>
+    <role>Daniel Carter</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4amEyfzcaHq8DBLpkFjmqg5wwwS.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/180942</profile>
+    <tmdbid>180942</tmdbid>
+  </actor>
+  <actor>
+    <name>Kathleen Munroe</name>
+    <role>Allison</role>
+    <thumb>https://image.tmdb.org/t/p/h632/co8l2AzgtCnx4SgJpcqDrIfIxli.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/168610</profile>
+    <tmdbid>168610</tmdbid>
+  </actor>
+  <actor>
+    <name>Art Hindle</name>
+    <role>Mitchell</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lhoh2KGtDfSjiIJSKT9ymTypPCf.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/41256</profile>
+    <tmdbid>41256</tmdbid>
+  </actor>
+  <actor>
+    <name>Daniel Fathers</name>
+    <role>Vincent</role>
+    <thumb>https://image.tmdb.org/t/p/h632/b0qxCiBh5h0BSE4Hik4W1GxWrNx.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/133327</profile>
+    <tmdbid>133327</tmdbid>
+  </actor>
+  <actor>
+    <name>Kenneth Welsh</name>
+    <role>Dr. Richard Powell</role>
+    <thumb>https://image.tmdb.org/t/p/h632/hsmY2HaIdOEoTBtwFPxQLyLymYw.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/6074</profile>
+    <tmdbid>6074</tmdbid>
+  </actor>
+  <actor>
+    <name>Ellen Wong</name>
+    <role>Kim</role>
+    <thumb>https://image.tmdb.org/t/p/h632/aJcsSflzYnGXiOaD7XkjPtnIPYz.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/88902</profile>
+    <tmdbid>88902</tmdbid>
+  </actor>
+  <actor>
+    <name>Stephanie Belding</name>
+    <role>Beverly</role>
+    <thumb>https://image.tmdb.org/t/p/h632/u6jtHIFvBXkKkhB4JGNwaOUb1pK.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/20180</profile>
+    <tmdbid>20180</tmdbid>
+  </actor>
+  <actor>
+    <name>Mik Byskov</name>
+    <role>Simon</role>
+    <thumb>https://image.tmdb.org/t/p/h632/v5q9uLHkmXkm7GsYiEVFcLBHbp3.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1368518</profile>
+    <tmdbid>1368518</tmdbid>
+  </actor>
+  <actor>
+    <name>Grace Munro</name>
+    <role>Maggie</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wtsnHsUjcsIHom8VxlrGhpFDckZ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1791802</profile>
+    <tmdbid>1791802</tmdbid>
+  </actor>
+  <actor>
+    <name>James Millington</name>
+    <role>Ben</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uJBrkvPRBcqqSLpYRdHNBtTBta9.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/553479</profile>
+    <tmdbid>553479</tmdbid>
+  </actor>
+  <actor>
+    <name>Evan Stern</name>
+    <role>James</role>
+    <thumb>https://image.tmdb.org/t/p/h632/fKwx8BzhpjxcLTuzKN2wqqGqQ2z.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1791800</profile>
+    <tmdbid>1791800</tmdbid>
+  </actor>
+  <actor>
+    <name>Trish Rainone</name>
+    <role>Vincent's Wife</role>
+    <thumb>https://image.tmdb.org/t/p/h632/wYFxp6HRstOjlYNM1o1VZCWbLsW.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1791801</profile>
+    <tmdbid>1791801</tmdbid>
+  </actor>
+  <actor>
+    <name>Amy Groening</name>
+    <role>Dispatch</role>
+    <thumb>https://image.tmdb.org/t/p/h632/jOb8WUITh7zhRcUEkwjE41E4U2c.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1120842</profile>
+    <tmdbid>1120842</tmdbid>
+  </actor>
+  <actor>
+    <name>Matthew Kennedy</name>
+    <role>Cliff Robertson</role>
+    <thumb>https://image.tmdb.org/t/p/h632/kVOgHnroIuZGeaFnN8junkZUvuM.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1038000</profile>
+    <tmdbid>1038000</tmdbid>
+  </actor>
+  <actor>
+    <name>Chris Nash</name>
+    <role>Transformed Sarah</role>
+    <thumb>https://image.tmdb.org/t/p/h632/tblRBZFr0hVd2uhzRGxqHJzHbQ5.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1024298</profile>
+    <tmdbid>1024298</tmdbid>
+  </actor>
+  <actor>
+    <name>Deke Garner</name>
+    <role>David (segment: A Bird's Nest)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/jPkNmHVJY7NoWB5kAzEds18RVPv.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1166071</profile>
+    <tmdbid>1166071</tmdbid>
+  </actor>
+  <producer tmdbid="1116035">
+    <name>Casey Walker</name>
+    <profile>https://www.themoviedb.org/person/1116035</profile>
+  </producer>
+  <producer tmdbid="1636994">
+    <name>Jonathan Bronfman</name>
+    <thumb>https://image.tmdb.org/t/p/h632/dul8wf1t6Tbo3n8H5SRR1hlyNYB.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1636994</profile>
+  </producer>
+  <producer tmdbid="1762252">
+    <name>Van Echeverri</name>
+    <profile>https://www.themoviedb.org/person/1762252</profile>
+  </producer>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=IkmSNt4moNg</trailer>
+  <languages>English</languages>
+  <dateadded>2023-12-28 01:17:41</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>h264</codec>
+        <aspect>1.78</aspect>
+        <width>1920</width>
+        <height>1080</height>
+        <durationinseconds>5422</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>DTSHD_MA</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>DTS</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>DTSHD_MA</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>DTS</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+  <original_filename>The Void_The Void_t00.mkv</original_filename>
+  <user_note/>
+</movie>

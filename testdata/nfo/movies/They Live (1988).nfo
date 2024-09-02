@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-08-10 20:06:12 - tinyMediaManager 4.3.16-->
+<movie>
+  <title>They Live</title>
+  <originaltitle>They Live</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>1988</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>7.3</value>
+      <votes>2931</votes>
+    </rating>
+  </ratings>
+  <userrating>0</userrating>
+  <top250>0</top250>
+  <set/>
+  <plot>A lone drifter stumbles upon a harrowing discovery -- a unique pair of sunglasses that reveals that aliens are systematically gaining control of the Earth by masquerading as humans and lulling the public into submission.</plot>
+  <outline>A lone drifter stumbles upon a harrowing discovery -- a unique pair of sunglasses that reveals that aliens are systematically gaining control of the Earth by masquerading as humans and lulling the public into submission.</outline>
+  <tagline>You see them on the street. You watch them on TV. You might even vote for one this fall. You think they're people just like you. You're wrong. Dead wrong.</tagline>
+  <runtime>93</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/vFDGmdP8j45X7ajQpKilW3U7XG7.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/movies/8337/moviebanner/they-live-5655e23a5ebbe.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/movies/8337/hdmovieclearart/they-live-515aafd14a730.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/movies/8337/hdmovielogo/they-live-51d70edd4040d.png</thumb>
+  <thumb aspect="discart">http://assets.fanart.tv/fanart/movies/8337/moviedisc/they-live-549ec742de4a0.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/movies/8337/moviethumb/they-live-62acddfcf0f3e.jpg</thumb>
+  <thumb aspect="keyart">http://assets.fanart.tv/fanart/movies/8337/movieposter/they-live-5635e55e20b69.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/movies/8337/hdmovielogo/they-live-51d70edd4040d.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/obJWp8ue3bD1Y8Nwpk7XiND4Kmx.jpg</thumb>
+  </fanart>
+  <mpaa>US:R / US:Rated R</mpaa>
+  <certification>US:R / US:Rated R</certification>
+  <id>tt0096256</id>
+  <tmdbid>8337</tmdbid>
+  <uniqueid default="false" type="tmdb">8337</uniqueid>
+  <uniqueid default="true" type="imdb">tt0096256</uniqueid>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>1988-11-04</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <genre>Science Fiction</genre>
+  <genre>Action</genre>
+  <studio>Alive Films</studio>
+  <studio>Larry Franco Productions</studio>
+  <credits tmdbid="55173">Ray Nelson</credits>
+  <credits tmdbid="11770">John Carpenter</credits>
+  <director tmdbid="11770">John Carpenter</director>
+  <tag>dystopia</tag>
+  <tag>villainess</tag>
+  <tag>alien</tag>
+  <tag>social commentary</tag>
+  <tag>conspiracy</tag>
+  <tag>los angeles, california</tag>
+  <tag>alien invasion</tag>
+  <tag>sunglasses</tag>
+  <tag>glasses</tag>
+  <tag>brawl</tag>
+  <tag>subliminal message</tag>
+  <tag>horror</tag>
+  <actor>
+    <name>Roddy Piper</name>
+    <role>John Nada</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3LZvHroOYjUe8mKP3AWL87ML8d7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/44240</profile>
+    <tmdbid>44240</tmdbid>
+  </actor>
+  <actor>
+    <name>Keith David</name>
+    <role>Frank Armitage</role>
+    <thumb>https://image.tmdb.org/t/p/h632/jJLJuR7FNHYL1fB5igjj7IXzOel.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/65827</profile>
+    <tmdbid>65827</tmdbid>
+  </actor>
+  <actor>
+    <name>Meg Foster</name>
+    <role>Holly Thompsen</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6T6GeL0hNcsI5xtf4I5QMJv6xB7.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/41229</profile>
+    <tmdbid>41229</tmdbid>
+  </actor>
+  <actor>
+    <name>George Buck Flower</name>
+    <role>Drifter</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9qmc0d452N45uSTuCGEaUg8sKQK.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/54564</profile>
+    <tmdbid>54564</tmdbid>
+  </actor>
+  <actor>
+    <name>Peter Jason</name>
+    <role>Gilbert</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xoqIuVvEH6BG6sOg4NnZzUKFnaf.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/6916</profile>
+    <tmdbid>6916</tmdbid>
+  </actor>
+  <actor>
+    <name>Raymond St. Jacques</name>
+    <role>Street Preacher</role>
+    <thumb>https://image.tmdb.org/t/p/h632/a3vR8Ju5HJUKrCf6Zkxr1QtD7DQ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/54565</profile>
+    <tmdbid>54565</tmdbid>
+  </actor>
+  <actor>
+    <name>Jason Robards III</name>
+    <role>Family Man</role>
+    <thumb>https://image.tmdb.org/t/p/h632/icStfJrjXyS7n2nt7IKNRL2G8rF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1172156</profile>
+    <tmdbid>1172156</tmdbid>
+  </actor>
+  <actor>
+    <name>John Lawrence</name>
+    <role>Bearded Man</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oxl1kHCvtSNed8TH1gimmESQEQk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/86345</profile>
+    <tmdbid>86345</tmdbid>
+  </actor>
+  <actor>
+    <name>Susan Barnes</name>
+    <role>Brown Haired Woman</role>
+    <thumb>https://image.tmdb.org/t/p/h632/uToxda0KL8I9Rn8JhLPbMKleKL1.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/104059</profile>
+    <tmdbid>104059</tmdbid>
+  </actor>
+  <actor>
+    <name>Sy Richardson</name>
+    <role>Black Revolutionary</role>
+    <thumb>https://image.tmdb.org/t/p/h632/kPlnnAmAbqQB33OcEVXiScK1Brr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/58623</profile>
+    <tmdbid>58623</tmdbid>
+  </actor>
+  <actor>
+    <name>Wendy Brainard</name>
+    <role>Family Man's Daughter</role>
+    <profile>https://www.themoviedb.org/person/1485654</profile>
+    <tmdbid>1485654</tmdbid>
+  </actor>
+  <actor>
+    <name>Lucille Meredith</name>
+    <role>Female Interviewer</role>
+    <profile>https://www.themoviedb.org/person/1485655</profile>
+    <tmdbid>1485655</tmdbid>
+  </actor>
+  <actor>
+    <name>Susan Blanchard</name>
+    <role>Ingenue</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lzY4fIDk05IxSZzysaL1NU4zmHr.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/158986</profile>
+    <tmdbid>158986</tmdbid>
+  </actor>
+  <actor>
+    <name>Norman Alden</name>
+    <role>Foreman</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zfClMw6EEImQtxArqunRcjbjvMg.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/7139</profile>
+    <tmdbid>7139</tmdbid>
+  </actor>
+  <actor>
+    <name>Dana Bratton</name>
+    <role>Black Junkie</role>
+    <profile>https://www.themoviedb.org/person/1485656</profile>
+    <tmdbid>1485656</tmdbid>
+  </actor>
+  <actor>
+    <name>John F. Goff</name>
+    <role>Well Dressed Customer</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sTZfE8gExmH2InGsSPI0a4n8mV9.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/52622</profile>
+    <tmdbid>52622</tmdbid>
+  </actor>
+  <actor>
+    <name>Norman D. Wilson</name>
+    <role>Vendor</role>
+    <thumb>https://image.tmdb.org/t/p/h632/gHQ3ROReJWHijUtLNhF1q8TkEa4.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/95805</profile>
+    <tmdbid>95805</tmdbid>
+  </actor>
+  <actor>
+    <name>Thelma Lee</name>
+    <role>Rich Lady</role>
+    <profile>https://www.themoviedb.org/person/1485657</profile>
+    <tmdbid>1485657</tmdbid>
+  </actor>
+  <actor>
+    <name>Stratton Leopold</name>
+    <role>Depressed Human</role>
+    <profile>https://www.themoviedb.org/person/1190889</profile>
+    <tmdbid>1190889</tmdbid>
+  </actor>
+  <actor>
+    <name>Rezza Shan</name>
+    <role>Arab Clerk</role>
+    <profile>https://www.themoviedb.org/person/1485658</profile>
+    <tmdbid>1485658</tmdbid>
+  </actor>
+  <actor>
+    <name>Norman Howell</name>
+    <role>Blonde Haired Cop</role>
+    <thumb>https://image.tmdb.org/t/p/h632/pgKSdCN2kA17u7P5HZClWUmXJTb.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/78395</profile>
+    <tmdbid>78395</tmdbid>
+  </actor>
+  <actor>
+    <name>Larry Franco</name>
+    <role>Neighbor</role>
+    <thumb>https://image.tmdb.org/t/p/h632/ohtAUK0wFyRJa5a9TIM3BSQkoCG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/511</profile>
+    <tmdbid>511</tmdbid>
+  </actor>
+  <actor>
+    <name>Tom Searle</name>
+    <role>Biker</role>
+    <profile>https://www.themoviedb.org/person/1485660</profile>
+    <tmdbid>1485660</tmdbid>
+  </actor>
+  <actor>
+    <name>Robert Grasmere</name>
+    <role>Scruffy Blonde Man</role>
+    <profile>https://www.themoviedb.org/person/554009</profile>
+    <tmdbid>554009</tmdbid>
+  </actor>
+  <actor>
+    <name>Vince Inneo</name>
+    <role>Passageway Guard</role>
+    <profile>https://www.themoviedb.org/person/1485661</profile>
+    <tmdbid>1485661</tmdbid>
+  </actor>
+  <actor>
+    <name>Bob Hudson</name>
+    <role>Passageway Guard #2</role>
+    <profile>https://www.themoviedb.org/person/2645929</profile>
+    <tmdbid>2645929</tmdbid>
+  </actor>
+  <actor>
+    <name>Jon Paul Jones</name>
+    <role>Manager</role>
+    <profile>https://www.themoviedb.org/person/95481</profile>
+    <tmdbid>95481</tmdbid>
+  </actor>
+  <actor>
+    <name>Dennis Michael</name>
+    <role>Male News Anchor</role>
+    <profile>https://www.themoviedb.org/person/1485663</profile>
+    <tmdbid>1485663</tmdbid>
+  </actor>
+  <actor>
+    <name>Nancy Gee</name>
+    <role>Female News Anchor</role>
+    <profile>https://www.themoviedb.org/person/1485664</profile>
+    <tmdbid>1485664</tmdbid>
+  </actor>
+  <actor>
+    <name>Claudia Stanlee</name>
+    <role>Young Female Executive</role>
+    <profile>https://www.themoviedb.org/person/1485665</profile>
+    <tmdbid>1485665</tmdbid>
+  </actor>
+  <actor>
+    <name>Christine Anne Baur</name>
+    <role>Woman on Phone</role>
+    <profile>https://www.themoviedb.org/person/999687</profile>
+    <tmdbid>999687</tmdbid>
+  </actor>
+  <actor>
+    <name>Eileen Wesson</name>
+    <role>Pregnant Secretary</role>
+    <thumb>https://image.tmdb.org/t/p/h632/g6LWHk3ttZlZcmPKFkZtX4pLjYL.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/161441</profile>
+    <tmdbid>161441</tmdbid>
+  </actor>
+  <actor>
+    <name>Gregory J. Barnett</name>
+    <role>Security Guard #1</role>
+    <thumb>https://image.tmdb.org/t/p/h632/97Gns4ZXSHaVcpMwJSUjH3etjCx.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1417685</profile>
+    <tmdbid>1417685</tmdbid>
+  </actor>
+  <actor>
+    <name>Jim Nickerson</name>
+    <role>Security Guard #2</role>
+    <profile>https://www.themoviedb.org/person/1485667</profile>
+    <tmdbid>1485667</tmdbid>
+  </actor>
+  <actor>
+    <name>Kerry Rossall</name>
+    <role>2nd Unit Guard</role>
+    <thumb>https://image.tmdb.org/t/p/h632/tttYalyq1zOMt8viYoAXoEMK8dF.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1402117</profile>
+    <tmdbid>1402117</tmdbid>
+  </actor>
+  <actor>
+    <name>Cibby Danyla</name>
+    <role>Naked Lady</role>
+    <profile>https://www.themoviedb.org/person/3931829</profile>
+    <tmdbid>3931829</tmdbid>
+  </actor>
+  <actor>
+    <name>Jeff Imada</name>
+    <role>Male Ghoul</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sUNSaNQreSHYaJvKr0SfiBqMPDV.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/169628</profile>
+    <tmdbid>169628</tmdbid>
+  </actor>
+  <actor>
+    <name>Michelle Costello</name>
+    <role>Female Ghoul</role>
+    <profile>https://www.themoviedb.org/person/1485669</profile>
+    <tmdbid>1485669</tmdbid>
+  </actor>
+  <actor>
+    <name>Jeb Stuart Adams</name>
+    <role>Homeless kid (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/seeA4grZOtuSPaBY5trmyxcRnXl.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/550085</profile>
+    <tmdbid>550085</tmdbid>
+  </actor>
+  <actor>
+    <name>Jennifer Austin</name>
+    <role>Teenage Girl (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/oFfgArxymeylfIplxwWsbobClHO.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1832288</profile>
+    <tmdbid>1832288</tmdbid>
+  </actor>
+  <actor>
+    <name>Michael Forino</name>
+    <role>Ghoul at Bar (uncredited)</role>
+    <profile>https://www.themoviedb.org/person/1832290</profile>
+    <tmdbid>1832290</tmdbid>
+  </actor>
+  <actor>
+    <name>Robert V. Greene</name>
+    <role>TV Technician (uncredited)</role>
+    <profile>https://www.themoviedb.org/person/33574</profile>
+    <tmdbid>33574</tmdbid>
+  </actor>
+  <actor>
+    <name>Helen Kelly</name>
+    <role>Woman at the Dinner Party (uncredited)</role>
+    <profile>https://www.themoviedb.org/person/1782966</profile>
+    <tmdbid>1782966</tmdbid>
+  </actor>
+  <actor>
+    <name>Al Leong</name>
+    <role>Asian Revolutionary (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/zC01uEOvbdTQIg19LKVu5r2QKan.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/61704</profile>
+    <tmdbid>61704</tmdbid>
+  </actor>
+  <actor>
+    <name>Gunnar Magg</name>
+    <role>Male Ghoulie (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/l7K1u235TKNoAQiwdtguAVBheTE.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1832292</profile>
+    <tmdbid>1832292</tmdbid>
+  </actor>
+  <actor>
+    <name>Matt McColm</name>
+    <role>Police Officer (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9SlVkQdWGURamicfGScV8BJNs2M.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9466</profile>
+    <tmdbid>9466</tmdbid>
+  </actor>
+  <actor>
+    <name>Tommy Morrison</name>
+    <role>Dave - Resistance Fighter (uncredited)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/aTgL1xBmPuH0SEHY6vpvSdLIiZD.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/16661</profile>
+    <tmdbid>16661</tmdbid>
+  </actor>
+  <actor>
+    <name>John Carpenter</name>
+    <role>Voice That Says 'Sleep'</role>
+    <thumb>https://image.tmdb.org/t/p/h632/3Qp0mg61u1qSZNJh30BFEUZrIMG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/11770</profile>
+    <tmdbid>11770</tmdbid>
+  </actor>
+  <producer tmdbid="511">
+    <name>Larry Franco</name>
+    <thumb>https://image.tmdb.org/t/p/h632/ohtAUK0wFyRJa5a9TIM3BSQkoCG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/511</profile>
+  </producer>
+  <producer tmdbid="56125">
+    <name>Andre Blay</name>
+    <profile>https://www.themoviedb.org/person/56125</profile>
+  </producer>
+  <producer tmdbid="56126">
+    <name>Shep Gordon</name>
+    <thumb>https://image.tmdb.org/t/p/h632/xaD2XYvH6dBIh4k8ILRV8jSJ6VT.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/56126</profile>
+  </producer>
+  <producer tmdbid="27581">
+    <name>Sandy King</name>
+    <thumb>https://image.tmdb.org/t/p/h632/7hbKtYTNS5CqFkkYtIszpV9o0la.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/27581</profile>
+  </producer>
+  <producer tmdbid="1190889">
+    <name>Stratton Leopold</name>
+    <profile>https://www.themoviedb.org/person/1190889</profile>
+  </producer>
+  <producer tmdbid="224967">
+    <name>Alan Levine</name>
+    <profile>https://www.themoviedb.org/person/224967</profile>
+  </producer>
+  <producer tmdbid="1433917">
+    <name>Ken Lavet</name>
+    <profile>https://www.themoviedb.org/person/1433917</profile>
+  </producer>
+  <producer tmdbid="1832295">
+    <name>Marian Shambo</name>
+    <profile>https://www.themoviedb.org/person/1832295</profile>
+  </producer>
+  <producer tmdbid="230436">
+    <name>Barbara Harris</name>
+    <thumb>https://image.tmdb.org/t/p/h632/d1BGeZT2b81Wa9gCOPdrXGWUtmR.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/230436</profile>
+  </producer>
+  <producer tmdbid="2226069">
+    <name>Joy Ewing</name>
+    <profile>https://www.themoviedb.org/person/2226069</profile>
+  </producer>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=vSVQ975eTBI</trailer>
+  <languages>English, German</languages>
+  <dateadded>2024-08-10 20:05:37</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>MPEG-2</codec>
+        <aspect>1.78</aspect>
+        <width>720</width>
+        <height>480</height>
+        <durationinseconds>5642</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language>fra</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+  <original_filename>ee731489-1eb1-400c-9349-af9739331a1a-B4_t00.mkv</original_filename>
+  <user_note/>
+</movie>

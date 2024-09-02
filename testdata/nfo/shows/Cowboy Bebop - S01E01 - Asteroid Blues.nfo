@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-07-21 22:20:42 - tinyMediaManager 4.3.16-->
+<episodedetails>
+  <title>Asteroid Blues</title>
+  <originaltitle/>
+  <showtitle>Cowboy Bebop</showtitle>
+  <season>1</season>
+  <episode>1</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>219120</id>
+  <uniqueid default="false" type="tvdb">219120</uniqueid>
+  <uniqueid default="true" type="imdb">tt0618963</uniqueid>
+  <ratings/>
+  <userrating>0</userrating>
+  <plot>Spike and Jet head to Tijuana to track down an outlaw smuggling a dangerous drug known as blood-eye. Jet wants the bounty, but Spike has eyes for a far prettier prize.</plot>
+  <runtime>25</runtime>
+  <thumb>https://image.tmdb.org/t/p/original/bwJQg2MFXlaGOjATitBCFQeblpJ.jpg</thumb>
+  <mpaa/>
+  <premiered>1998-10-24</premiered>
+  <aired>1998-10-24</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>TV Tokyo</studio>
+  <studio>WOWOW</studio>
+  <studio>SUNRISE</studio>
+  <studio>BONES</studio>
+  <studio>Bandai Visual</studio>
+  <credits tvdbid="418408">Keiko Nobumoto</credits>
+  <director tvdbid="418409">Shinichirō Watanabe</director>
+  <trailer/>
+  <dateadded>2024-07-21 22:20:31</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>MPEG-2</codec>
+        <aspect>1.33</aspect>
+        <width>720</width>
+        <height>480</height>
+        <durationinseconds>1482</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>jpn</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>jpn</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>jpn</language>
+        <channels>2</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <original_filename>e389fcf0-7662-4ebd-9c81-269260cd9f23-S01E01.mkv</original_filename>
+  <user_note/>
+</episodedetails>

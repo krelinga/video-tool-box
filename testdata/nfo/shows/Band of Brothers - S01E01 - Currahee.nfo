@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-07-21 23:14:52 - tinyMediaManager 4.3.16-->
+<episodedetails>
+  <title>Currahee</title>
+  <originaltitle/>
+  <showtitle>Band of Brothers</showtitle>
+  <season>1</season>
+  <episode>1</episode>
+  <displayseason>-1</displayseason>
+  <displayepisode>-1</displayepisode>
+  <id>141245</id>
+  <uniqueid default="false" type="tvdb">141245</uniqueid>
+  <uniqueid default="true" type="imdb">tt1245384</uniqueid>
+  <ratings/>
+  <userrating>0</userrating>
+  <plot>Easy Company is introduced to Captain Sobel, who has the group undergo hard and unfair training. As a result, Sobel comes into conflict with his men, including Richard Winters, his executive officer. The company is shipped to England to prepare for D-Day.</plot>
+  <runtime>63</runtime>
+  <thumb>https://image.tmdb.org/t/p/original/cHV8CMK9G6Q4EWIDntzmpEdty7o.jpg</thumb>
+  <mpaa/>
+  <premiered>2001-09-09</premiered>
+  <aired>2001-09-09</aired>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <studio>HBO</studio>
+  <credits tvdbid="8081027">Erik Jendreson</credits>
+  <credits tvdbid="253794">Tom Hanks</credits>
+  <director tvdbid="359697">Phil Alden Robinson</director>
+  <actor>
+    <name>Alex Sabga</name>
+    <profile>8081028-alex-sabga</profile>
+    <tvdbid>8081028</tvdbid>
+  </actor>
+  <actor>
+    <name>Simon Schatzberger</name>
+    <profile>373736-simon-schatzberger</profile>
+    <tvdbid>373736</tvdbid>
+  </actor>
+  <actor>
+    <name>Luke Griffin</name>
+    <profile>373738-luke-griffin</profile>
+    <tvdbid>373738</tvdbid>
+  </actor>
+  <actor>
+    <name>Jason O'Mara</name>
+    <profile>373739-jason-omara</profile>
+    <tvdbid>373739</tvdbid>
+  </actor>
+  <actor>
+    <name>Marcos D'Cruze</name>
+    <profile>8081029-marcos-dcruze</profile>
+    <tvdbid>8081029</tvdbid>
+  </actor>
+  <actor>
+    <name>Michael Fassbender</name>
+    <profile>310895-michael-fassbender</profile>
+    <tvdbid>310895</tvdbid>
+  </actor>
+  <actor>
+    <name>Jamie Bamber</name>
+    <profile>317721-jamie-bamber</profile>
+    <tvdbid>317721</tvdbid>
+  </actor>
+  <actor>
+    <name>Rocky Marshall</name>
+    <profile>373734-rocky-marshall</profile>
+    <tvdbid>373734</tvdbid>
+  </actor>
+  <actor>
+    <name>Joseph May</name>
+    <profile>278790-joseph-may</profile>
+    <tvdbid>278790</tvdbid>
+  </actor>
+  <actor>
+    <name>David Crow</name>
+    <profile>278589-david-crow</profile>
+    <tvdbid>278589</tvdbid>
+  </actor>
+  <actor>
+    <name>Jordan Frieda</name>
+    <profile>373737-jordan-frieda</profile>
+    <tvdbid>373737</tvdbid>
+  </actor>
+  <trailer/>
+  <dateadded>2024-07-21 23:14:39</dateadded>
+  <epbookmark/>
+  <code/>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>MPEG-2</codec>
+        <aspect>1.78</aspect>
+        <width>720</width>
+        <height>480</height>
+        <durationinseconds>4392</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>DTS</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>spa</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>fra</language>
+        <channels>2</channels>
+      </audio>
+      <subtitle>
+        <language>spa</language>
+      </subtitle>
+      <subtitle>
+        <language>fra</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <original_filename>dd4fe49f-3445-49a5-906a-9879398077a4-S01E01.mkv</original_filename>
+  <user_note/>
+</episodedetails>

@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--created on 2024-05-07 23:41:13 - tinyMediaManager 4.3.15-->
+<movie>
+  <title>Beavis and Butt-Head Do America</title>
+  <originaltitle>Beavis and Butt-Head Do America</originaltitle>
+  <sorttitle/>
+  <epbookmark/>
+  <year>1996</year>
+  <ratings>
+    <rating default="false" max="10" name="themoviedb">
+      <value>6.6</value>
+      <votes>654</votes>
+    </rating>
+  </ratings>
+  <userrating>0</userrating>
+  <top250>0</top250>
+  <set>
+    <name>Beavis and Butt-Head Collection</name>
+    <overview>A series of animated comedy films based on the "Beavis and Butt-Head" TV series.</overview>
+  </set>
+  <plot>Slacker duo Beavis and Butt-Head wake to discover their TV has been stolen. Their search for a new one takes them on a clueless adventure across America, during which they manage to accidentally become America's most wanted.</plot>
+  <outline>Slacker duo Beavis and Butt-Head wake to discover their TV has been stolen. Their search for a new one takes them on a clueless adventure across America, during which they manage to accidentally become America's most wanted.</outline>
+  <tagline>Coming to a screen bigger than your TV.</tagline>
+  <runtime>80</runtime>
+  <thumb aspect="poster">https://image.tmdb.org/t/p/original/wEB1GPT7mQcTNuYT73s72ljjbMF.jpg</thumb>
+  <thumb aspect="banner">http://assets.fanart.tv/fanart/movies/3179/moviebanner/beavis-and-butt-head-do-america-56c7901d59d63.jpg</thumb>
+  <thumb aspect="clearart">http://assets.fanart.tv/fanart/movies/3179/movieart/beavis-and-butt-head-do-america-516442f2f2cda.png</thumb>
+  <thumb aspect="clearlogo">http://assets.fanart.tv/fanart/movies/3179/hdmovielogo/beavis-and-butt-head-do-america-552857e2adc73.png</thumb>
+  <thumb aspect="discart">http://assets.fanart.tv/fanart/movies/3179/moviedisc/beavis-and-butt-head-do-america-5155c542c9521.png</thumb>
+  <thumb aspect="landscape">http://assets.fanart.tv/fanart/movies/3179/moviethumb/beavis-and-butt-head-do-america-56201100bbd12.jpg</thumb>
+  <thumb aspect="logo">http://assets.fanart.tv/fanart/movies/3179/hdmovielogo/beavis-and-butt-head-do-america-552857e2adc73.png</thumb>
+  <fanart>
+    <thumb>https://image.tmdb.org/t/p/original/wL0l7lnr46qAkb3W3o7WluqfA0U.jpg</thumb>
+  </fanart>
+  <mpaa>US:PG-13 / US:Rated PG-13</mpaa>
+  <certification>US:PG-13 / US:Rated PG-13</certification>
+  <id>tt0115641</id>
+  <tmdbid>3179</tmdbid>
+  <uniqueid default="false" type="tmdb">3179</uniqueid>
+  <uniqueid default="false" type="tmdbSet">939227</uniqueid>
+  <uniqueid default="true" type="imdb">tt0115641</uniqueid>
+  <country>United States</country>
+  <status/>
+  <code/>
+  <premiered>1996-12-20</premiered>
+  <watched>false</watched>
+  <playcount>0</playcount>
+  <genre>Animation</genre>
+  <genre>Comedy</genre>
+  <studio>Paramount</studio>
+  <studio>Geffen Pictures</studio>
+  <studio>MTV Films</studio>
+  <credits tmdbid="17403">Mike Judge</credits>
+  <credits tmdbid="12083">Joe Stillman</credits>
+  <credits tmdbid="93883">John Rice</credits>
+  <credits tmdbid="1462615">Ray daSilva</credits>
+  <director tmdbid="17403">Mike Judge</director>
+  <tag>hotel</tag>
+  <tag>sperm</tag>
+  <tag>washington dc, usa</tag>
+  <tag>casino</tag>
+  <tag>sun</tag>
+  <tag>road trip</tag>
+  <tag>las vegas</tag>
+  <tag>adult animation</tag>
+  <tag>based on tv series</tag>
+  <actor>
+    <name>Mike Judge</name>
+    <role>Beavis / Butt-Head / Tom Anderson / Mr. Van Driessen / Principal McVicker (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/8jEumAVtJ23rE4XZ0YrvVKAUKjk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/17403</profile>
+    <tmdbid>17403</tmdbid>
+  </actor>
+  <actor>
+    <name>Bruce Willis</name>
+    <role>Muddy Grimes (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/A1XBu3CffBpSK8HEIJM8q7Mn4lz.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/62</profile>
+    <tmdbid>62</tmdbid>
+  </actor>
+  <actor>
+    <name>Demi Moore</name>
+    <role>Dallas (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/6tUZg39Zjb90F8Z0treUFer6HNk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3416</profile>
+    <tmdbid>3416</tmdbid>
+  </actor>
+  <actor>
+    <name>Cloris Leachman</name>
+    <role>Old Woman On Plane And Bus (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/vsaw9iOVSuluGsOgIGfyGTW9znG.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/9599</profile>
+    <tmdbid>9599</tmdbid>
+  </actor>
+  <actor>
+    <name>Robert Stack</name>
+    <role>Agent Flemming (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/f1MchlCMVc4LDWEALsodZHPkbIu.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/2493</profile>
+    <tmdbid>2493</tmdbid>
+  </actor>
+  <actor>
+    <name>Jacqueline Barba</name>
+    <role>Agent Hurly (voice)</role>
+    <profile>https://www.themoviedb.org/person/1757788</profile>
+    <tmdbid>1757788</tmdbid>
+  </actor>
+  <actor>
+    <name>Pamela Blair</name>
+    <role>Flight Attendant / White House Tour Guide (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/9QU0mQgc3Z9XGAcrdxamMoQgoXy.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/1218045</profile>
+    <tmdbid>1218045</tmdbid>
+  </actor>
+  <actor>
+    <name>Eric Bogosian</name>
+    <role>Old Faithful Ranger / White House Press Secretary / Strategic Air Command Lieutenant (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lUtLCWoLh18UFVOHBFr1VpUpoYJ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/10866</profile>
+    <tmdbid>10866</tmdbid>
+  </actor>
+  <actor>
+    <name>Kristofor Brown</name>
+    <role>Man on Plane / Man in Confession Booth / Old Guy / Jim (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/87F7W6OKcN7HLteif4MHUVwCzpi.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/55098</profile>
+    <tmdbid>55098</tmdbid>
+  </actor>
+  <actor>
+    <name>Tony Darling</name>
+    <role>Mötley Crüe Roadie #2 / Tourist Man (voice)</role>
+    <profile>https://www.themoviedb.org/person/1757780</profile>
+    <tmdbid>1757780</tmdbid>
+  </actor>
+  <actor>
+    <name>John Doman</name>
+    <role>Airplane Captain / White House Representative (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/2HQRXWb6QrUFHJtJrgY8zpLP8u8.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/4735</profile>
+    <tmdbid>4735</tmdbid>
+  </actor>
+  <actor>
+    <name>Francis Dumaurier</name>
+    <role>French Dignitary (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/u6T06j238LJOOgKdNewDBEbyaCv.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/949865</profile>
+    <tmdbid>949865</tmdbid>
+  </actor>
+  <actor>
+    <name>Jim Flaherty</name>
+    <role>Petrified Forest Recording (voice)</role>
+    <profile>https://www.themoviedb.org/person/3650954</profile>
+    <tmdbid>3650954</tmdbid>
+  </actor>
+  <actor>
+    <name>Toby Huss</name>
+    <role>TV Thief #2 / Concierge / Bellboy / Male TV Reporter (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/lFW4D9TgMgtHPTD4SM3eKFpMT67.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/18271</profile>
+    <tmdbid>18271</tmdbid>
+  </actor>
+  <actor>
+    <name>Sam Johnson</name>
+    <role>Limo Driver / TV Thief / Man In Confession Booth / Forest Ranger</role>
+    <profile>https://www.themoviedb.org/person/1223686</profile>
+    <tmdbid>1223686</tmdbid>
+  </actor>
+  <actor>
+    <name>David Letterman</name>
+    <role>Mötley Crüe Roadie (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/nk1rMabb84e52G2oax6yO9FBiAd.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/136487</profile>
+    <tmdbid>136487</tmdbid>
+  </actor>
+  <actor>
+    <name>Richard Linklater</name>
+    <role>Tour Bus Driver (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/xSctxeZQzQbZoaxIvcDeHlDjbiN.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/564</profile>
+    <tmdbid>564</tmdbid>
+  </actor>
+  <actor>
+    <name>Rosemary McNamara</name>
+    <role>Flight Attendant #2 (voice)</role>
+    <profile>https://www.themoviedb.org/person/1576634</profile>
+    <tmdbid>1576634</tmdbid>
+  </actor>
+  <actor>
+    <name>Harsh Nayyar</name>
+    <role>Indian Dignitary (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/1ThQ7mfGUC7zpFswuZ5JXA89NnQ.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/20807</profile>
+    <tmdbid>20807</tmdbid>
+  </actor>
+  <actor>
+    <name>Karen Phillips</name>
+    <role>Announcer In Capital (voice)</role>
+    <profile>https://www.themoviedb.org/person/3650966</profile>
+    <tmdbid>3650966</tmdbid>
+  </actor>
+  <actor>
+    <name>Dale Reeves</name>
+    <role>President Clinton (voice)</role>
+    <profile>https://www.themoviedb.org/person/3650969</profile>
+    <tmdbid>3650969</tmdbid>
+  </actor>
+  <actor>
+    <name>Mike Ruschak</name>
+    <role>Hoover Technician / General At Strategic Air Command (voice)</role>
+    <profile>https://www.themoviedb.org/person/3650971</profile>
+    <tmdbid>3650971</tmdbid>
+  </actor>
+  <actor>
+    <name>Gail Thomas</name>
+    <role>Flight Attendant #3 / Female TV Reporter (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/sHSEP2a6qbKtdaIYCbQmMEvJKCy.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/3650972</profile>
+    <tmdbid>3650972</tmdbid>
+  </actor>
+  <actor>
+    <name>Greg Kinnear</name>
+    <role>ATF Agent Bork (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/w4CVkyjjCBuZXVsdoiKxKeJzFYn.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/17141</profile>
+    <tmdbid>17141</tmdbid>
+  </actor>
+  <actor>
+    <name>Tim Guinee</name>
+    <role>Additional Voices (voice)</role>
+    <thumb>https://image.tmdb.org/t/p/h632/4ceLJK0hD8DhRBARGxfodluK8Bh.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/40275</profile>
+    <tmdbid>40275</tmdbid>
+  </actor>
+  <producer tmdbid="17403">
+    <name>Mike Judge</name>
+    <thumb>https://image.tmdb.org/t/p/h632/8jEumAVtJ23rE4XZ0YrvVKAUKjk.jpg</thumb>
+    <profile>https://www.themoviedb.org/person/17403</profile>
+  </producer>
+  <producer tmdbid="31094">
+    <name>Van Toffler</name>
+    <profile>https://www.themoviedb.org/person/31094</profile>
+  </producer>
+  <producer tmdbid="31096">
+    <name>Winnie Chaffee</name>
+    <profile>https://www.themoviedb.org/person/31096</profile>
+  </producer>
+  <producer tmdbid="1746321">
+    <name>David Gale</name>
+    <profile>https://www.themoviedb.org/person/1746321</profile>
+  </producer>
+  <producer tmdbid="1231294">
+    <name>Abby Terkuhle</name>
+    <profile>https://www.themoviedb.org/person/1231294</profile>
+  </producer>
+  <producer tmdbid="1116912">
+    <name>Michael Blakey</name>
+    <profile>https://www.themoviedb.org/person/1116912</profile>
+  </producer>
+  <producer tmdbid="31095">
+    <name>John Andrews</name>
+    <profile>https://www.themoviedb.org/person/31095</profile>
+  </producer>
+  <trailer>plugin://plugin.video.youtube/?action=play_video&amp;videoid=jRnVQ4NBXko</trailer>
+  <languages>English</languages>
+  <dateadded>2024-05-07 23:41:01</dateadded>
+  <fileinfo>
+    <streamdetails>
+      <video>
+        <codec>MPEG-2</codec>
+        <aspect>1.78</aspect>
+        <width>720</width>
+        <height>480</height>
+        <durationinseconds>4852</durationinseconds>
+        <stereomode/>
+      </video>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>6</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <audio>
+        <codec>AC3</codec>
+        <language>eng</language>
+        <channels>2</channels>
+      </audio>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+      <subtitle>
+        <language>eng</language>
+      </subtitle>
+    </streamdetails>
+  </fileinfo>
+  <!--tinyMediaManager meta data-->
+  <source>UNKNOWN</source>
+  <edition>NONE</edition>
+  <original_filename>6b715d48-5f0e-4697-b974-f39fbbe7c24d-B1_t00.mkv</original_filename>
+  <user_note/>
+</movie>
