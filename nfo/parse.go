@@ -10,6 +10,7 @@ import (
 type nfoMovie struct {
 	XMLName  xml.Name     `xml:"movie"`
 	Tags     []string     `xml:"tag"`
+	Genres   []string     `xml:"genre"`
 	FileInfo *nfoFileInfo `xml:"fileinfo"`
 }
 
@@ -52,6 +53,7 @@ func readFromFile(filename string) (*nfoMovie, error) {
 
 type Content struct {
 	Tags   []string
+	Genres []string
 	Width  int
 	Height int
 }
@@ -80,6 +82,7 @@ func Parse(filename string) (*Content, error) {
 
 	return &Content{
 		Tags:   movie.Tags,
+		Genres: movie.Genres,
 		Width:  video.Width,
 		Height: video.Height,
 	}, nil

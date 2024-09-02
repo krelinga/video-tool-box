@@ -16,6 +16,7 @@ func TestParse(t *testing.T) {
 			filename: "../testdata/nfo/movies/Beavis and Butt-Head Do America (1996).nfo",
 			expected: &Content{
 				Tags:   []string{"hotel", "sperm", "washington dc, usa", "casino", "sun", "road trip", "las vegas", "adult animation", "based on tv series"},
+				Genres: []string{"Animation", "Comedy"},
 				Width:  720,
 				Height: 480,
 			},
@@ -25,6 +26,7 @@ func TestParse(t *testing.T) {
 			filename: "../testdata/nfo/movies/The Void (2016).nfo",
 			expected: &Content{
 				Tags:   []string{"nurse", "mutation", "mutant", "morgue", "murder", "hospital", "another dimension", "doctor", "pregnant woman", "cosmic horror", "ax"},
+				Genres: []string{"Mystery", "Horror", "Science Fiction"},
 				Width:  1920,
 				Height: 1080,
 			},
@@ -34,6 +36,7 @@ func TestParse(t *testing.T) {
 			filename: "../testdata/nfo/movies/They Live (1988).nfo",
 			expected: &Content{
 				Tags:   []string{"dystopia", "villainess", "alien", "social commentary", "conspiracy", "los angeles, california", "alien invasion", "sunglasses", "glasses", "brawl", "subliminal message", "horror"},
+				Genres: []string{"Science Fiction", "Action"},
 				Width:  720,
 				Height: 480,
 			},
@@ -109,6 +112,14 @@ func equalContent(c1, c2 *Content) bool {
 	}
 	for i := range c1.Tags {
 		if c1.Tags[i] != c2.Tags[i] {
+			return false
+		}
+	}
+	if len(c1.Genres) != len(c2.Genres) {
+		return false
+	}
+	for i := range c1.Genres {
+		if c1.Genres[i] != c2.Genres[i] {
 			return false
 		}
 	}
