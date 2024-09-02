@@ -10,8 +10,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"sync"
 
+	"github.com/krelinga/video-tool-box/nfo"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -111,6 +113,28 @@ func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 	}
 
 	return files, nil
+}
+
+func guessTranscodeProfile(in *nfo.Content) string {
+	if in.Width == 1920 && in.Height == 1080 {
+		return "hd"
+	}
+	findSubstring := func(target string, in []string) bool {
+		target = strings.ToLower(target)
+		for _, s := range in {
+			s = strings.ToLower(s)
+			if strings.Contains(s, target) {
+				return true
+			}
+		}
+		return false
+	}
+	notations := in.Genres
+	notations = append(notations, in.Tags...)
+	if findSubstring("anime", notations) || findSubstring("animation", notations) {
+		return "sd_animation"
+	}
+	return "sd_live_action"
 }
 
 func cmdTmm(c *cli.Context) error {

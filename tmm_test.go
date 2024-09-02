@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/krelinga/video-tool-box/nfo"
 )
 
 func TestFindNfoFiles(t *testing.T) {
@@ -58,6 +60,75 @@ func TestFindNfoFiles(t *testing.T) {
 		}
 		if file.content != expectedFiles[i] {
 			t.Errorf("expected content %s, got %s", expectedFiles[i], file.content)
+		}
+	}
+}
+func TestGuessTranscodeProfile(t *testing.T) {
+	testCases := []struct {
+		input    *nfo.Content
+		expected string
+	}{
+		{
+			input: &nfo.Content{
+				Width:  1920,
+				Height: 1080,
+			},
+			expected: "hd",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Genres: []string{"anime"},
+			},
+			expected: "sd_animation",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Genres: []string{"animation"},
+			},
+			expected: "sd_animation",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Tags:   []string{"Anime"},
+			},
+			expected: "sd_animation",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Tags:   []string{"adult animation"},
+			},
+			expected: "sd_animation",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Genres: []string{"action"},
+			},
+			expected: "sd_live_action",
+		},
+		{
+			input: &nfo.Content{
+				Width:  1280,
+				Height: 720,
+				Tags:   []string{"action"},
+			},
+			expected: "sd_live_action",
+		},
+	}
+
+	for _, tc := range testCases {
+		actual := guessTranscodeProfile(tc.input)
+		if actual != tc.expected {
+			t.Errorf("expected profile %s, got %s", tc.expected, actual)
 		}
 	}
 }
