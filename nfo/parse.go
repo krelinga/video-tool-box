@@ -27,7 +27,7 @@ type nfoVideo struct {
 	Height int `xml:"height"`
 }
 
-func readFromFile(filename string) (*nfoMovie, error) {
+func readFromMovieFile(filename string) (*nfoMovie, error) {
 	// Open the XML file
 	file, err := os.Open(filename)
 	if err != nil {
@@ -59,7 +59,7 @@ type Content struct {
 }
 
 func Parse(filename string) (*Content, error) {
-	movie, err := readFromFile(filename)
+	movie, err := readFromMovieFile(filename)
 	if err != nil {
 		return nil, err
 	}
