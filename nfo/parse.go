@@ -7,7 +7,11 @@ import (
 	"os"
 )
 
-func readFromMovieFile(filename string) (*nfoMovie, error) {
+type nfoRoot interface {
+	nfoMovie
+}
+
+func readNfoFile[rootType nfoRoot](filename string) (*rootType, error) {
 	// Open the XML file
 	file, err := os.Open(filename)
 	if err != nil {
@@ -19,11 +23,11 @@ func readFromMovieFile(filename string) (*nfoMovie, error) {
 	decoder := xml.NewDecoder(file)
 
 	// Parse the XML content
-	entry := &nfoMovie{}
+	entry := &rootType{}
 	err = decoder.Decode(entry)
 	if err != nil {
 		if err == io.EOF {
-			return nil, fmt.Errorf("no movie data found")
+			return nil, fmt.Errorf("no NFO data found")
 		}
 		return nil, err
 	}
@@ -39,7 +43,7 @@ type Content struct {
 }
 
 func Parse(filename string) (*Content, error) {
-	movie, err := readFromMovieFile(filename)
+	movie, err := readNfoFile[nfoMovie](filename)
 	if err != nil {
 		return nil, err
 	}

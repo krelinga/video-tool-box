@@ -45,7 +45,7 @@ func TestParse(t *testing.T) {
 		{
 			filename: "../testdata/nfo/movies/errors/no_movie.nfo",
 			expected: nil,
-			errMsg:   "no movie data found",
+			errMsg:   "no NFO data found",
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_fileinfo.nfo",
