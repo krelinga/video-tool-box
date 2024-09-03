@@ -1,6 +1,6 @@
 package main
 
-// spell-checker:ignore urfave, subcmd
+// spell-checker:ignore urfave, subcmd, Tcprofiles
 
 import cli "github.com/urfave/cli/v2"
 
@@ -20,6 +20,7 @@ func appCfg() *cli.App {
 			subcmdCfgMkv(),
 			cmdCfgConfig(),
 			subcmdCfgCache(),
+			cmdCfgWriteTcprofiles(),
 		},
 		// Caller should set these.
 		Reader:    nil,
