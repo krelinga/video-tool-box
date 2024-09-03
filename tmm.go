@@ -1,6 +1,6 @@
 package main
 
-// spell-checker:ignore urfave .tcprofile tvshow.nfo
+// spell-checker:ignore urfave .tcprofile tvshow.nfo Tcprofile
 
 import (
 	"errors"
@@ -67,6 +67,10 @@ type nfoFileInfo struct {
 	content string
 }
 
+func nfoPathToTcprofilePath(nfoPath string) string {
+	return strings.TrimSuffix(nfoPath, ".nfo") + ".tcprofile"
+}
+
 func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 	var files []*nfoFileInfo
 
@@ -86,11 +90,15 @@ func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 
 	// Read the contents of all .nfo files in parallel.
 	var wg sync.WaitGroup
+	const parallelism = 20
+	sem := make(chan struct{}, parallelism)
 	errorChan := make(chan error, len(files))
 	for _, file := range files {
 		file := file
 		wg.Add(1)
 		go func() {
+			sem <- struct{}{}
+			defer func() { <-sem }()
 			defer wg.Done()
 
 			content, err := os.ReadFile(file.path)
@@ -103,10 +111,8 @@ func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 		}()
 	}
 
-	go func() {
-		wg.Wait()
-		close(errorChan)
-	}()
+	wg.Wait()
+	close(errorChan)
 
 	for err := range errorChan {
 		return nil, err
@@ -154,10 +160,6 @@ func updateTranscodeProfiles(old, new []*nfoFileInfo) error {
 		}
 	}
 
-	convertPath := func(nfoPath string) string {
-		return strings.TrimSuffix(nfoPath, ".nfo") + ".tcprofile"
-	}
-
 	for _, file := range updateNeeded {
 		nfoFile := file.path
 		showNfo, err := nfo.Parse(nfoFile, strings.NewReader(file.content))
@@ -165,7 +167,7 @@ func updateTranscodeProfiles(old, new []*nfoFileInfo) error {
 			return fmt.Errorf("could not parse NFO file %s: %w", nfoFile, err)
 		}
 		profile := guessTranscodeProfile(showNfo)
-		profileFile := convertPath(nfoFile)
+		profileFile := nfoPathToTcprofilePath(nfoFile)
 		if err := os.WriteFile(profileFile, []byte(profile+"\n"), 0644); err != nil {
 			return fmt.Errorf("could not write profile file %s: %w", profileFile, err)
 		}
