@@ -56,7 +56,7 @@ func Parse(filename string) (*Content, error) {
 		genres = movie.Genres
 	case Episode:
 		var episode nfoEpisode
-		err := readNfoFile[nfoEpisode](filename, &episode)
+		err := readNfoFile(filename, &episode)
 		if err != nil {
 			return nil, err
 		}
