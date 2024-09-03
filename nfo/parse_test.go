@@ -1,6 +1,7 @@
 package nfo
 
 import (
+	"os"
 	"testing"
 )
 
@@ -105,7 +106,11 @@ func TestParse(t *testing.T) {
 		test := test
 		t.Run(test.filename, func(t *testing.T) {
 			t.Parallel()
-			content, err := Parse(test.filename)
+			nfoFile, err := os.Open(test.filename)
+			if err != nil {
+				t.Fatalf("Failed to open file %q: %v", test.filename, err)
+			}
+			content, err := Parse(test.filename, nfoFile)
 			if err != nil {
 				if test.errMsg == "" {
 					t.Errorf("Unexpected error: %v", err)

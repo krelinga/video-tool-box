@@ -160,8 +160,7 @@ func updateTranscodeProfiles(old, new []*nfoFileInfo) error {
 
 	for _, file := range updateNeeded {
 		nfoFile := file.path
-		// TODO: don't read the nfo file twice...
-		showNfo, err := nfo.Parse(nfoFile)
+		showNfo, err := nfo.Parse(nfoFile, strings.NewReader(file.content))
 		if err != nil {
 			return fmt.Errorf("could not parse NFO file %s: %w", nfoFile, err)
 		}

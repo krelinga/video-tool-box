@@ -11,19 +11,12 @@ type nfoRoot interface {
 	nfoMovie | nfoEpisode | nfoShow
 }
 
-func readNfoFile[rootType nfoRoot](filename string, out *rootType) error {
-	// Open the XML file
-	file, err := os.Open(filename)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
+func readNfoFile[rootType nfoRoot](in io.Reader, out *rootType) error {
 	// Create a new XML decoder
-	decoder := xml.NewDecoder(file)
+	decoder := xml.NewDecoder(in)
 
 	// Parse the XML content
-	err = decoder.Decode(out)
+	err := decoder.Decode(out)
 	if err != nil {
 		if err == io.EOF {
 			return fmt.Errorf("no NFO data found")
@@ -41,13 +34,13 @@ type Content struct {
 	Height int
 }
 
-func Parse(filename string) (*Content, error) {
+func Parse(filename string, reader io.Reader) (*Content, error) {
 	var fileInfo *nfoFileInfo
 	var tags, genres []string
 	switch detectFileContext(filename) {
 	case Movie:
 		var movie nfoMovie
-		err := readNfoFile(filename, &movie)
+		err := readNfoFile(reader, &movie)
 		if err != nil {
 			return nil, err
 		}
@@ -56,7 +49,7 @@ func Parse(filename string) (*Content, error) {
 		genres = movie.Genres
 	case Episode:
 		var episode nfoEpisode
-		err := readNfoFile(filename, &episode)
+		err := readNfoFile(reader, &episode)
 		if err != nil {
 			return nil, err
 		}
@@ -67,7 +60,11 @@ func Parse(filename string) (*Content, error) {
 			return nil, err
 		}
 		var show nfoShow
-		if err := readNfoFile(showNfoPath, &show); err != nil {
+		showNfoFile, err := os.Open(showNfoPath)
+		if err != nil {
+			return nil, err
+		}
+		if err := readNfoFile(showNfoFile, &show); err != nil {
 			return nil, err
 		}
 		tags = show.Tags
