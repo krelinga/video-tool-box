@@ -71,54 +71,136 @@ func nfoPathToTcprofilePath(nfoPath string) string {
 	return strings.TrimSuffix(nfoPath, ".nfo") + ".tcprofile"
 }
 
-func findNfoFiles(base string) ([]*nfoFileInfo, error) {
-	var files []*nfoFileInfo
-
-	// Recursively walk the base directory and find all .nfo files.
-	err := filepath.WalkDir(base, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
-		}
-		if !d.IsDir() && filepath.Ext(path) == ".nfo" && filepath.Base(path) != "tvshow.nfo" {
-			files = append(files, &nfoFileInfo{path: path})
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	// Read the contents of all .nfo files in parallel.
-	var wg sync.WaitGroup
-	const parallelism = 20
-	sem := make(chan struct{}, parallelism)
-	errorChan := make(chan error, len(files))
-	for _, file := range files {
-		file := file
-		wg.Add(1)
-		go func() {
-			sem <- struct{}{}
-			defer func() { <-sem }()
-			defer wg.Done()
-
-			content, err := os.ReadFile(file.path)
+func crawlNfoFiles(base string) (chan string, chan error) {
+	nfoFiles := make(chan string)
+	errors := make(chan error)
+	go func() {
+		defer close(nfoFiles)
+		defer close(errors)
+		err := filepath.WalkDir(base, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
-				errorChan <- fmt.Errorf("error reading file %s: %v", file.path, err)
-				return
+				errors <- err
+				return nil
 			}
+			if !d.IsDir() && filepath.Ext(path) == ".nfo" && filepath.Base(path) != "tvshow.nfo" {
+				nfoFiles <- path
+			}
+			return nil
+		})
+		if err != nil {
+			errors <- err
+		}
+	}()
+	return nfoFiles, errors
+}
 
-			file.content = string(content)
+func readNfoFile(path string) (*nfoFileInfo, error) {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("error reading file %s: %v", path, err)
+	}
+	return &nfoFileInfo{path: path, content: string(content)}, nil
+}
+
+func merge[t any](channels ...<-chan t) <-chan t {
+	out := make(chan t, len(channels))
+	var wg sync.WaitGroup
+	wg.Add(len(channels))
+	for _, c := range channels {
+		c := c
+		go func() {
+			defer wg.Done()
+			for v := range c {
+				out <- v
+			}
 		}()
 	}
 
-	wg.Wait()
-	close(errorChan)
+	go func() {
+		wg.Wait()
+		close(out)
+	}()
 
-	for err := range errorChan {
-		return nil, err
+	return out
+}
+
+func each[inType any, outType any](f func(inType) outType, in ...inType) []outType {
+	out := make([]outType, len(in))
+	for i, v := range in {
+		out[i] = f(v)
+	}
+	return out
+}
+
+func readOnlyChan[t any](in chan t) <-chan t {
+	return in
+}
+
+func parallel[inType any, outType any](parallelism int, in <-chan inType, f func(inType) (outType, error)) (<-chan outType, <-chan error) {
+	outs := make([]chan outType, parallelism)
+	errors := make([]chan error, parallelism)
+	for i := 0; i < parallelism; i++ {
+		i := i
+		outs[i] = make(chan outType)
+		errors[i] = make(chan error)
+		go func() {
+			defer close(outs[i])
+			defer close(errors[i])
+			for inVal := range in {
+				outVal, err := f(inVal)
+				if err != nil {
+					errors[i] <- err
+					continue
+				}
+				outs[i] <- outVal
+			}
+		}()
 	}
 
-	return files, nil
+	roOuts := each(readOnlyChan, outs...)
+	roErrors := each(readOnlyChan, errors...)
+
+	return merge(roOuts...), merge(roErrors...)
+}
+
+func goWait(wg *sync.WaitGroup, f func()) {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		f()
+	}()
+}
+
+func goWaitAll(fs ...func()) {
+	wg := sync.WaitGroup{}
+	for _, f := range fs {
+		goWait(&wg, f)
+	}
+	wg.Wait()
+}
+
+func findNfoFiles(base string) ([]*nfoFileInfo, error) {
+	nfoPaths, pathErrors := crawlNfoFiles(base)
+	nfoFiles, readErrors := parallel(20, nfoPaths, readNfoFile)
+
+	finalInfos := []*nfoFileInfo{}
+	var finalErr error
+	goWaitAll(
+		func() {
+			for info := range nfoFiles {
+				finalInfos = append(finalInfos, info)
+			}
+		},
+		func() {
+			for err := range merge(pathErrors, readErrors) {
+				if finalErr == nil {
+					finalErr = err
+				}
+			}
+		},
+	)
+
+	return finalInfos, finalErr
 }
 
 func guessTranscodeProfile(in *nfo.Content) string {
