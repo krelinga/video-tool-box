@@ -1,6 +1,6 @@
 module github.com/krelinga/video-tool-box
 
-go 1.21.5
+go 1.22.6
 
 require (
 	buf.build/gen/go/krelinga/proto/connectrpc/go v1.16.2-20240722200501-e4a8f516a168.1
@@ -9,6 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
+	github.com/krelinga/go-lib v0.0.0-20240921030943-8b7b87f8ad42
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/net v0.23.0
 )

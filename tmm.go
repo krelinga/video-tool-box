@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/krelinga/go-lib/chans"
 	"github.com/krelinga/video-tool-box/nfo"
 	cli "github.com/urfave/cli/v2"
 )
@@ -102,28 +103,6 @@ func readNfoFile(path string) (*nfoFileInfo, error) {
 	return &nfoFileInfo{path: path, content: string(content)}, nil
 }
 
-func merge[t any](channels ...<-chan t) <-chan t {
-	out := make(chan t, len(channels))
-	var wg sync.WaitGroup
-	wg.Add(len(channels))
-	for _, c := range channels {
-		c := c
-		go func() {
-			defer wg.Done()
-			for v := range c {
-				out <- v
-			}
-		}()
-	}
-
-	go func() {
-		wg.Wait()
-		close(out)
-	}()
-
-	return out
-}
-
 func each[inType any, outType any](f func(inType) outType, in ...inType) []outType {
 	out := make([]outType, len(in))
 	for i, v := range in {
@@ -160,7 +139,7 @@ func parallel[inType any, outType any](parallelism int, in <-chan inType, f func
 	roOuts := each(readOnlyChan, outs...)
 	roErrors := each(readOnlyChan, errors...)
 
-	return merge(roOuts...), merge(roErrors...)
+	return chans.Merge(roOuts...), chans.Merge(roErrors...)
 }
 
 func goWait(wg *sync.WaitGroup, f func()) {
@@ -192,7 +171,7 @@ func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 			}
 		},
 		func() {
-			for err := range merge(pathErrors, readErrors) {
+			for err := range chans.Merge(pathErrors, readErrors) {
 				if finalErr == nil {
 					finalErr = err
 				}
