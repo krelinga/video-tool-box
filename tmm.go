@@ -111,33 +111,6 @@ func each[inType any, outType any](f func(inType) outType, in ...inType) []outTy
 	return out
 }
 
-func parallel[inType any, outType any](parallelism int, in <-chan inType, f func(inType) (outType, error)) (<-chan outType, <-chan error) {
-	outs := make([]chan outType, parallelism)
-	errors := make([]chan error, parallelism)
-	for i := 0; i < parallelism; i++ {
-		i := i
-		outs[i] = make(chan outType)
-		errors[i] = make(chan error)
-		go func() {
-			defer close(outs[i])
-			defer close(errors[i])
-			for inVal := range in {
-				outVal, err := f(inVal)
-				if err != nil {
-					errors[i] <- err
-					continue
-				}
-				outs[i] <- outVal
-			}
-		}()
-	}
-
-	roOuts := each(chans.ReadOnly, outs...)
-	roErrors := each(chans.ReadOnly, errors...)
-
-	return chans.Merge(roOuts...), chans.Merge(roErrors...)
-}
-
 func goWait(wg *sync.WaitGroup, f func()) {
 	wg.Add(1)
 	go func() {
@@ -156,7 +129,7 @@ func goWaitAll(fs ...func()) {
 
 func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 	nfoPaths, pathErrors := crawlNfoFiles(base)
-	nfoFiles, readErrors := parallel(20, nfoPaths, readNfoFile)
+	nfoFiles, readErrors := chans.ParallelErr(20, nfoPaths, readNfoFile)
 
 	finalInfos := []*nfoFileInfo{}
 	var finalErr error
