@@ -1,6 +1,6 @@
 package main
 
-// spell-checker:ignore urfave .tcprofile tvshow.nfo Tcprofile
+// spell-checker:ignore urfave .tcprofile tvshow.nfo Tcprofile chans
 
 import (
 	"errors"
@@ -11,9 +11,9 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/krelinga/go-lib/chans"
+	"github.com/krelinga/go-lib/routines"
 	"github.com/krelinga/video-tool-box/nfo"
 	cli "github.com/urfave/cli/v2"
 )
@@ -103,29 +103,13 @@ func readNfoFile(path string) (*nfoFileInfo, error) {
 	return &nfoFileInfo{path: path, content: string(content)}, nil
 }
 
-func goWait(wg *sync.WaitGroup, f func()) {
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		f()
-	}()
-}
-
-func goWaitAll(fs ...func()) {
-	wg := sync.WaitGroup{}
-	for _, f := range fs {
-		goWait(&wg, f)
-	}
-	wg.Wait()
-}
-
 func findNfoFiles(base string) ([]*nfoFileInfo, error) {
 	nfoPaths, pathErrors := crawlNfoFiles(base)
 	nfoFiles, readErrors := chans.ParallelErr(20, nfoPaths, readNfoFile)
 
 	finalInfos := []*nfoFileInfo{}
 	var finalErr error
-	goWaitAll(
+	routines.RunAndWait(
 		func() {
 			for info := range nfoFiles {
 				finalInfos = append(finalInfos, info)
