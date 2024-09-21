@@ -22,3 +22,7 @@ go.work
 
 # secrets
 .act/secrets
+
+# go-lib development via submodule
+submodules
+.gitmodules
