@@ -111,10 +111,6 @@ func each[inType any, outType any](f func(inType) outType, in ...inType) []outTy
 	return out
 }
 
-func readOnlyChan[t any](in chan t) <-chan t {
-	return in
-}
-
 func parallel[inType any, outType any](parallelism int, in <-chan inType, f func(inType) (outType, error)) (<-chan outType, <-chan error) {
 	outs := make([]chan outType, parallelism)
 	errors := make([]chan error, parallelism)
@@ -136,8 +132,8 @@ func parallel[inType any, outType any](parallelism int, in <-chan inType, f func
 		}()
 	}
 
-	roOuts := each(readOnlyChan, outs...)
-	roErrors := each(readOnlyChan, errors...)
+	roOuts := each(chans.ReadOnly, outs...)
+	roErrors := each(chans.ReadOnly, errors...)
 
 	return chans.Merge(roOuts...), chans.Merge(roErrors...)
 }
