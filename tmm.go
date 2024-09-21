@@ -103,14 +103,6 @@ func readNfoFile(path string) (*nfoFileInfo, error) {
 	return &nfoFileInfo{path: path, content: string(content)}, nil
 }
 
-func each[inType any, outType any](f func(inType) outType, in ...inType) []outType {
-	out := make([]outType, len(in))
-	for i, v := range in {
-		out[i] = f(v)
-	}
-	return out
-}
-
 func goWait(wg *sync.WaitGroup, f func()) {
 	wg.Add(1)
 	go func() {
