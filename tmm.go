@@ -1,8 +1,9 @@
 package main
 
-// spell-checker:ignore urfave .tcprofile tvshow.nfo Tcprofile chans
+// spell-checker:ignore urfave .tcprofile tvshow.nfo Tcprofile
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -12,8 +13,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/krelinga/go-lib/chans"
-	"github.com/krelinga/go-lib/routines"
+	"github.com/krelinga/go-lib/pipe"
 	"github.com/krelinga/video-tool-box/nfo"
 	cli "github.com/urfave/cli/v2"
 )
@@ -72,7 +72,7 @@ func nfoPathToTcprofilePath(nfoPath string) string {
 	return strings.TrimSuffix(nfoPath, ".nfo") + ".tcprofile"
 }
 
-func crawlNfoFiles(base string) (chan string, chan error) {
+func crawlNfoFiles(ctx context.Context, base string) (chan string, chan error) {
 	nfoFiles := make(chan string)
 	errors := make(chan error)
 	go func() {
@@ -81,10 +81,15 @@ func crawlNfoFiles(base string) (chan string, chan error) {
 		err := filepath.WalkDir(base, func(path string, d fs.DirEntry, err error) error {
 			if err != nil {
 				errors <- err
+				if !pipe.TryWrite(ctx, errors, err) {
+					return context.Canceled
+				}
 				return nil
 			}
 			if !d.IsDir() && filepath.Ext(path) == ".nfo" && filepath.Base(path) != "tvshow.nfo" {
-				nfoFiles <- path
+				if !pipe.TryWrite(ctx, nfoFiles, path) {
+					return context.Canceled
+				}
 			}
 			return nil
 		})
@@ -104,24 +109,18 @@ func readNfoFile(path string) (*nfoFileInfo, error) {
 }
 
 func findNfoFiles(base string) ([]*nfoFileInfo, error) {
-	nfoPaths, pathErrors := crawlNfoFiles(base)
-	nfoFiles, readErrors := chans.ParallelErr(20, nfoPaths, readNfoFile)
+	ctx, cancel := context.WithCancel(context.TODO())
+	defer cancel()
+	nfoPaths, nfoPathErrors := crawlNfoFiles(ctx, base)
+	nfoFiles, nfoFileErrors := pipe.ParDoErr(ctx, 20, nfoPaths, readNfoFile)
 
 	finalInfos := []*nfoFileInfo{}
 	var finalErr error
-	routines.RunAndWait(
-		func() {
-			for info := range nfoFiles {
-				finalInfos = append(finalInfos, info)
-			}
-		},
-		func() {
-			for err := range chans.Merge(pathErrors, readErrors) {
-				if finalErr == nil {
-					finalErr = err
-				}
-			}
-		},
+	pipe.Wait(
+		pipe.ToArrayFunc(nfoFiles, &finalInfos),
+		pipe.FirstFunc(pipe.Merge(ctx, nfoPathErrors, nfoFileErrors), func(err error) {
+			finalErr = err
+		}),
 	)
 
 	return finalInfos, finalErr
