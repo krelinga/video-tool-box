@@ -13,9 +13,9 @@
 	},
 
 	"mounts": [
-		"source=/Users/krelinga/localdev/macbin,target=/host/bin,type=bind,consistency=cached",
-		"source=/Users/krelinga/Movies,target=/host/Movies,type=bind,consistency=cached",
-		"source=/nas/media,target=/nas/media,type=bind,consistency=cached"
+		"source=/Users/krelinga/macbin,target=/host/bin,type=bind,consistency=cached",
+		"source=/Users/krelinga/Movies,target=/host/Movies,type=bind,consistency=cached" //,
+		// "source=/nas/media,target=/nas/media,type=bind,consistency=cached"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
