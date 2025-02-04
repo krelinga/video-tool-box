@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
+	"github.com/krelinga/go-lib/mac"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -48,6 +49,20 @@ func cmdSync(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+
+	// Prevent mac from sleeping while rsync is running.
+	resume, err := mac.StayAwake(mac.StayAwakeOpts{
+		Disk:   true,
+		System: true,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to prevent sleep: %w", err)
+	}
+	defer func() {
+		if err := resume(); err != nil {
+			fmt.Fprintf(c.App.ErrWriter, "failed to resume normal sleep behavior: %v\n", err)
+		}
+	}()
 
 	subdirs, err := filepath.Glob(filepath.Join(cfg.RipCacheServerDir, "*"))
 	if err != nil {

@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	humanize "github.com/dustin/go-humanize"
+	mac "github.com/krelinga/go-lib/mac"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -55,6 +56,20 @@ func cmdPush(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
+
+	// Prevent macos from sleeping during the push.
+	resume, err := mac.StayAwake(mac.StayAwakeOpts{
+		System: true,
+		Disk:   true,
+	})
+	if err != nil {
+		return fmt.Errorf("failed to prevent sleep: %w", err)
+	}
+	defer func() {
+		if err := resume(); err != nil {
+			fmt.Fprintf(c.App.ErrWriter, "failed to resume normal sleep behavior: %v\n", err)
+		}
+	}()
 
 	projects := ts.FindByStage(psReadyForPush)
 	if len(projects) == 0 {
@@ -193,6 +208,7 @@ func cmdPush(c *cli.Context) error {
 	if needSave {
 		updateError(save())
 	}
+	updateError(resume())
 
 	return err
 }
