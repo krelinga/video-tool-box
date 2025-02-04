@@ -149,7 +149,7 @@ func TestRipSequence(t *testing.T) {
 		}
 	}
 	checkPattern := func(dir, basename string) {
-		pattern := filepath.Join(dir, "uncategorized_????.mkv")
+		pattern := filepath.Join(dir, "uncategorized_aaa?.mkv")
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
 			t.Errorf("Could not match %s: %s", pattern, err)
