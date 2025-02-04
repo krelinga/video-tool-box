@@ -1,17 +1,18 @@
 package main
 
-// spell-checker:ignore urfave
+// spell-checker:ignore urfave uncat
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"math/big"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	humanize "github.com/dustin/go-humanize"
-	uuid "github.com/google/uuid"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -36,6 +37,48 @@ func openInVLC(path string) error {
 	return cmd.Run()
 }
 
+func nextUncatFileName(destDir string) (string, error) {
+	entries, err := os.ReadDir(destDir)
+	if err != nil {
+		return "", err
+	}
+	prefix := "uncategorized_"
+	extension := ".mkv"
+	var maxUncatSuffix string
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".mkv") || !strings.HasPrefix(name, prefix) {
+			continue
+		}
+		clean := strings.TrimSuffix(strings.TrimPrefix(name, prefix), extension)
+		if clean > maxUncatSuffix {
+			maxUncatSuffix = clean
+		}
+	}
+	var out string
+	if maxUncatSuffix == "" {
+		out = "aaaa"
+	} else {
+		cary := false
+		for i := len(maxUncatSuffix) - 1; i >= 0; i-- {
+			if maxUncatSuffix[i] == 'z' {
+				cary = true
+				out = "a" + out
+			} else if cary {
+				out = string(maxUncatSuffix[i]+1) + out
+				cary = false
+			} else {
+				out = string(maxUncatSuffix[i]) + out
+			}
+		}
+		if cary {
+			return "", errors.New("too many uncategorized files")
+		}
+	}
+
+	return prefix + out + extension, nil
+}
+
 func createDestDirAndMove(toMove string, destDir string) error {
 	exists := func(path string) error {
 		_, err := os.Stat(path)
@@ -47,12 +90,15 @@ func createDestDirAndMove(toMove string, destDir string) error {
 		}
 		return fmt.Errorf("path %s already exists", path)
 	}
-	basename := filepath.Base(toMove)
-	destPath := filepath.Join(destDir, uuid.NewString()+"-"+basename)
-	if err := exists(destPath); err != nil {
+	if err := os.MkdirAll(destDir, 0755); err != nil {
 		return err
 	}
-	if err := os.MkdirAll(destDir, 0755); err != nil {
+	destName, err := nextUncatFileName(destDir)
+	if err != nil {
+		return err
+	}
+	destPath := filepath.Join(destDir, destName)
+	if err := exists(destPath); err != nil {
 		return err
 	}
 	return os.Rename(toMove, destPath)

@@ -111,7 +111,8 @@ func TestRipSequence(t *testing.T) {
 	writeTestFile("c_skip.mkv")
 	writeTestFile("d_delete.mkv")
 
-	runNoError := func(args ...string) bool {
+	runNoError := func(t *testing.T, args ...string) bool {
+		t.Helper()
 		if err := ta.Run(args...); err != nil {
 			t.Errorf("Error running with args %v: %s", args, err)
 			return false
@@ -121,7 +122,7 @@ func TestRipSequence(t *testing.T) {
 
 	// Project names don't have to be quoted on the shell, so we pass
 	// "Test" and "Movie" as two separate strings here.
-	if !runNoError("rip", "new", "--type", "movie", "--name", "Test Movie") {
+	if !runNoError(t, "rip", "new", "--type", "movie", "--name", "Test Movie") {
 		return
 	}
 	ta.Reset()
@@ -129,7 +130,7 @@ func TestRipSequence(t *testing.T) {
 	if _, err := ta.Stdin().WriteString("t\nx\ns\nd\n"); err != nil {
 		t.Fatalf("error writing to test stdin: %s", err)
 	}
-	if !runNoError("rip", "dir", "--name", "Test Movie") {
+	if !runNoError(t, "rip", "dir", "--name", "Test Movie") {
 		return
 	}
 	if leftover := ta.Stdin().Len(); leftover > 0 {
@@ -148,8 +149,7 @@ func TestRipSequence(t *testing.T) {
 		}
 	}
 	checkPattern := func(dir, basename string) {
-		const uuidPattern = "????????-????-????-????-????????????-"
-		pattern := filepath.Join(dir, uuidPattern+basename)
+		pattern := filepath.Join(dir, "uncategorized_????.mkv")
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
 			t.Errorf("Could not match %s: %s", pattern, err)
@@ -185,11 +185,11 @@ func TestRipSequence(t *testing.T) {
 	ta.Reset()
 
 	// This isn't exactly right, but we can't simulate push in this harness.
-	if !runNoError("rip", "stage", "--name", "Test Movie", "--pushed") {
+	if !runNoError(t, "rip", "stage", "--name", "Test Movie", "--pushed") {
 		return
 	}
 
-	if !runNoError("rip", "finish", "-y") {
+	if !runNoError(t, "rip", "finish", "-y") {
 		return
 	}
 	ta.Reset()
