@@ -59,7 +59,7 @@ func nextUncatFileName(destDir string) (string, error) {
 	if maxUncatSuffix == "" {
 		out = "aaaa"
 	} else {
-		cary := false
+		cary := true
 		for i := len(maxUncatSuffix) - 1; i >= 0; i-- {
 			if maxUncatSuffix[i] == 'z' {
 				cary = true
