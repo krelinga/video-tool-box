@@ -49,18 +49,24 @@ func TestFindNfoFiles(t *testing.T) {
 	}
 
 	// Check the paths of the found files
-	expectedFiles := []string{
-		"file1.nfo",
-		"file3.nfo",
+	expectedFiles := map[string]struct{}{
+		filepath.Join(tempDir, "file1.nfo"): {},
+		filepath.Join(tempDir, "file3.nfo"): {},
 	}
-	for i, file := range files {
-		expectedPath := filepath.Join(tempDir, expectedFiles[i])
-		if file.path != expectedPath {
-			t.Errorf("expected path %s, got %s", expectedPath, file.path)
+	for _, file := range files {
+		_, found := expectedFiles[file.path]
+		if !found {
+			t.Errorf("unexpected file found: %s", file.path)
+			continue
 		}
-		if file.content != expectedFiles[i] {
-			t.Errorf("expected content %s, got %s", expectedFiles[i], file.content)
+		delete(expectedFiles, file.path)
+		expectedContent := filepath.Base(file.path)
+		if file.content != expectedContent {
+			t.Errorf("expected content %s, got %s", expectedContent, file.content)
 		}
+	}
+	if len(expectedFiles) > 0 {
+		t.Errorf("files not found: %v", expectedFiles)
 	}
 }
 func TestGuessTranscodeProfile(t *testing.T) {
