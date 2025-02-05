@@ -208,7 +208,6 @@ func cmdPush(c *cli.Context) error {
 	if needSave {
 		updateError(save())
 	}
-	updateError(resume())
 
 	return err
 }
