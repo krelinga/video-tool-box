@@ -162,6 +162,22 @@ func cmdPush(c *cli.Context) error {
 		outSuperDir := outSuperDirs[i]
 		outDir := outDirs[i]
 
+		// If there's an existing extras dir, rename it to .extras.  That will allow rsync to do the right thing.
+		oldExtrasPath := filepath.Join(outDir, "extras")
+		if _, statErr := os.Stat(oldExtrasPath); statErr == nil {
+			fmt.Fprintf(c.App.Writer, "Renaming existing extras dir... ")
+			if !updateError(os.Rename(oldExtrasPath, filepath.Join(outDir, ".extras"))) {
+				continue
+			} else {
+				fmt.Fprintf(c.App.Writer, "done.\n")
+			}
+		} else if !errors.Is(statErr, fs.ErrNotExist) {
+			updateError(statErr)
+			continue
+		} else {
+			fmt.Fprintln(c.App.Writer, "No existing extras dir.")
+		}
+
 		fmt.Fprintf(c.App.Writer, "\n[%d/%d] Copying from %s...\n", i+1, len(dirs), dir)
 
 		// Use rsync to copy the files.
