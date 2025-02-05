@@ -1,5 +1,7 @@
 module github.com/krelinga/video-tool-box
 
+// spell-checker:ignore
+
 go 1.23.4
 
 require (
@@ -8,7 +10,6 @@ require (
 	connectrpc.com/connect v1.16.2
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-cmp v0.6.0
-	github.com/google/uuid v1.6.0
 	github.com/krelinga/go-lib v0.4.1
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/net v0.23.0
