@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	humanize "github.com/dustin/go-humanize"
+	uuid "github.com/google/uuid"
 	cli "github.com/urfave/cli/v2"
 )
 
@@ -79,7 +80,7 @@ func nextUncatFileName(destDir string) (string, error) {
 	return prefix + out + extension, nil
 }
 
-func createDestDirAndMove(toMove string, destDir string) error {
+func createDestDirAndMove(toMove string, destDir string, isExtra bool) error {
 	exists := func(path string) error {
 		_, err := os.Stat(path)
 		if os.IsNotExist(err) {
@@ -93,9 +94,23 @@ func createDestDirAndMove(toMove string, destDir string) error {
 	if err := os.MkdirAll(destDir, 0755); err != nil {
 		return err
 	}
-	destName, err := nextUncatFileName(destDir)
-	if err != nil {
-		return err
+	var destName string
+	if isExtra {
+		// Give extras files a uuid-based name.  This is because we might merge an extras
+		// directory into one that already exists on my NAS ... I don't want to overwrite
+		// any existing extras.
+		destName = uuid.NewString() + ".mkv"
+	} else {
+		// for non-extras, we want to use a sequential name.  This allows us to keep track of
+		// the order in which titles were discovered, and makes it easy to ensure that TMM
+		// places these in an "uncategorized" folder.  We don't need to worry about overwriting
+		// files that already exist on my NAS because TMM will further-rename these as part of
+		// attaching metadata.
+		var err error
+		destName, err = nextUncatFileName(destDir)
+		if err != nil {
+			return err
+		}
 	}
 	destPath := filepath.Join(destDir, destName)
 	if err := exists(destPath); err != nil {
@@ -202,7 +217,7 @@ pathLoop:
 				if err != nil {
 					return err
 				}
-				if err := createDestDirAndMove(path, destDir); err != nil {
+				if err := createDestDirAndMove(path, destDir, false); err != nil {
 					return err
 				}
 				fmt.Fprintln(c.App.Writer, "moved to TMM content dir")
@@ -212,7 +227,7 @@ pathLoop:
 				if err != nil {
 					return err
 				}
-				if err := createDestDirAndMove(path, destDir); err != nil {
+				if err := createDestDirAndMove(path, destDir, true); err != nil {
 					return err
 				}
 				fmt.Fprintln(c.App.Writer, "moved to extras dir")

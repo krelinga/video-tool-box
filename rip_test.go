@@ -148,8 +148,9 @@ func TestRipSequence(t *testing.T) {
 			t.Errorf("Bad contents in %s: expected \"%s\", actual \"%s\"", path, expContents, actContents)
 		}
 	}
-	checkPattern := func(dir, basename string) {
-		pattern := filepath.Join(dir, "uncategorized_aaa?.mkv")
+	checkPattern := func(t *testing.T, dir, basename string) {
+		t.Helper()
+		pattern := filepath.Join(dir, "*.mkv")
 		matches, err := filepath.Glob(pattern)
 		if err != nil {
 			t.Errorf("Could not match %s: %s", pattern, err)
@@ -171,8 +172,8 @@ func TestRipSequence(t *testing.T) {
 		}
 	}
 	tmmMovieDir := filepath.Join(ta.Paths().TmmMoviesDir(), "Test Movie")
-	checkPattern(tmmMovieDir, "a_title.mkv")
-	checkPattern(filepath.Join(tmmMovieDir, ".extras"), "b_extra.mkv")
+	checkPattern(t, tmmMovieDir, "a_title.mkv")
+	checkPattern(t, filepath.Join(tmmMovieDir, ".extras"), "b_extra.mkv")
 	check(filepath.Join(ta.Paths().CurrentDir(), "c_skip.mkv"))
 	files, err := os.ReadDir(ta.Paths().CurrentDir())
 	if err != nil {
