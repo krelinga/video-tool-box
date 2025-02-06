@@ -1,6 +1,6 @@
 module github.com/krelinga/video-tool-box
 
-// spell-checker:ignore
+// spell-checker:disable
 
 go 1.23.4
 
