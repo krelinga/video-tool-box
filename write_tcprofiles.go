@@ -22,6 +22,10 @@ func cmdCfgWriteTcprofiles() *cli.Command {
 				Usage:    "The directory to search for .tcprofile files.",
 				Required: true,
 			},
+			&cli.BoolFlag{
+				Name:  "dry-run",
+				Usage: "Do not write any files, just print what would be done.",
+			},
 		},
 		Action: cmdWritetcprofiles,
 	}
@@ -33,18 +37,30 @@ func cmdWritetcprofiles(c *cli.Context) error {
 		return err
 	}
 
-	progressChan := make(chan struct{})
+	type counters struct {
+		alreadyExists int
+		added         int
+		total         int
+	}
+
+	progressChan := make(chan counters)
 	progressDoneChan := make(chan struct{})
 	go func() {
 		const updateInterval = 10
-		updates := 0
 		defer close(progressDoneChan)
-		for range progressChan {
-			updates += 1
-			if updates%updateInterval == 0 {
-				fmt.Fprintf(c.App.Writer, "Processed %d/%d files\n", updates, len(files))
+		totals := counters{}
+		output := func() {
+			fmt.Fprintf(c.App.Writer, "Processed %d/%d files.  %d already exist, %d added.\n", totals.total, len(files), totals.alreadyExists, totals.added)
+		}
+		for p := range progressChan {
+			totals.alreadyExists += p.alreadyExists
+			totals.added += p.added
+			totals.total += p.total
+			if totals.total%updateInterval == 0 {
+				output()
 			}
 		}
+		output()
 	}()
 
 	const parallelism = 20
@@ -54,15 +70,19 @@ func cmdWritetcprofiles(c *cli.Context) error {
 	for _, f := range files {
 		f := f
 		wg.Add(1)
+		sem <- struct{}{}
 		go func() {
-			sem <- struct{}{}
+			one_count := counters{
+				total: 1,
+			}
 			defer wg.Done()
 			defer func() { <-sem }()
-			defer func() { progressChan <- struct{}{} }()
+			defer func() { progressChan <- one_count }()
 
 			tcProfilePath := nfoPathToTcprofilePath(f.path)
 			if _, err := os.Stat(tcProfilePath); err == nil {
 				// file already exists, so we can skip it.
+				one_count.alreadyExists += 1
 				return
 			}
 
@@ -71,12 +91,15 @@ func cmdWritetcprofiles(c *cli.Context) error {
 				errorChan <- fmt.Errorf("could not parse nfo file %s: %w", f.path, err)
 				return
 			}
-			guessedTcProfile := guessTranscodeProfile(nfoInfo)
-			profileFile := nfoPathToTcprofilePath(f.path)
-			if err := os.WriteFile(profileFile, []byte(guessedTcProfile+"\n"), 0644); err != nil {
-				errorChan <- fmt.Errorf("could not write tcprofile file %s: %w", profileFile, err)
-				return
+			if !c.Bool("dry-run") {
+				guessedTcProfile := guessTranscodeProfile(nfoInfo)
+				profileFile := nfoPathToTcprofilePath(f.path)
+				if err := os.WriteFile(profileFile, []byte(guessedTcProfile+"\n"), 0644); err != nil {
+					errorChan <- fmt.Errorf("could not write tcprofile file %s: %w", profileFile, err)
+					return
+				}
 			}
+			one_count.added += 1
 		}()
 	}
 
