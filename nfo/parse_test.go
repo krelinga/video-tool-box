@@ -1,8 +1,11 @@
 package nfo
 
 import (
+	"errors"
 	"os"
 	"testing"
+
+	"github.com/krelinga/go-lib/video/nfo"
 )
 
 func TestParse(t *testing.T) {
@@ -11,7 +14,7 @@ func TestParse(t *testing.T) {
 	tests := []struct {
 		filename string
 		expected *Content
-		errMsg   string
+		wantErr  error
 	}{
 		{
 			filename: "../testdata/nfo/movies/Beavis and Butt-Head Do America (1996).nfo",
@@ -21,7 +24,6 @@ func TestParse(t *testing.T) {
 				Width:  720,
 				Height: 480,
 			},
-			errMsg: "",
 		},
 		{
 			filename: "../testdata/nfo/movies/The Void (2016).nfo",
@@ -31,7 +33,6 @@ func TestParse(t *testing.T) {
 				Width:  1920,
 				Height: 1080,
 			},
-			errMsg: "",
 		},
 		{
 			filename: "../testdata/nfo/movies/They Live (1988).nfo",
@@ -41,37 +42,30 @@ func TestParse(t *testing.T) {
 				Width:  720,
 				Height: 480,
 			},
-			errMsg: "",
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_movie.nfo",
-			expected: nil,
-			errMsg:   "no NFO data found",
+			wantErr:  nfo.ErrBadXml,
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_fileinfo.nfo",
-			expected: nil,
-			errMsg:   "no file info found",
+			wantErr:  nfo.ErrNoWidth,
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_streamdetails.nfo",
-			expected: nil,
-			errMsg:   "no stream details found",
+			wantErr:  nfo.ErrNoWidth,
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_video.nfo",
-			expected: nil,
-			errMsg:   "no video stream details found",
+			wantErr:  nfo.ErrNoWidth,
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_height.nfo",
-			expected: nil,
-			errMsg:   "invalid video resolution",
+			wantErr:  nfo.ErrNoHeight,
 		},
 		{
 			filename: "../testdata/nfo/movies/errors/no_width.nfo",
-			expected: nil,
-			errMsg:   "invalid video resolution",
+			wantErr:  nfo.ErrNoWidth,
 		},
 		{
 			filename: "../testdata/nfo/shows/Band of Brothers (2001)/Season 1/Band of Brothers - S01E01 - Currahee.nfo",
@@ -80,7 +74,6 @@ func TestParse(t *testing.T) {
 				Width:  720,
 				Height: 480,
 			},
-			errMsg: "",
 		},
 		{
 			filename: "../testdata/nfo/shows/Cowboy Bebop (1998)/Season 1/Cowboy Bebop - S01E01 - Asteroid Blues.nfo",
@@ -89,7 +82,6 @@ func TestParse(t *testing.T) {
 				Width:  720,
 				Height: 480,
 			},
-			errMsg: "",
 		},
 		{
 			filename: "../testdata/nfo/shows/The Terror (2018)/Season 1/The Terror - S01E01 - Go for Broke.nfo",
@@ -98,7 +90,6 @@ func TestParse(t *testing.T) {
 				Width:  1920,
 				Height: 1080,
 			},
-			errMsg: "",
 		},
 	}
 
@@ -111,17 +102,8 @@ func TestParse(t *testing.T) {
 				t.Fatalf("Failed to open file %q: %v", test.filename, err)
 			}
 			content, err := Parse(test.filename, nfoFile)
-			if err != nil {
-				if test.errMsg == "" {
-					t.Errorf("Unexpected error: %v", err)
-				} else if err.Error() != test.errMsg {
-					t.Errorf("Expected error message: %q, got: %q", test.errMsg, err.Error())
-				}
-				return
-			}
-
-			if test.errMsg != "" {
-				t.Errorf("Expected error message: %q, got: nil", test.errMsg)
+			if !errors.Is(err, test.wantErr) {
+				t.Errorf("Expected error: %v, got: %v", test.wantErr, err)
 				return
 			}
 
