@@ -11,7 +11,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/google/go-cmp v0.6.0
 	github.com/google/uuid v1.6.0
-	github.com/krelinga/go-lib v0.4.3
+	github.com/krelinga/go-lib v0.4.4
 	github.com/urfave/cli/v2 v2.27.1
 	golang.org/x/net v0.23.0
 )
